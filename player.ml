@@ -18,11 +18,11 @@ exception NotValidSelection
 (** [initialize_player a] initializes all feilds of a player object a. *)
 let initialize_player (player : t) =
   {
-    player with
     bet = 0;
     tricks_won_this_round = 0;
     current_score = 0;
     current_hand = [];
+    current_selected_card = Card.make_no_card ();
     current_selected_index = 0;
   }
 

@@ -22,7 +22,7 @@ let rec sublist list index1 index2 acc counter =
     let acc = List.nth list counter :: acc in
     sublist list index1 index2 acc (counter + 1)
 
-(*[deal_helper] returns a list of card_lists with the cards in cards
+(*[deal_helper] returns a card list list with the cards in cards
   distributed equally*)
 let rec deal_helper
     cards
