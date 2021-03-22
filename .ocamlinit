@@ -3,4 +3,5 @@
 #require "ANSITerminal";;
 #directory "_build";;
 #load "card.cmo";;
+#load "player.cmo";;
 #load "deck.cmo";;
