@@ -6,4 +6,8 @@ type suit = Red | Blue | Green | Yellow
 
 type card = {number : number; suit : suit }
 
-type cardList = {cards : card list; size : int} 
+type card_list = {cards : card list; size : int} 
+
+let get_cards card_list = card_list.cards
+
+let get_cards_size card_list = card_list.size

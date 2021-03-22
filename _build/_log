@@ -15,4 +15,12 @@ ocamlfind ocamlc -c -o player.cmo player.ml # cached
 ocamlfind ocamldep -modules card.ml > card.ml.depends # cached
 # Target: card.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:card.cmo, file:card.ml, implem, ocaml, quiet }
 ocamlfind ocamlc -c -o card.cmo card.ml # cached
+# Target: deck.mli.depends, tags: { extension:mli, file:deck.mli, ocaml, ocamldep, quiet }
+ocamlfind ocamldep -modules deck.mli > deck.mli.depends # cached
+# Target: deck.cmi, tags: { byte, compile, extension:mli, file:deck.mli, interf, ocaml, quiet }
+ocamlfind ocamlc -c -o deck.cmi deck.mli # cached
+# Target: deck.ml.depends, tags: { extension:ml, file:deck.ml, ocaml, ocamldep, quiet }
+ocamlfind ocamldep -modules deck.ml > deck.ml.depends
+# Target: deck.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:deck.cmo, file:deck.ml, implem, ocaml, quiet }
+ocamlfind ocamlc -c -o deck.cmo deck.ml
 # Compilation successful.
