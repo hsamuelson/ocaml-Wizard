@@ -1,34 +1,38 @@
-
 (** Representation of static player data.
 
     This module represents the data stored in player files, including
-    the cards the player holds and the current player's bet. 
-    It handles all information that the player holds. *)
+    the cards the player holds and the current player's bet. It handles
+    all information that the player holds. *)
 
 (** The abstract type of values representing player. *)
 type t
 
-(** This player's current bet for this trick. *)
-type bet = int
+(** The indexing is out of bounds*)
+exception OutOfBounds
 
-(** The number of tricks this player has already won. *)
-type tricks_won_this_round = int
+(** If player is trying to select a card out of bounds*)
+exception NotValidSelection
 
-(** The number of rounds this player has already won. *)
-type current_score = int
+(** [initialize_player a] initializes all feilds of a player object a. *)
+val initialize_player : t -> t
 
-(** The number of rounds this player has already won. *)
-type current_hand = Card.card list
-(* 
-(** [start_room a] is the identifier of the starting room in adventure
-    [a]. *)
-val start_room : t -> room_id
+(** [reset_round_player a] resets all necessary parts of a player object
+    a. *)
+val reset_round_player : t -> t
 
-(** [room_ids a] is a set-like list of all of the room identifiers in
-    adventure [a]. *)
-val room_ids : t -> room_id list
+(** [choose_card a] is the function that will output the card we are
+    currently looking at a = 0 or 1 for moving between cards. Raises
+    NotValidMovement if the number is not 0 or 1*)
+val choose_card : t -> int -> t
 
-(** [description a r] is the description of room [r] in adventure [a].
-    Raises [UnknownRoom r] if [r] is not a room identifier in [a]. *)
-val description : t -> room_id -> string *)
+(** [play_card] allows a player to play the current chosen card. Returns
+    a tuple of the updated player and the played card *)
+val play_card : t -> t * Card.card
 
+(** [win_trick ] allows this player to win a trick and returns the
+    current state of the player *)
+val win_trick : t -> t
+
+(** [finish_round ] Finishes the round and adds trick points to the
+    current players score *)
+val finish_round : t -> t

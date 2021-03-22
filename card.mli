@@ -1,6 +1,6 @@
 type card
 
-type number 
+type number
 
 type suit
 
