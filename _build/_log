@@ -1,18 +1,18 @@
 ### Starting build.
 # Target: player.mli.depends, tags: { extension:mli, file:player.mli, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules player.mli > player.mli.depends
+ocamlfind ocamldep -modules player.mli > player.mli.depends # cached
 # Target: card.mli.depends, tags: { extension:mli, file:card.mli, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules card.mli > card.mli.depends
+ocamlfind ocamldep -modules card.mli > card.mli.depends # cached
 # Target: card.cmi, tags: { byte, compile, extension:mli, file:card.mli, interf, ocaml, quiet }
-ocamlfind ocamlc -c -o card.cmi card.mli
+ocamlfind ocamlc -c -o card.cmi card.mli # cached
 # Target: player.cmi, tags: { byte, compile, extension:mli, file:player.mli, interf, ocaml, quiet }
-ocamlfind ocamlc -c -o player.cmi player.mli
+ocamlfind ocamlc -c -o player.cmi player.mli # cached
 # Target: player.ml.depends, tags: { extension:ml, file:player.ml, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules player.ml > player.ml.depends
+ocamlfind ocamldep -modules player.ml > player.ml.depends # cached
 # Target: player.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:player.cmo, file:player.ml, implem, ocaml, quiet }
-ocamlfind ocamlc -c -o player.cmo player.ml
+ocamlfind ocamlc -c -o player.cmo player.ml # cached
 # Target: card.ml.depends, tags: { extension:ml, file:card.ml, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules card.ml > card.ml.depends
+ocamlfind ocamldep -modules card.ml > card.ml.depends # cached
 # Target: card.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:card.cmo, file:card.ml, implem, ocaml, quiet }
-ocamlfind ocamlc -c -o card.cmo card.ml
+ocamlfind ocamlc -c -o card.cmo card.ml # cached
 # Compilation successful.
