@@ -26,3 +26,5 @@ let get_cards_size card_list = card_list.size
 let set_cards card_list cards = { card_list with cards }
 
 let make_no_trump () = { number = 0; suit = No_Trump }
+
+let make_no_card () = { number = 0; suit = No_Card }
