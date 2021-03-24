@@ -16,7 +16,7 @@ exception OutOfBounds
 exception NotValidSelection
 
 (** [initialize_player a] initializes all feilds of a player object a. *)
-let initialize_player (player : t) =
+let initialize_player =
   {
     bet = 0;
     tricks_won_this_round = 0;
