@@ -40,6 +40,6 @@ let tb (num_p : int) = {
   num_players = num_p;
   scoreboard = [];
 }  
-
+(* Does this show up correctly in git? *)
 
 let update_scoreboard = failwith "Unimp"

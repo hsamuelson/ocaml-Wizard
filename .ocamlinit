@@ -5,3 +5,5 @@
 #load "card.cmo";;
 #load "player.cmo";;
 #load "deck.cmo";;
+#load "round.cmo";;
+#load "table.cmo";;
