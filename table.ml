@@ -23,10 +23,10 @@ let start_game = failwith "Unimp"
 (* let player_num = read_int () *)
 
 (* Initialize players *)
-let init_players (p_num : int) =
+let init_players (p_num : int) : Player.t list =
   let rec init_p_helper p_num p_list =
     if p_num > 0 then
-      init_p_helper (p_num - 1) (Player.initialize_player :: p_list)
+      init_p_helper (p_num - 1) ((Player.initialize_player p_num) :: p_list)
     else p_list
   in
   init_p_helper p_num []

@@ -14,7 +14,7 @@ exception OutOfBounds
 exception NotValidSelection
 
 (** [initialize_player a] initializes all feilds of a player object a. *)
-val initialize_player : t
+val initialize_player : int -> t
 
 (** [reset_round_player a] resets all necessary parts of a player object
     a. *)

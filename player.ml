@@ -3,15 +3,15 @@ type t = {
   tricks_won_this_round : int;
       (** The number of tricks this player has already won. *)
   current_score : int;
-      (** The number of rounds this player has already won. *)
+      (** The current score accross muiltple rounds. *)
   current_hand : Card.card list;
       (** The number of rounds this player has already won. *)
   current_selected_card : Card.card;
       (** The card we are focused on (current selection)*)
   current_selected_index : int;  (** Index of currently selected card*)
 
-  (* The total score the player has accross rounds *)
-  t_score : int;
+  player_id : int;
+  (* the id of the player *)
 }
 
 exception OutOfBounds
@@ -19,7 +19,7 @@ exception OutOfBounds
 exception NotValidSelection
 
 (** [initialize_player a] initializes all feilds of a player object a. *)
-let initialize_player =
+let initialize_player (p_num : int)=
   {
     bet = 0;
     tricks_won_this_round = 0;
@@ -27,7 +27,7 @@ let initialize_player =
     current_hand = [];
     current_selected_card = Card.make_no_card ();
     current_selected_index = 0;
-    t_score = 0;
+    player_id = p_num;
   }
 
 (** [reset_round_player a] resets all necessary parts of a player object
