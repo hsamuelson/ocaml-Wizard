@@ -1,17 +1,9 @@
 (* 0 is N, which always loses, and 14 is Wizard, which always wins*)
-type number = int
-
-type suit =
-  | Red
-  | Blue
-  | Green
-  | Yellow
-  | No_Trump
-  | No_Card
+(* | Red | Blue | Green | Yellow | No_Trump | No_Card *)
 
 type card = {
-  number : number;
-  suit : suit;
+  number : int;
+  suit : string;
 }
 
 type card_list = {
@@ -25,6 +17,10 @@ let get_cards_size card_list = card_list.size
 
 let set_cards card_list cards = { card_list with cards }
 
-let make_no_trump () = { number = 0; suit = No_Trump }
+let make_no_trump () = { number = 0; suit = "No_Trump" }
 
-let make_no_card () = { number = 0; suit = No_Card }
+let make_no_card () = { number = 0; suit = "No_Card" }
+
+let make_card number suit = { number; suit }
+
+let make_card_list cards size = { cards; size }

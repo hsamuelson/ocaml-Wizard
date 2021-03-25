@@ -1,4 +1,4 @@
-MODULES=player card deck round
+MODULES=player card deck round table
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
