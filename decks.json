@@ -1,0 +1,245 @@
+{
+  "cards": [
+    {
+      "number": 0,
+      "suit": "red"
+    },
+    {
+      "number": 1,
+      "suit": "red"
+    },
+    {
+      "number": 2,
+      "suit": "red"
+    },
+    {
+      "number": 3,
+      "suit": "red"
+    },
+    {
+      "number": 4,
+      "suit": "red"
+    },
+    {
+      "number": 5,
+      "suit": "red"
+    },
+    {
+      "number": 6,
+      "suit": "red"
+    },
+    {
+      "number": 7,
+      "suit": "red"
+    },
+    {
+      "number": 8,
+      "suit": "red"
+    },
+    {
+      "number": 9,
+      "suit": "red"
+    },
+    {
+      "number": 10,
+      "suit": "red"
+    },
+    {
+      "number": 11,
+      "suit": "red"
+    },
+    {
+      "number": 12,
+      "suit": "red"
+    },
+    {
+      "number": 13,
+      "suit": "red"
+    },
+    {
+      "number": 14,
+      "suit": "red"
+    },
+    {
+      "number": 0,
+      "suit": "red"
+    },
+    {
+      "number": 1,
+      "suit": "yellow"
+    },
+    {
+      "number": 2,
+      "suit": "yellow"
+    },
+    {
+      "number": 3,
+      "suit": "yellow"
+    },
+    {
+      "number": 4,
+      "suit": "yellow"
+    },
+    {
+      "number": 5,
+      "suit": "yellow"
+    },
+    {
+      "number": 6,
+      "suit": "yellow"
+    },
+    {
+      "number": 7,
+      "suit": "yellow"
+    },
+    {
+      "number": 8,
+      "suit": "yellow"
+    },
+    {
+      "number": 9,
+      "suit": "yellow"
+    },
+    {
+      "number": 10,
+      "suit": "yellow"
+    },
+    {
+      "number": 11,
+      "suit": "yellow"
+    },
+    {
+      "number": 12,
+      "suit": "yellow"
+    },
+    {
+      "number": 13,
+      "suit": "yellow"
+    },
+    {
+      "number": 14,
+      "suit": "yellow"
+    },
+    {
+      "number": 0,
+      "suit": "blue"
+    },
+    {
+      "number": 1,
+      "suit": "blue"
+    },
+    {
+      "number": 2,
+      "suit": "blue"
+    },
+    {
+      "number": 3,
+      "suit": "blue"
+    },
+    {
+      "number": 4,
+      "suit": "blue"
+    },
+    {
+      "number": 5,
+      "suit": "blue"
+    },
+    {
+      "number": 6,
+      "suit": "blue"
+    },
+    {
+      "number": 7,
+      "suit": "blue"
+    },
+    {
+      "number": 8,
+      "suit": "blue"
+    },
+    {
+      "number": 9,
+      "suit": "blue"
+    },
+    {
+      "number": 10,
+      "suit": "blue"
+    },
+    {
+      "number": 11,
+      "suit": "blue"
+    },
+    {
+      "number": 12,
+      "suit": "blue"
+    },
+    {
+      "number": 13,
+      "suit": "blue"
+    },
+    {
+      "number": 14,
+      "suit": "blue"
+    },
+    {
+      "number": 0,
+      "suit": "green"
+    },
+    {
+      "number": 1,
+      "suit": "green"
+    },
+    {
+      "number": 2,
+      "suit": "green"
+    },
+    {
+      "number": 3,
+      "suit": "green"
+    },
+    {
+      "number": 4,
+      "suit": "green"
+    },
+    {
+      "number": 5,
+      "suit": "green"
+    },
+    {
+      "number": 6,
+      "suit": "green"
+    },
+    {
+      "number": 7,
+      "suit": "green"
+    },
+    {
+      "number": 8,
+      "suit": "green"
+    },
+    {
+      "number": 9,
+      "suit": "green"
+    },
+    {
+      "number": 10,
+      "suit": "green"
+    },
+    {
+      "number": 11,
+      "suit": "green"
+    },
+    {
+      "number": 12,
+      "suit": "green"
+    },
+    {
+      "number": 13,
+      "suit": "green"
+    },
+    {
+      "number": 14,
+      "suit": "green"
+    }
+  ],
+  "size": 60
+}
