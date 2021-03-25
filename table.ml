@@ -9,7 +9,10 @@ type t = {
   num_players : int;
   scoreboard : int list;
 }
-
+type scoreboard = {
+  player_ids : Player.t list;
+  scores : int list;
+}
 let start_round = failwith "Unimplemented"
 
 let start_game = failwith "Unimp"
@@ -39,4 +42,15 @@ let init_tb (num_p : int) json_file =
     scoreboard = [];
   }
 
-let update_scoreboard = failwith "Unimp"
+(* Unimplemented *)
+let update_scoreboard (sb : scoreboard) =  sb
+
+let scoreboard (p_list : Player.t list) = 
+  let rec sb_helper p_list (pair : int * int) list =
+    match p_list with 
+    | hd :: tl -> begin
+    []
+    end
+    | _ -> []
+  in
+  sb_helper p_list 
