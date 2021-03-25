@@ -17,7 +17,7 @@ let start_game = failwith "Unimp"
 (* Initialize game params *)
 (* Call first round *)
 (* let () = print_string "Enter number of players" *)
-(* let player_num = read_int ()  *)
+(* let player_num = read_int () *)
 
 (* Initialize players *)
 let init_players (p_num : int) =
@@ -31,7 +31,7 @@ let init_players (p_num : int) =
 (* Number of possible rounds / rounds down so we insure that the last
    round everyone has the correct number of cards*)
 
-let tb (num_p : int) json_file =
+let init_tb (num_p : int) json_file =
   {
     players = init_players num_p;
     round = Round.init_first_round num_p (Deck.make_deck json_file);
