@@ -3,6 +3,7 @@ let play_game f = failwith "Unimplemented"
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
+  (*prompt for json file and number of players*)
   ANSITerminal.print_string [ ANSITerminal.red ]
     "\n\nWelcome to the 3110 Text Adventure Game engine.\n";
   print_endline
