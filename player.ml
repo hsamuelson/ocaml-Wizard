@@ -9,6 +9,9 @@ type t = {
   current_selected_card : Card.card;
       (** The card we are focused on (current selection)*)
   current_selected_index : int;  (** Index of currently selected card*)
+
+  (* The total score the player has accross rounds *)
+  t_score : int;
 }
 
 exception OutOfBounds
@@ -24,6 +27,7 @@ let initialize_player =
     current_hand = [];
     current_selected_card = Card.make_no_card ();
     current_selected_index = 0;
+    t_score = 0;
   }
 
 (** [reset_round_player a] resets all necessary parts of a player object
