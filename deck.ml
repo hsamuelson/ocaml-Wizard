@@ -39,10 +39,10 @@ let rec deal_helper
 
 (*[deal] deals a deck of cards into [num_players] different card lists
   where each card list has [round_number] of cards, and outputs a trump
-  card *)
+  card. Assumes that [num_players] * [round_number] <= size of [deck] *)
 let deal (deck : Card.card_list) num_players round_number =
   let size = Card.get_cards_size deck in
-  let num_cards = size / (num_players * round_number) in
+  let num_cards = round_number in
   let cards = Card.get_cards deck in
   let trump_card =
     if num_cards * num_players < size then List.nth cards (size - 1)

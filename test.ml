@@ -86,7 +86,7 @@ let deal_test
 let deal_tests =
   [
     deal_test "deal unshuffled wizard deck, 1 player round 1" main_deck
-      1 1 [ "hello" ];
+      1 1 [ "[ 0 , red ]" ];
   ]
 
 (*deck testing ends here*)
