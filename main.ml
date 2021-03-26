@@ -7,6 +7,11 @@ open ANSITerminal
    poll for inputs I guess, or to just type in inputs. Ask for number of
    players as the input. *)
 
+(* include unicode characters and colors to get suits
+0xE2 0x99 0xA4
+&#9828;
+&#x2664;*)
+
 (** [play_game f] starts the adventure in file [f]. *)
 let play_game f : unit =
   print_string [ Bold ] ("you have selected: " ^ f ^ "\n\n");
@@ -17,7 +22,7 @@ let play_game f : unit =
   | number_string ->
     (**TODO: Catch error if inputting bad information for inputs?*)
       let number = int_of_string number_string in
-      if number > 0 && number < 6 then
+      if number > 0 && number <= 6 then
         print_string [ Bold ]
           ("you have selected: " ^ string_of_int number ^ "\n\n")
       else
