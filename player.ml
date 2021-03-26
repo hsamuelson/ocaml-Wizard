@@ -39,6 +39,7 @@ let reset_round_player (player : t) =
     tricks_won_this_round = 0;
     current_hand = [];
     current_selected_index = 0;
+    current_selected_card = Card.make_no_card ();
   }
 
 (** [find_card_at_index a b] returns the card object in the list at the

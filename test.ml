@@ -329,6 +329,69 @@ let play_card_tests_get_card =
       "[ 2 , orange ]";
   ]
 
+let player12 =
+  Player.initialize_player 12
+  |> Player.make_bet 2 |> Player.win_trick |> Player.win_trick
+
+let player13 =
+  Player.initialize_player 13 |> Player.make_bet 2 |> Player.win_trick
+
+let player14 = Player.initialize_player 14 |> Player.make_bet 0
+
+let player15 =
+  Player.initialize_player 15 |> Player.make_bet 0 |> Player.win_trick
+
+let finish_round_test
+    (name : string)
+    (player : Player.t)
+    (expected_output : int list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player.finish_round player |> Player.player_to_list)
+    ~printer:(print_player_list "[ ")
+
+let finish_round_tests =
+  [
+    finish_round_test "Player 12 bet == wins" player12
+      [ 2; 2; 3; 0; 0; 0; 12 ];
+    finish_round_test "Player 13 bet != wins" player13
+      [ 2; 1; -1; 0; 0; 0; 13 ];
+    finish_round_test "Player 14 bet == 0 and bet == wins" player14
+      [ 0; 0; 1; 0; 0; 0; 14 ];
+    finish_round_test "Player 15 bet == 0 and bet == 0 and wins == 1"
+      player15
+      [ 0; 1; -1; 0; 0; 0; 15 ];
+  ]
+
+let player16 =
+  Player.initialize_player 16
+  |> Player.make_bet 2 |> Player.win_trick |> Player.win_trick
+  |> Player.finish_round
+
+let player17 =
+  Player.initialize_player 17
+  |> Player.make_bet 3 |> Player.win_trick |> Player.win_trick
+  |> Player.win_trick
+  |> Player.give_cards card_hand_4
+  |> Player.choose_card "next"
+  |> Player.choose_card "next"
+  |> Player.finish_round
+
+let reset_round_test
+    (name : string)
+    (player : Player.t)
+    (expected_output : int list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player.reset_round_player player |> Player.player_to_list)
+    ~printer:(print_player_list "[ ")
+
+let reset_round_tests =
+  [
+    reset_round_test "Player 16 reset" player16 [ 0; 0; 3; 0; 0; 0; 16 ];
+    reset_round_test "Player 17 reset" player17 [ 0; 0; 4; 0; 0; 0; 17 ];
+  ]
+
 let player_tests =
   [
     initialize_tests;
@@ -339,13 +402,14 @@ let player_tests =
     choose_card_tests;
     play_card_tests_get_player;
     play_card_tests_get_card;
-    (* reset_round_tests; *)
-    (* finish_round_tests; *)
+    finish_round_tests;
+    reset_round_tests;
   ]
 
 (*deck testing ends here*)
 let suite =
   "test suite for Wizard"
-  >::: List.flatten [ shuffle_tests; List.flatten player_tests ]
+  >::: List.flatten
+         [ shuffle_tests; deal_tests; List.flatten player_tests ]
 
 let _ = run_test_tt_main suite

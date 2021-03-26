@@ -6,8 +6,26 @@
 
 (** The abstract type of values representing player. *)
 type t
+(** type t = { *)
 
-(** The indexing is out of bounds*)
+(* ________________________ *)
+
+(* bet; *)
+
+(* tricks_won_this_round; *)
+
+(* current_score; *)
+
+(* current_hand; *)
+
+(* current_selected_card; *)
+
+(* current_selected_index; *)
+
+(* player_id; *)
+(* ________________________ *)
+
+(* The indexing is out of bounds*)
 exception OutOfBounds
 
 (** If player is trying to select a card out of bounds*)
