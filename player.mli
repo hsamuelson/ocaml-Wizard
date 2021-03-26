@@ -72,5 +72,4 @@ val get_player_hand : t -> string
 
 (** [player_to_string ] Returns the player as a legible string for
     testing*)
-
-(* val player_to_string : t -> string *)
+val player_to_string : t -> string

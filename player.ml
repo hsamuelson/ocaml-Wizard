@@ -173,12 +173,28 @@ let player_to_list (player : t) =
   } ->
       [ b; t; c; get_hand_size ch; Card.get_num cc; csi; pi ]
 
-(* let player_to_string (player : t) = match player with | { bet = b;
-   tricks_won_this_round = t; current_score = c; current_hand = ch;
-   current_selected_card = cc; current_selected_index = csi; player_id =
-   pi; _; } -> "Bet: " ^ string_of_int b ^ " Tricks: " ^ string_of_int t
-   ^ " Score: " ^ string_of_int c ^ " Selected: " ^ Card.string_of_card
-   cc ^ " Selected Index: " ^ string_of_int csi ^ " Id: " ^
-   string_of_int pi *)
+let rec hand_to_string hand acc =
+  match hand with
+  | [] -> acc
+  | h :: t -> hand_to_string t (acc ^ Card.string_of_card h)
+
+let player_to_string (player : t) =
+  match player with
+  | {
+   bet = b;
+   tricks_won_this_round = t;
+   current_score = c;
+   current_hand = ch;
+   current_selected_card = cc;
+   current_selected_index = csi;
+   player_id = pi;
+   _;
+  } ->
+      "Player " ^ string_of_int pi ^ " information: \nCurrent bet: "
+      ^ string_of_int b ^ "\nTricks won this round: " ^ string_of_int t
+      ^ "\nCurrent score: " ^ string_of_int c ^ "\nCurrent hand: "
+      ^ hand_to_string ch "" ^ "\nCurrently selected card: "
+      ^ Card.string_of_card cc ^ "\nCurrently selected index: "
+      ^ string_of_int csi ^ "\n"
 
 let make_bet bet (player : t) = { player with bet }

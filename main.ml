@@ -12,6 +12,30 @@ open ANSITerminal
 (* include unicode characters and colors to get suits 0xE2 0x99 0xA4
    &#9828; &#x2664;*)
 
+(** [deal cards] is an example of how we can display information on the
+    terminal of the players. Will not be used in the final game!*)
+let deal_cards num_players file =
+  let json_file = Yojson.Basic.from_file file in
+  let deck = Deck.make_deck json_file in
+  let dealed_cards = Deck.deal (Deck.shuffle deck) num_players 5 in
+  let decks =
+    match dealed_cards with deal, trump -> Array.of_list deal
+  in
+
+  for i = 0 to num_players - 1 do
+    let player1 =
+      fst
+        (Player.initialize_player i
+        |> Player.give_cards decks.(i)
+        |> Player.make_bet 2 |> Player.win_trick |> Player.win_trick
+        |> Player.choose_card "next"
+        |> Player.choose_card "next"
+        |> Player.play_card)
+      |> Player.finish_round
+    in
+    print_endline (Player.player_to_string player1)
+  done
+
 (* [play_game f] starts the adventure in file [f]. *)
 let play_game f : unit =
   print_string [ Bold ] ("you have selected: " ^ f ^ "\n\n");
@@ -22,9 +46,12 @@ let play_game f : unit =
   | number_string ->
       (*TODO: Catch error if inputting bad information for inputs?*)
       let number = int_of_string number_string in
-      if number > 0 && number <= 6 then
+      if number > 0 && number <= 6 then begin
         print_string [ Bold ]
-          ("you have selected: " ^ string_of_int number ^ "\n\n")
+          ("you have selected: " ^ string_of_int number
+         ^ " player(s).\n\n");
+        deal_cards number f
+      end
       else
         print_string [ Bold ]
           "number of players must be at least 1 and at most 6"
