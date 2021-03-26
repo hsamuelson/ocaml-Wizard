@@ -53,7 +53,45 @@ let shuffle_test
 let shuffle_tests =
   [ shuffle_test "shuffle basic wizard deck" main_deck main_deck ]
 
+let list_of_list_of_strings_of_deck_list lst =
+  List.map (List.map string_of_card) lst
+
+(*for each list of lists, create a list of card strings, then flatten
+  the list*)
+let string_of_deck_deal tuple =
+  let card_list_list = fst tuple in
+  card_list_list |> list_of_list_of_strings_of_deck_list |> List.flatten
+
+let string_list_printer (string_lst : string list) : string =
+  List.fold_left ( ^ ) "" string_lst
+
+let string_of_string_lst lst1 lst2 =
+  let string1 = string_list_printer lst1 in
+  let string2 = string_list_printer lst2 in
+  if string1 = string2 then true else false
+
+(**[deal_test] checks that there are [num_players] card lists of size
+   (size/ num_players)*)
+let deal_test
+    (name : string)
+    (deck : card_list)
+    (num_players : int)
+    (round_number : int)
+    (expected_output : string list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (string_of_deck_deal (deal deck num_players round_number))
+    ~cmp:string_of_string_lst ~printer:string_list_printer
+
+let deal_tests =
+  [
+    deal_test "deal unshuffled wizard deck, 1 player round 1" main_deck
+      1 1 [ "hello" ];
+  ]
+
 (*deck testing ends here*)
-let suite = "test suite for Wizard" >::: List.flatten [ shuffle_tests ]
+let suite =
+  "test suite for Wizard"
+  >::: List.flatten [ shuffle_tests; deal_tests ]
 
 let _ = run_test_tt_main suite
