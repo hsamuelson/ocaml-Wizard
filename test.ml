@@ -148,7 +148,7 @@ let make_bet_test
     (expected_output : int list) =
   name >:: fun _ ->
   assert_equal expected_output
-    (Player.player_to_list (Player.make_bet bet player))
+    (Player.make_bet bet player |> Player.player_to_list)
     ~printer:(print_player_list "[ ")
 
 let make_bet_tests =
@@ -157,15 +157,190 @@ let make_bet_tests =
       [ 0; 0; 0; 0; 0; 0; 1 ];
     make_bet_test "Player 2 make bet of 1" player2 1
       [ 1; 0; 0; 0; 0; 0; 2 ];
+    make_bet_test "Player 2 make bet of 3" player2 3
+      [ 3; 0; 0; 0; 0; 0; 2 ];
+  ]
+
+let player3 = Player.initialize_player 3
+
+let player4 = Player.initialize_player 4
+
+let player5 = Player.initialize_player 5 |> Player.make_bet 2
+
+let win_trick_test
+    (name : string)
+    (player : Player.t)
+    (expected_output : int list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player.win_trick player |> Player.player_to_list)
+    ~printer:(print_player_list "[ ")
+
+let win_trick_tests =
+  [
+    win_trick_test "Player 3 win trick" player3 [ 0; 1; 0; 0; 0; 0; 3 ];
+    win_trick_test "Player 4 win trick" player4 [ 0; 1; 0; 0; 0; 0; 4 ];
+    win_trick_test "Player 5 win trick" player5 [ 2; 1; 0; 0; 0; 0; 5 ];
+  ]
+
+let card_hand_2 = [ Card.make_card 1 "red"; Card.make_card 2 "orange" ]
+
+let card_hand_4 =
+  [
+    Card.make_card 1 "red";
+    Card.make_card 2 "orange";
+    Card.make_card 3 "yellow";
+    Card.make_card 4 "green";
+  ]
+
+let player6 =
+  Player.initialize_player 6 |> Player.make_bet 2 |> Player.win_trick
+
+let give_cards_test
+    (name : string)
+    (player : Player.t)
+    (cards : Card.card list)
+    (expected_output : int list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player.give_cards cards player |> Player.player_to_list)
+    ~printer:(print_player_list "[ ")
+
+let give_cards_tests =
+  [
+    give_cards_test "Player 6 give empty deck" player6 []
+      [ 2; 1; 0; 0; 0; 0; 6 ];
+    give_cards_test "Player 6 give 2 cards" player6 card_hand_2
+      [ 2; 1; 0; 2; 1; 0; 6 ];
+    give_cards_test "Player 6 give 4 cards" player6 card_hand_4
+      [ 2; 1; 0; 4; 1; 0; 6 ];
+  ]
+
+let player7 =
+  Player.initialize_player 7
+  |> Player.make_bet 2 |> Player.win_trick
+  |> Player.give_cards card_hand_4
+
+let player8 =
+  Player.initialize_player 8
+  |> Player.make_bet 2 |> Player.win_trick
+  |> Player.give_cards card_hand_4
+  |> Player.choose_card "next"
+
+let player9 =
+  Player.initialize_player 9
+  |> Player.make_bet 2 |> Player.win_trick
+  |> Player.give_cards card_hand_4
+  |> Player.choose_card "next"
+  |> Player.choose_card "next"
+
+let player10 =
+  Player.initialize_player 10
+  |> Player.make_bet 2 |> Player.win_trick
+  |> Player.give_cards card_hand_4
+  |> Player.choose_card "next"
+
+let print_string str = str
+
+let get_cards_test
+    (name : string)
+    (player : Player.t)
+    (expected_output : string) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player.get_player_hand player)
+    ~printer:print_string
+
+let get_cards_tests =
+  [
+    get_cards_test "Player 7 get hand" player7
+      "[ 1 , red ][ 2 , orange ][ 3 , yellow ][ 4 , green ]";
+  ]
+
+let choose_card_test
+    (name : string)
+    (player : Player.t)
+    (movement : string)
+    (expected_output : int list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player.choose_card movement player |> Player.player_to_list)
+    ~printer:(print_player_list "[ ")
+
+let choose_card_tests =
+  [
+    choose_card_test "Player 7 chose next" player7 "next"
+      [ 2; 1; 0; 4; 2; 1; 7 ];
+    choose_card_test "Player 8 choose next" player8 "next"
+      [ 2; 1; 0; 4; 3; 2; 8 ];
+    choose_card_test "Player 9 choose next" player9 "next"
+      [ 2; 1; 0; 4; 4; 3; 9 ];
+    choose_card_test "Player 10 choose prev" player10 "prev"
+      [ 2; 1; 0; 4; 1; 0; 10 ];
+  ]
+
+let play_card_test_player
+    (name : string)
+    (player : Player.t)
+    (expected_output : int list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (let pl =
+       match Player.play_card player with
+       | fst, lst -> Player.player_to_list fst
+     in
+     pl)
+    ~printer:(print_player_list "[ ")
+
+let play_card_tests_get_player =
+  [
+    play_card_test_player "Player 7 plays first [idx 0] card" player7
+      [ 2; 1; 0; 3; 2; 0; 7 ];
+    play_card_test_player "Player 8 plays second [idx 1] card" player8
+      [ 2; 1; 0; 3; 2; 0; 8 ];
+    play_card_test_player "Player 9 plays third [idx 2] card" player9
+      [ 2; 1; 0; 3; 3; 1; 9 ];
+    play_card_test_player "Player 10 plays third [idx 1] card" player10
+      [ 2; 1; 0; 3; 2; 0; 10 ];
+  ]
+
+let play_card_test_card
+    (name : string)
+    (player : Player.t)
+    (expected_output : string) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (let pl =
+       match Player.play_card player with
+       | fst, lst -> Card.string_of_card lst
+     in
+     pl)
+    ~printer:print_string
+
+let play_card_tests_get_card =
+  [
+    play_card_test_card "Player 7 plays first [idx 0] card" player7
+      "[ 1 , red ]";
+    play_card_test_card "Player 8 plays second [idx 1] card" player8
+      "[ 2 , orange ]";
+    play_card_test_card "Player 9 plays third [idx 2] card" player9
+      "[ 3 , yellow ]";
+    play_card_test_card "Player 10 plays third [idx 2] card" player10
+      "[ 2 , orange ]";
   ]
 
 let player_tests =
   [
     initialize_tests;
     make_bet_tests;
-    (* win_trick_tests; *)
+    win_trick_tests;
+    give_cards_tests;
+    get_cards_tests;
+    choose_card_tests;
+    play_card_tests_get_player;
+    play_card_tests_get_card;
     (* reset_round_tests; *)
-    (*choose_card_tests; play_card_tests; finish_round_tests; *)
+    (* finish_round_tests; *)
   ]
 
 (*deck testing ends here*)

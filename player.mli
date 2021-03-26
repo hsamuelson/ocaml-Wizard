@@ -13,6 +13,8 @@ exception OutOfBounds
 (** If player is trying to select a card out of bounds*)
 exception NotValidSelection
 
+exception NoCardsLeft
+
 (** [initialize_player a] initializes all feilds of a player object a. *)
 val initialize_player : int -> t
 
@@ -23,7 +25,7 @@ val reset_round_player : t -> t
 (** [choose_card a] is the function that will output the card we are
     currently looking at a = 0 or 1 for moving between cards. Raises
     NotValidMovement if the number is not 0 or 1*)
-val choose_card : t -> int -> t
+val choose_card : string -> t -> t
 
 (** [play_card] allows a player to play the current chosen card. Returns
     a tuple of the updated player and the played card *)
@@ -37,14 +39,20 @@ val win_trick : t -> t
     current players score *)
 val finish_round : t -> t
 
+(** [make_bet t] Returns a player with t's previous stats and a new bet
+    feild*)
+val make_bet : int -> t -> t
+
+(** [give_cards lst t] Returns a player with t's previous stats and a
+    new hand of cards lst*)
+val give_cards : Card.card list -> t -> t
+
 (** [player_to_array ] Returns the player as a list for testing*)
 val player_to_list : t -> int list
+
+val get_player_hand : t -> string
 
 (** [player_to_string ] Returns the player as a legible string for
     testing*)
 
 (* val player_to_string : t -> string *)
-
-(** [make_bet t 3] Returns a player with t's previous stats and a new
-    bet feild*)
-val make_bet : int -> t -> t

@@ -14,6 +14,8 @@ type t = {
 
 exception OutOfBounds
 
+exception NoCardsLeft
+
 exception NotValidSelection
 
 (** [initialize_player a] initializes all feilds of a player object a. *)
@@ -42,13 +44,14 @@ let reset_round_player (player : t) =
 (** [find_card_at_index a b] returns the card object in the list at the
     given index Raises OutOfBounds if the index is outside the list's
     capacity*)
-let rec find_card_at_index card_list index =
+let rec find_card_at_index (card_list : Card.card list) index =
   match index with
-  | 0 -> ( match card_list with [] -> raise OutOfBounds | h :: t -> h)
+  | 0 -> ( match card_list with [] -> raise NoCardsLeft | h :: t -> h)
   | _ -> (
       match card_list with
       | [] -> raise OutOfBounds
-      | h :: t -> find_card_at_index t (index - 1))
+      | h :: t -> if t = [] then h else find_card_at_index t (index - 1)
+      )
 
 (** [select_previous_card a] returns the card object in the player's
     hand at the previous selected index*)
@@ -75,9 +78,9 @@ let select_next_card (player : t) =
 (** [choose_card a] is the function that will output the card we are
     currently looking at a = 0 or 1 for moving between cards. Raises
     NotValidMovement if the number is not 0 or 1 *)
-let choose_card (player : t) move =
-  if move = 0 || move = 1 then
-    if move = 1 then select_previous_card player
+let choose_card move (player : t) =
+  if move = "next" || move = "prev" then
+    if move = "prev" then select_previous_card player
     else select_next_card player
   else raise NotValidSelection
 
@@ -90,13 +93,23 @@ let rec remove_index player_list index =
       | [] -> raise OutOfBounds
       | h :: t -> h :: remove_index t (index - 1))
 
+let rec get_hand_size hand =
+  match hand with [] -> 0 | h :: t -> 1 + get_hand_size t
+
 let remove_current_selected_card (player : t) =
   let curr_hand = player.current_hand in
   let curr_index = player.current_selected_index in
   {
     player with
     current_hand = remove_index curr_hand curr_index;
-    current_selected_index = curr_index - 1;
+    current_selected_index =
+      (if curr_index = 0 then curr_index else curr_index - 1);
+    current_selected_card =
+      (if curr_index = 0 then
+       let size = get_hand_size curr_hand in
+       if size < 2 then Card.make_no_card ()
+       else find_card_at_index curr_hand (curr_index + 1)
+      else find_card_at_index curr_hand curr_index);
   }
 
 (** [play_card] allows a player to play the current chosen card. Returns
@@ -130,8 +143,20 @@ let finish_round (player : t) =
           current_score = curr_score - Int.abs (bet - tricks);
         }
 
-let rec get_hand_size hand =
-  match hand with [] -> 0 | h :: t -> 1 + get_hand_size t
+let give_cards lst player =
+  {
+    player with
+    current_hand = lst;
+    current_selected_card =
+      (match lst with [] -> Card.make_no_card () | h :: t -> h);
+  }
+
+let rec card_list_to_string lst acc =
+  match lst with
+  | [] -> acc
+  | h :: t -> card_list_to_string t (acc ^ Card.string_of_card h)
+
+let get_player_hand player = card_list_to_string player.current_hand ""
 
 let player_to_list (player : t) =
   match player with
