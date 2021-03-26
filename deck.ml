@@ -16,7 +16,7 @@ let shuffle (deck : Card.card_list) =
   [index2] non-inclusive*)
 let rec sublist list index1 index2 acc counter =
   if counter < index1 then sublist list index1 index2 acc index1
-  else if counter >= index2 then acc
+  else if counter >= index2 then List.rev acc
   else
     let acc = List.nth list counter :: acc in
     sublist list index1 index2 acc (counter + 1)
@@ -25,7 +25,7 @@ let rec sublist list index1 index2 acc counter =
   distributed equally*)
 let rec deal_helper
     cards
-    num_cards
+    (num_cards : int)
     acc
     (num_players : int)
     (count : int) =
@@ -42,7 +42,7 @@ let rec deal_helper
   card *)
 let deal (deck : Card.card_list) num_players round_number =
   let size = Card.get_cards_size deck in
-  let num_cards = size / num_players in
+  let num_cards = size / (num_players * round_number) in
   let cards = Card.get_cards deck in
   let trump_card =
     if num_cards * num_players < size then List.nth cards (size - 1)
