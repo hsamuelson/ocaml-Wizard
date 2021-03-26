@@ -9,9 +9,7 @@ type t = {
   current_selected_card : Card.card;
       (** The card we are focused on (current selection)*)
   current_selected_index : int;  (** Index of currently selected card*)
-
-  player_id : int;
-  (* the id of the player *)
+  player_id : int; (* the id of the player *)
 }
 
 exception OutOfBounds
@@ -19,7 +17,7 @@ exception OutOfBounds
 exception NotValidSelection
 
 (** [initialize_player a] initializes all feilds of a player object a. *)
-let initialize_player (p_num : int)=
+let initialize_player (p_num : int) =
   {
     bet = 0;
     tricks_won_this_round = 0;
@@ -131,3 +129,30 @@ let finish_round (player : t) =
           player with
           current_score = curr_score - Int.abs (bet - tricks);
         }
+
+let rec get_hand_size hand =
+  match hand with [] -> 0 | h :: t -> 1 + get_hand_size t
+
+let player_to_list (player : t) =
+  match player with
+  | {
+   bet = b;
+   tricks_won_this_round = t;
+   current_score = c;
+   current_hand = ch;
+   current_selected_card = cc;
+   current_selected_index = csi;
+   player_id = pi;
+   _;
+  } ->
+      [ b; t; c; get_hand_size ch; Card.get_num cc; csi; pi ]
+
+(* let player_to_string (player : t) = match player with | { bet = b;
+   tricks_won_this_round = t; current_score = c; current_hand = ch;
+   current_selected_card = cc; current_selected_index = csi; player_id =
+   pi; _; } -> "Bet: " ^ string_of_int b ^ " Tricks: " ^ string_of_int t
+   ^ " Score: " ^ string_of_int c ^ " Selected: " ^ Card.string_of_card
+   cc ^ " Selected Index: " ^ string_of_int csi ^ " Id: " ^
+   string_of_int pi *)
+
+let make_bet bet (player : t) = { player with bet }

@@ -33,3 +33,6 @@ val make_card_list : card list -> int -> card_list
 (**[string_of_card] card outputs a string representation of a card, e.g.
    a card with number = 0 and suit = "Red" would output "[ 0 , Red ]"*)
 val string_of_card : card -> string
+
+(** [get_num a] returns the number of the card *)
+val get_num : card -> int

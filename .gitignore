@@ -12,6 +12,7 @@ adventure.zip
 *.native
 *.byte
 _build
+*.native
 
 # temporary files
 *.swp

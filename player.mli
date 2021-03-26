@@ -36,3 +36,15 @@ val win_trick : t -> t
 (** [finish_round ] Finishes the round and adds trick points to the
     current players score *)
 val finish_round : t -> t
+
+(** [player_to_array ] Returns the player as a list for testing*)
+val player_to_list : t -> int list
+
+(** [player_to_string ] Returns the player as a legible string for
+    testing*)
+
+(* val player_to_string : t -> string *)
+
+(** [make_bet t 3] Returns a player with t's previous stats and a new
+    bet feild*)
+val make_bet : int -> t -> t

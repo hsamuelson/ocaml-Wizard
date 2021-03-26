@@ -1,5 +1,6 @@
 (*Main file in which we call the module test files from *)
 open OUnit2
+open Player
 
 (*Note: make test will fail if you uncomment modules that output
   failwith for any function *)
@@ -90,9 +91,60 @@ let deal_tests =
       1 1 [ "hello" ];
   ]
 
+let rec print_player_list str player_list =
+  match player_list with
+  | [] -> str ^ " ]"
+  | h :: t -> print_player_list (str ^ " " ^ string_of_int h ^ ",") t
+
+let initialize_test
+    (name : string)
+    (id : int)
+    (expected_output : int list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player.player_to_list (Player.initialize_player id))
+    ~printer:(print_player_list "[ ")
+
+let initialize_tests =
+  [
+    initialize_test "Initialize player 1" 1 [ 0; 0; 0; 0; 0; 0; 1 ];
+    initialize_test "Initialize player 2" 2 [ 0; 0; 0; 0; 0; 0; 2 ];
+  ]
+
+let player1 = Player.initialize_player 1
+
+let player2 = Player.initialize_player 2
+
+let make_bet_test
+    (name : string)
+    (player : Player.t)
+    (bet : int)
+    (expected_output : int list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Player.player_to_list (Player.make_bet bet player))
+    ~printer:(print_player_list "[ ")
+
+let make_bet_tests =
+  [
+    make_bet_test "Player 1 make bet of 0" player1 0
+      [ 0; 0; 0; 0; 0; 0; 1 ];
+    make_bet_test "Player 2 make bet of 1" player2 1
+      [ 1; 0; 0; 0; 0; 0; 2 ];
+  ]
+
+let player_tests =
+  [
+    initialize_tests;
+    make_bet_tests;
+    (* win_trick_tests; *)
+    (* reset_round_tests; *)
+    (*choose_card_tests; play_card_tests; finish_round_tests; *)
+  ]
+
 (*deck testing ends here*)
 let suite =
   "test suite for Wizard"
-  >::: List.flatten [ shuffle_tests; deal_tests ]
+  >::: List.flatten [ shuffle_tests; List.flatten player_tests ]
 
 let _ = run_test_tt_main suite
