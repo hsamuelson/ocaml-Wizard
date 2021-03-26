@@ -1,14 +1,13 @@
-type deck = Card.card_list
-
 open Yojson.Basic.Util
 
 (*[random_compare] randomly returns 1 or -1 as a comparator value*)
 let random_compare (a : Card.card) (b : Card.card) =
+  Random.self_init ();
   let is_positive = Random.int 2 in
   if is_positive = 1 then 1 else -1
 
 (*[shuffle] sorts [deck]'s cards randomly and returns a shuffled deck*)
-let shuffle (deck : deck) =
+let shuffle (deck : Card.card_list) =
   let cards = Card.get_cards deck in
   let shuffled_cards = List.sort random_compare cards in
   Card.set_cards deck shuffled_cards
@@ -41,7 +40,7 @@ let rec deal_helper
 (*[deal] deals a deck of cards into [num_players] different card lists
   where each card list has [round_number] of cards, and outputs a trump
   card *)
-let deal (deck : deck) num_players round_number =
+let deal (deck : Card.card_list) num_players round_number =
   let size = Card.get_cards_size deck in
   let num_cards = size / num_players in
   let cards = Card.get_cards deck in
@@ -51,14 +50,17 @@ let deal (deck : deck) num_players round_number =
   in
   (deal_helper cards num_cards [] num_players 0, trump_card)
 
+(**[card_of_json] returns a card object based on the given json [j]*)
 let card_of_json j : Card.card =
   let number = j |> member "number" |> to_int in
   let suit = j |> member "suit" |> to_string in
   Card.make_card number suit
 
+(**[size_of_json] returns the size of the deck given in the json [j]*)
 let size_of_json j : int = j |> member "size" |> to_int
 
-let make_deck json : deck =
+(**[make_deck] returns a deck from the given [json]*)
+let make_deck json : Card.card_list =
   let cards =
     json |> member "cards" |> to_list |> List.map card_of_json
   in

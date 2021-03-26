@@ -1,5 +1,5 @@
 type t = {
-  main_deck : Deck.deck;
+  main_deck : Card.card_list;
   remaining_tricks : int;
   (* tricks : trick list; *)
   (* trump_suit : Card.suit; *)
@@ -21,10 +21,10 @@ let init_first_round p_num dck =
   }
 
 (* let play_round (rnd : t) players = *)
-  (* Shuffle Deck *)
-  (* match Deck.shuffle rnd.main_deck  *)
-  (* |> Deck.deal with  *)
-  (* | (hands,trump) ->  *)
+(* Shuffle Deck *)
+(* match Deck.shuffle rnd.main_deck  *)
+(* |> Deck.deal with  *)
+(* | (hands,trump) ->  *)
 (* Deal Cards to each player *)
 (* Distribute cards to each player *)
 (* distribute_cars(d, ) *)

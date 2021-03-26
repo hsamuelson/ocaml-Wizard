@@ -15,7 +15,7 @@ type scoreboard = {
   scores : int list;
 }
 
-let start_round = failwith "Unimplemented"
+let start_round = failwith "Unimplemented_start_round"
 
 let start_game = failwith "Unimp"
 
