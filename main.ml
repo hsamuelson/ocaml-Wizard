@@ -1,5 +1,5 @@
 (** [play_game f] starts the adventure in file [f]. *)
-let play_game f = failwith "Unimplemented"
+let play_game f = failwith "Unimplemented_play_game"
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =

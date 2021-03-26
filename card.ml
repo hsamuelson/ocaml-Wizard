@@ -24,3 +24,8 @@ let make_no_card () = { number = 0; suit = "No_Card" }
 let make_card number suit = { number; suit }
 
 let make_card_list cards size = { cards; size }
+
+let string_of_card card =
+  let num = string_of_int card.number in
+  let suit = card.suit in
+  "[ " ^ num ^ " , " ^ suit ^ " ]"
