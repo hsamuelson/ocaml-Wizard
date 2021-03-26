@@ -83,10 +83,36 @@ let deal_test
     (string_of_deck_deal (deal deck num_players round_number))
     ~cmp:string_of_string_lst ~printer:string_list_printer
 
+let full_deck_list =
+  [
+    "[ 0 , red ][ 1 , red ][ 2 , red ][ 3 , red ][ 4 , red ][ 5 , red \
+     ][ 6 , red ][ 7 , red ][ 8 , red ][ 9 , red ][ 10 , red ][ 11 , \
+     red ][ 12 , red ][ 13 , red ][ 14 , red ][ 0 , red ][ 1 , yellow \
+     ][ 2 , yellow ][ 3 , yellow ][ 4 , yellow ][ 5 , yellow ][ 6 , \
+     yellow ][ 7 , yellow ][ 8 , yellow ][ 9 , yellow ][ 10 , yellow \
+     ][ 11 , yellow ][ 12 , yellow ][ 13 , yellow ][ 14 , yellow ][ 0 \
+     , blue ][ 1 , blue ][ 2 , blue ][ 3 , blue ][ 4 , blue ][ 5 , \
+     blue ][ 6 , blue ][ 7 , blue ][ 8 , blue ][ 9 , blue ][ 10 , blue \
+     ][ 11 , blue ][ 12 , blue ][ 13 , blue ][ 14 , blue ][ 0 , green \
+     ][ 1 , green ][ 2 , green ][ 3 , green ][ 4 , green ][ 5 , green \
+     ][ 6 , green ][ 7 , green ][ 8 , green ][ 9 , green ][ 10 , green \
+     ][ 11 , green ][ 12 , green ][ 13 , green ][ 14 , green ]";
+  ]
+
 let deal_tests =
   [
     deal_test "deal unshuffled wizard deck, 1 player round 1" main_deck
       1 1 [ "[ 0 , red ]" ];
+    deal_test "deal unshuffled wizard deck, 2 players round 1" main_deck
+      2 1
+      [ "[ 0 , red ]"; "[ 1 , red ]" ];
+    deal_test "deal unshuffled wizard deck, 2 players round 2" main_deck
+      2 2
+      [ "[ 0 , red ]"; "[ 1 , red ]"; "[ 2 , red ]"; "[ 3 , red ]" ];
+    deal_test "deal unshuffled wizard deck, 4 players round 15"
+      main_deck 4 15 full_deck_list;
+    deal_test "deal unshuffled wizard deck, 6 players round 10"
+      main_deck 6 10 full_deck_list;
   ]
 
 (*deck testing ends here*)
