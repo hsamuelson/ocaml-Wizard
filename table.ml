@@ -42,8 +42,18 @@ let init_tb (num_p : int) json_file =
     round_num = 1;
   }
 
+
+let rec list_to_string acc lst  = 
+  match lst with
+  | [] -> acc
+  | hd :: tl -> list_to_string (acc ^ " " ^ string_of_int hd) tl
 let scoreboard (p_list : Player.t list) =
-  let rec sb_helper p_list (pair : int * int) list =
-    match p_list with hd :: tl -> [] | _ -> []
+  let scores = p_list 
+  |> List.map (fun x ->  Player.player_score x)
+  |> List.map string_of_int 
   in
-  sb_helper p_list
+  let ids = p_list
+  |> List.map (fun x -> Player.player_id x)
+  |> List.map string_of_int
+  in
+  ids,scores

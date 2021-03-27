@@ -207,3 +207,6 @@ let player_to_string (player : t) =
       ^ string_of_int csi ^ "\n"
 
 let make_bet bet (player : t) = { player with bet }
+
+let player_score (plyr : t) = plyr.current_score
+let player_id (plyr : t) = plyr.player_id
