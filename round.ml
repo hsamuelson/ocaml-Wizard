@@ -58,6 +58,21 @@ let rec assign_hands (players : Player.t list) hands =
       | _ -> players)
   | _ -> failwith "No hands were passed"
 
+
+ 
+
+(* let rec trick (rnd : t) (cntr : int) (plyrs : Player.t list) : Player.t list =
+  if cntr <= rnd.num_players then
+    match plyrs with
+    | hd :: tl -> begin
+      trick rnd (cntr + 1) ( tl @ [Player.choose_card_rec hd])
+    end
+    | _ -> plyrs
+  else plyrs *)
+
+
+let trick (rnd : t ) (plyrs : Player.t list) =
+  List.map Player.choose_card_rec plyrs
 let play_round (rnd : t) =
   (* Shuffle Deck *)
   match

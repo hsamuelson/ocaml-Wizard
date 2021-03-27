@@ -76,6 +76,13 @@ let select_next_card (player : t) =
         current_selected_card = find_card_at_index hand (index + 1);
       }
 
+(* Choose_card does not work on its own we need this rec funciton *)
+let rec choose_card_rec (player : t) = 
+  match read_line () with
+  | exception End_of_file -> player
+  | command -> if command = "select" then player
+  else choose_card_rec player
+
 (** [choose_card a] is the function that will output the card we are
     currently looking at a = 0 or 1 for moving between cards. Raises
     NotValidMovement if the number is not 0 or 1 *)

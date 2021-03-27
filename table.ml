@@ -16,8 +16,6 @@ type scoreboard = {
   scores : int list;
 }
 
-let start_round = failwith "Unimplemented_start_round"
-
 let run_game (tb : t) =
   (* At the moment we only play a single round *)
   Round.play_round tb.round
