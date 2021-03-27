@@ -123,8 +123,10 @@ let play_card (player : t) =
 (** [win_trick ] allows this player to win a trick and returns the
     current state of the player *)
 let win_trick (player : t) =
-  let curr_tricks = player.tricks_won_this_round + 1 in
-  { player with tricks_won_this_round = curr_tricks }
+  {
+    player with
+    tricks_won_this_round = player.tricks_won_this_round + 1;
+  }
 
 (** [finish_round ] Finishes the round and adds trick points to the
     current players score *)

@@ -18,7 +18,9 @@ type scoreboard = {
 
 let start_round = failwith "Unimplemented_start_round"
 
-let run_game = failwith "Unimp"
+let run_game (tb : t) = 
+  (* At the moment we only play a single round *)
+  Round.play_round tb.round
 
 (* Initialize game params *)
 (* Call first round *)

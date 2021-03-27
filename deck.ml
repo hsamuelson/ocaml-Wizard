@@ -6,15 +6,12 @@ let random_compare (a : Card.card) (b : Card.card) =
   if Random.int 2 = 1 then 1 else -1
 
 (*[shuffle] sorts [deck]'s cards randomly and returns a shuffled deck*)
-(* let shuffle (deck : Card.card_list) =
-  let cards = Card.get_cards deck in
-  let shuffled_cards = List.sort random_compare cards in
-  Card.set_cards deck shuffled_cards *)
+(* let shuffle (deck : Card.card_list) = let cards = Card.get_cards deck
+   in let shuffled_cards = List.sort random_compare cards in
+   Card.set_cards deck shuffled_cards *)
 
-  let shuffle (deck : Card.card_list) =
-    Card.get_cards deck
-    |> List.sort random_compare
-    |> Card.set_cards deck
+let shuffle (deck : Card.card_list) =
+  Card.get_cards deck |> List.sort random_compare |> Card.set_cards deck
 
 (*[sublist] returns the sublist of [list] from [index1] inclusive to
   [index2] non-inclusive*)
@@ -35,11 +32,14 @@ let rec deal_helper
     (count : int) =
   if num_players = count then acc
   else
-    let player_cards =
-      sublist cards (count * num_cards) ((count + 1) * num_cards) [] 0
-    in
-    let acc = acc @ [ player_cards ] in
-    deal_helper cards num_cards acc num_players (count + 1)
+    deal_helper cards num_cards
+      (acc
+      @ [
+          sublist cards (count * num_cards)
+            ((count + 1) * num_cards)
+            [] 0;
+        ])
+      num_players (count + 1)
 
 (*[deal] deals a deck of cards into [num_players] different card lists
   where each card list has [round_number] of cards, and outputs a trump
