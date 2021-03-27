@@ -3,4 +3,4 @@ type t
 
 val init_first_round : int -> Card.card_list -> Player.t list -> t
 
-val play_round : t -> 'a
+val play_round : t -> t

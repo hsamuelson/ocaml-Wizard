@@ -18,10 +18,9 @@ type scoreboard = {
 
 let start_round = failwith "Unimplemented_start_round"
 
-let run_game (tb : t) = 
+let run_game (tb : t) =
   (* At the moment we only play a single round *)
   Round.play_round tb.round
-  
 
 (* Initialize players *)
 let init_players (p_num : int) : Player.t list =
@@ -38,12 +37,12 @@ let init_tb (num_p : int) json_file =
   {
     round =
       Round.init_first_round num_p
-        (Deck.make_deck json_file (init_players num_p));
+        (Deck.make_deck json_file)
+        (init_players num_p);
     num_players = num_p;
     scoreboard = [];
     round_num = 1;
   }
-
 
 let scoreboard (p_list : Player.t list) =
   let rec sb_helper p_list (pair : int * int) list =
