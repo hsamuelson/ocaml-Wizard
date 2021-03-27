@@ -71,3 +71,7 @@ let main () =
 
 (* Execute the game engine. *)
 let () = main ()
+
+(* HOW TO START GAME! -from Henry *)
+(* Create a new table object *)
+(*  Call run_game*)

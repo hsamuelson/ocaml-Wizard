@@ -21,11 +21,7 @@ let start_round = failwith "Unimplemented_start_round"
 let run_game (tb : t) = 
   (* At the moment we only play a single round *)
   Round.play_round tb.round
-
-(* Initialize game params *)
-(* Call first round *)
-(* let () = print_string "Enter number of players" *)
-(* let player_num = read_int () *)
+  
 
 (* Initialize players *)
 let init_players (p_num : int) : Player.t list =
@@ -37,9 +33,7 @@ let init_players (p_num : int) : Player.t list =
   in
   init_p_helper p_num []
 
-(* Number of possible rounds / rounds down so we insure that the last
-   round everyone has the correct number of cards*)
-
+(* Initilize a table object *)
 let init_tb (num_p : int) json_file =
   {
     round =
@@ -50,8 +44,6 @@ let init_tb (num_p : int) json_file =
     round_num = 1;
   }
 
-(* Unimplemented *)
-let update_scoreboard (sb : scoreboard) = sb
 
 let scoreboard (p_list : Player.t list) =
   let rec sb_helper p_list (pair : int * int) list =
