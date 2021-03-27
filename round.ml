@@ -17,8 +17,8 @@ let init_first_round
   }
 
 (* Change round object to be ready to be run on next round *)
-let gen_next_round (rnd : t) =
-  { rnd with round_num = rnd.round_num + 1 }
+let gen_next_round (rnd : t) (plyrs : Player.t list) =
+  { rnd with round_num = rnd.round_num + 1; players = plyrs }
 
 (* This function asks the usr for a bet *)
 let usr_bet () =
@@ -60,16 +60,16 @@ let rec assign_hands (players : Player.t list) hands =
 
 let play_round (rnd : t) =
   (* Shuffle Deck *)
-  match Deck.shuffle rnd.main_deck |> Deck.deal with
-  | hands, trump -> hands
-  | _ ->
-      []
+  match
+    Deck.deal (Deck.shuffle rnd.main_deck) rnd.num_players rnd.round_num
+  with
+  | hands, trump ->
+      hands
       (* Assign hands *)
       |> assign_hands rnd.players
       (* We now run bidding. *)
       |> run_bidding rnd.round_num 0 rnd.num_players 0
-
       (* Now we start game play*)
 
       (* After round is over prepair for next round *)
-      |> gen_next_round
+      |> gen_next_round rnd
