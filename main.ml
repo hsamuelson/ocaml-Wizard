@@ -23,7 +23,7 @@ let deal_cards num_players file =
   in
 
   for i = 0 to num_players - 1 do
-    let player1 =
+    let player =
       fst
         (Player.initialize_player i
         |> Player.give_cards decks.(i)
@@ -33,7 +33,7 @@ let deal_cards num_players file =
         |> Player.play_card)
       |> Player.finish_round
     in
-    print_endline (Player.player_to_string player1)
+    print_endline (Player.player_to_string player)
   done
 
 (* [play_game f] starts the adventure in file [f]. *)

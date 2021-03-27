@@ -110,7 +110,7 @@ let remove_current_selected_card (player : t) =
        let size = get_hand_size curr_hand in
        if size < 2 then Card.make_no_card ()
        else find_card_at_index curr_hand (curr_index + 1)
-      else find_card_at_index curr_hand curr_index);
+      else find_card_at_index curr_hand (curr_index - 1));
   }
 
 (** [play_card] allows a player to play the current chosen card. Returns
