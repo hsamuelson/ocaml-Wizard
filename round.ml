@@ -18,6 +18,30 @@ let init_first_round
     round_num = 1;
   }
 
+  (* This function asks the usr for a bet *)
+let usr_bet () = 
+  match read_line () with 
+  | exception End_of_file -> 0
+  | bet -> int_of_string bet 
+
+  (* This will run the bidding by going through all players
+  Asking for their bet *)
+let rec run_bidding t_trck bet_sum plyrs = 
+  match plyrs with
+  | hd :: tl -> begin
+    let bet = usr_bet () in
+    if bet + bet_sum = t_trck then
+      (* Invalid bet *)
+      (* ignore (Printf.printf "Bet cannot sum to number of tricks!") *)
+      run_bidding t_trck bet_sum plyrs
+    else
+      (* In this case the bet was correct
+          - Assign bet to player 
+          - Move player to back of queue and ask next player*)
+      run_bidding t_trck (bet_sum + bet )(tl @ [Player.make_bet bet hd])
+  end
+  | _ -> failwith "Error in bidding"
+
 let rec assign_hands (players : Player.t list) hands =
   match players with
   | hd :: tl -> begin
@@ -29,16 +53,12 @@ let rec assign_hands (players : Player.t list) hands =
       end
   | _ -> failwith "No hands were passed"
 
-let play_round (rnd : t) players =
+let play_round (rnd : t) =
   (* Shuffle Deck *)
   match Deck.shuffle rnd.main_deck |> Deck.deal with
-  | hands, trump -> ()
+  | (hands, trump) -> begin
+    (* Assign Hands *)
+    assign_hands rnd.players hands
+  end
   | _ -> failwith "There has been an Error in Deal"
-
-(* Deal Cards to each player *)
-(* Distribute cards to each player *)
-(* distribute_cars(d, ) *)
-(* Betting Round *)
-(* How do we do this part? *)
-
-(* Game play round *)
+  (* We now run bidding. *)

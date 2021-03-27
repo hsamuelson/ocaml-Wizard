@@ -3,14 +3,18 @@ open Yojson.Basic.Util
 (*[random_compare] randomly returns 1 or -1 as a comparator value*)
 let random_compare (a : Card.card) (b : Card.card) =
   Random.self_init ();
-  let is_positive = Random.int 2 in
-  if is_positive = 1 then 1 else -1
+  if Random.int 2 = 1 then 1 else -1
 
 (*[shuffle] sorts [deck]'s cards randomly and returns a shuffled deck*)
-let shuffle (deck : Card.card_list) =
+(* let shuffle (deck : Card.card_list) =
   let cards = Card.get_cards deck in
   let shuffled_cards = List.sort random_compare cards in
-  Card.set_cards deck shuffled_cards
+  Card.set_cards deck shuffled_cards *)
+
+  let shuffle (deck : Card.card_list) =
+    Card.get_cards deck
+    |> List.sort random_compare
+    |> Card.set_cards deck
 
 (*[sublist] returns the sublist of [list] from [index1] inclusive to
   [index2] non-inclusive*)

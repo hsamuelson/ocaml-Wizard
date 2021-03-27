@@ -26,8 +26,6 @@ let make_card number suit = { number; suit }
 let make_card_list cards size = { cards; size }
 
 let string_of_card card =
-  let num = string_of_int card.number in
-  let suit = card.suit in
-  "[ " ^ num ^ " , " ^ suit ^ " ]"
+  "[ " ^ string_of_int card.number ^ " , " ^ card.suit ^ " ]"
 
 let get_num card = card.number
