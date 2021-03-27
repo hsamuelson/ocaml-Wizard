@@ -19,8 +19,9 @@ let rec sublist list index1 index2 acc counter =
   if counter < index1 then sublist list index1 index2 acc index1
   else if counter >= index2 then List.rev acc
   else
-    let acc = List.nth list counter :: acc in
-    sublist list index1 index2 acc (counter + 1)
+    sublist list index1 index2
+      (List.nth list counter :: acc)
+      (counter + 1)
 
 (*[deal_helper] returns a card list list with the cards in cards
   distributed equally*)
