@@ -4,10 +4,11 @@ type playr_num = int
 
 type t = {
   (* main_deck : Deck.deck; *)
-  players : Player.t list;
+  (* players : Player.t list; *)
   round : Round.t;
   num_players : int;
   scoreboard : int list;
+  round_num : int;
 }
 
 type scoreboard = {
@@ -17,7 +18,7 @@ type scoreboard = {
 
 let start_round = failwith "Unimplemented_start_round"
 
-let start_game = failwith "Unimp"
+let run_game = failwith "Unimp"
 
 (* Initialize game params *)
 (* Call first round *)
@@ -39,10 +40,12 @@ let init_players (p_num : int) : Player.t list =
 
 let init_tb (num_p : int) json_file =
   {
-    players = init_players num_p;
-    round = Round.init_first_round num_p (Deck.make_deck json_file);
+    round =
+      Round.init_first_round num_p
+        (Deck.make_deck json_file (init_players num_p));
     num_players = num_p;
     scoreboard = [];
+    round_num = 1;
   }
 
 (* Unimplemented *)
