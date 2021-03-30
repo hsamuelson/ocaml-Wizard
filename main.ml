@@ -24,16 +24,13 @@ let deal_cards num_players file =
 
   for i = 0 to num_players - 1 do
     let player =
-      fst
-        (Player.initialize_player i
-        |> Player.give_cards decks.(i)
-        |> Player.make_bet 2 |> Player.win_trick |> Player.win_trick
-        |> Player.choose_card "next"
-        |> Player.choose_card "next"
-        |> Player.play_card)
-      |> Player.finish_round
+      Player.initialize_player i
+      |> Player.give_cards decks.(i)
+      |> Player.make_bet 2 |> Player.win_trick |> Player.win_trick
+      |> Player.choose_card "next"
+      |> Player.choose_card "next"
     in
-    print_endline (Player.player_to_string player)
+    Player.print_player player
   done
 
 let deal_cards_2 num_players file =
@@ -57,7 +54,7 @@ let play_game f : unit =
         print_string [ Bold ]
           ("you have selected: " ^ string_of_int number
          ^ " player(s).\n\n");
-        deal_cards_2 number f
+        deal_cards number f
       end
       else
         print_string [ Bold ]
@@ -81,4 +78,4 @@ let () = main ()
 
 (* HOW TO START GAME! -from Henry *)
 (* Create a new table object *)
-(*  Call run_game*)
+(* Call run_game*)

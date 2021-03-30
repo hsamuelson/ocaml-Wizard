@@ -75,6 +75,9 @@ val get_player_hand : t -> string
     testing*)
 val player_to_string : t -> string
 
+(** [print_player] prints the player*)
+val print_player : t -> unit
+
 val player_score : t -> int
 
 val player_id : t -> int

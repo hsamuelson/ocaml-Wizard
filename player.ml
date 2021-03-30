@@ -77,11 +77,11 @@ let select_next_card (player : t) =
       }
 
 (* Choose_card does not work on its own we need this rec funciton *)
-let rec choose_card_rec (player : t) = 
+let rec choose_card_rec (player : t) =
   match read_line () with
   | exception End_of_file -> player
-  | command -> if command = "select" then player
-  else choose_card_rec player
+  | command ->
+      if command = "select" then player else choose_card_rec player
 
 (** [choose_card a] is the function that will output the card we are
     currently looking at a = 0 or 1 for moving between cards. Raises
@@ -209,4 +209,45 @@ let player_to_string (player : t) =
 let make_bet bet (player : t) = { player with bet }
 
 let player_score (plyr : t) = plyr.current_score
+
 let player_id (plyr : t) = plyr.player_id
+
+let get_card_color card_suit =
+  match card_suit with
+  | "red" -> ANSITerminal.red
+  | "blue" -> ANSITerminal.cyan
+  | "green" -> ANSITerminal.green
+  | "yellow" -> ANSITerminal.yellow
+  | _ -> ANSITerminal.white
+
+let rec print_cards_with_colors card_list =
+  match card_list with
+  | h :: t ->
+      ANSITerminal.print_string
+        [ get_card_color (Card.get_suit h); Bold ]
+        (Card.string_of_card h);
+      print_cards_with_colors t
+  | [] -> ()
+
+let print_player (player : t) =
+  match player with
+  | {
+   bet = b;
+   tricks_won_this_round = t;
+   current_score = c;
+   current_hand = ch;
+   current_selected_card = cc;
+   current_selected_index = csi;
+   player_id = pi;
+   _;
+  } ->
+      print_string ("Player " ^ string_of_int pi);
+      print_string (" information: \nCurrent bet: " ^ string_of_int b);
+      print_string ("\nTricks won this round: " ^ string_of_int t);
+      print_string ("\nCurrent score: " ^ string_of_int c);
+      print_string "\nCurrent hand: ";
+      print_cards_with_colors ch;
+      print_string "\nCurrently selected card: ";
+      print_cards_with_colors [ cc ];
+      print_endline
+        ("\nCurrently selected index: " ^ string_of_int csi ^ "\n")
