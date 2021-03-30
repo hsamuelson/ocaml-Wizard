@@ -36,6 +36,13 @@ let deal_cards num_players file =
     print_endline (Player.player_to_string player)
   done
 
+let deal_cards_2 num_players file = 
+  let json_file = Yojson.Basic.from_file file in
+  let deck = Deck.make_deck json_file in
+  let new_table = Table.init_tb num_players json_file in
+
+  Table.run_game new_table; ()
+
 (* [play_game f] starts the adventure in file [f]. *)
 let play_game f : unit =
   print_string [ Bold ] ("you have selected: " ^ f ^ "\n\n");
@@ -50,7 +57,7 @@ let play_game f : unit =
         print_string [ Bold ]
           ("you have selected: " ^ string_of_int number
          ^ " player(s).\n\n");
-        deal_cards number f
+        deal_cards_2 number f
       end
       else
         print_string [ Bold ]

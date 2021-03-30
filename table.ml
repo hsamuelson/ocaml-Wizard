@@ -11,11 +11,6 @@ type t = {
   round_num : int;
 }
 
-type scoreboard = {
-  player_ids : Player.t list;
-  scores : int list;
-}
-
 let run_game (tb : t) =
   (* At the moment we only play a single round *)
   Round.play_round tb.round
