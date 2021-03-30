@@ -34,5 +34,8 @@ val make_card_list : card list -> int -> card_list
    a card with number = 0 and suit = "Red" would output "[ 0 , Red ]"*)
 val string_of_card : card -> string
 
-(** [get_num a] returns the number of the card *)
+(** [get_num] returns the number of the card *)
 val get_num : card -> int
+
+(** [get_suit] returns the suit of the card*)
+val get_suit : card -> string
