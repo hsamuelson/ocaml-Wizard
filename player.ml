@@ -92,6 +92,9 @@ let choose_card move (player : t) =
     else select_next_card player
   else raise NotValidSelection
 
+(** [remove_index a b] removes the card from the player's hand at the
+    given index. If the index is out of bounds, return OutOfBounds.
+    Returns the new list of cards without the index card.*)
 let rec remove_index player_list index =
   match index with
   | 0 -> (
@@ -101,9 +104,15 @@ let rec remove_index player_list index =
       | [] -> raise OutOfBounds
       | h :: t -> h :: remove_index t (index - 1))
 
+(** [get_hand_size a] returns the number of cards that are in the given
+    hand a *)
 let rec get_hand_size hand =
   match hand with [] -> 0 | h :: t -> 1 + get_hand_size t
 
+(** [remove_current_selected_card] returns a new player without the card
+    in hand that is currently selected. Used in play_card. If the
+    selected card is 0, we keep the selected index at 0. Otherwise, we
+    make the new selected card at previous_index -1*)
 let remove_current_selected_card (player : t) =
   let curr_hand = player.current_hand in
   let curr_index = player.current_selected_index in
@@ -153,6 +162,7 @@ let finish_round (player : t) =
           current_score = curr_score - Int.abs (bet - tricks);
         }
 
+(** [give_cards a b] returns a new player as a copy of b with new hand a*)
 let give_cards lst player =
   {
     player with
@@ -161,13 +171,16 @@ let give_cards lst player =
       (match lst with [] -> Card.make_no_card () | h :: t -> h);
   }
 
+(** [card_list_to_string a b] Makes the list of cards into a string*)
 let rec card_list_to_string lst acc =
   match lst with
   | [] -> acc
   | h :: t -> card_list_to_string t (acc ^ Card.string_of_card h)
 
+(** [get_player_hand t] returns the stirng of the players hand *)
 let get_player_hand player = card_list_to_string player.current_hand ""
 
+(** [player_to_list p] returns an int list representation of player*)
 let player_to_list (player : t) =
   match player with
   | {
@@ -182,11 +195,14 @@ let player_to_list (player : t) =
   } ->
       [ b; t; c; get_hand_size ch; Card.get_num cc; csi; pi ]
 
+(** [hand_to_string a b] returns the string representation of a list of
+    cards **)
 let rec hand_to_string hand acc =
   match hand with
   | [] -> acc
   | h :: t -> hand_to_string t (acc ^ Card.string_of_card h)
 
+(** [player_to_string] returns a string representation of a player*)
 let player_to_string (player : t) =
   match player with
   | {
@@ -206,6 +222,7 @@ let player_to_string (player : t) =
       ^ Card.string_of_card cc ^ "\nCurrently selected index: "
       ^ string_of_int csi ^ "\n"
 
+(** [make_bet]*)
 let make_bet bet (player : t) = { player with bet }
 
 let player_score (plyr : t) = plyr.current_score
@@ -229,6 +246,15 @@ let rec print_cards_with_colors card_list =
       print_cards_with_colors t
   | [] -> ()
 
+let rec print_cards_with_colors_short card_list =
+  match card_list with
+  | h :: t ->
+      ANSITerminal.print_string
+        [ get_card_color (Card.get_suit h); Bold ]
+        ("|" ^ string_of_int (Card.get_num h) ^ "| ");
+      print_cards_with_colors_short t
+  | [] -> ()
+
 let print_player (player : t) =
   match player with
   | {
@@ -246,8 +272,8 @@ let print_player (player : t) =
       print_string ("\nTricks won this round: " ^ string_of_int t);
       print_string ("\nCurrent score: " ^ string_of_int c);
       print_string "\nCurrent hand: ";
-      print_cards_with_colors ch;
+      print_cards_with_colors_short ch;
       print_string "\nCurrently selected card: ";
-      print_cards_with_colors [ cc ];
+      print_cards_with_colors_short [ cc ];
       print_endline
         ("\nCurrently selected index: " ^ string_of_int csi ^ "\n")

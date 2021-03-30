@@ -36,7 +36,8 @@ let rec run_bidding t_trck bet_sum num_p cntr plyrs =
   if cntr < num_p then
     match plyrs with
     | hd :: tl ->
-        print_endline (Player.player_to_string hd);
+        (* print_endline (Player.player_to_string hd); *)
+        Player.print_player hd;
         let bet = usr_bet () in
         if bet + bet_sum = t_trck then
           (*This should only be the case for the last player*)

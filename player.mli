@@ -75,9 +75,12 @@ val get_player_hand : t -> string
     testing*)
 val player_to_string : t -> string
 
-(** [print_player] prints the player*)
+(** [print_player] prints the player using print_string 
+    (also will print the colors of the cards)*)
 val print_player : t -> unit
 
+(** [player_score] returns the score of the player *)
 val player_score : t -> int
 
+(** [player_id] returns the id of the player*)
 val player_id : t -> int

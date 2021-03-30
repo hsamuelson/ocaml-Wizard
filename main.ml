@@ -54,7 +54,7 @@ let play_game f : unit =
         print_string [ Bold ]
           ("you have selected: " ^ string_of_int number
          ^ " player(s).\n\n");
-        deal_cards number f
+        deal_cards_2 number f
       end
       else
         print_string [ Bold ]
