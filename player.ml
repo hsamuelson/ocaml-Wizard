@@ -277,3 +277,5 @@ let print_player (player : t) =
       print_cards_with_colors_short [ cc ];
       print_endline
         ("\nCurrently selected index: " ^ string_of_int csi ^ "\n")
+
+let player_bet player = player.bet

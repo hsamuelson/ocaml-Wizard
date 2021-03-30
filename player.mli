@@ -84,3 +84,6 @@ val player_score : t -> int
 
 (** [player_id] returns the id of the player*)
 val player_id : t -> int
+
+(** [player_bet] returns the bet of the player*)
+val player_bet : t -> int

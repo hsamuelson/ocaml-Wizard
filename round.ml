@@ -150,6 +150,30 @@ let trick (trump : Card.card) (plyrs : Player.t list) (trmp : Card.card)
 
    else x ) *)
 
+let rec get_list_bets list_players =
+  match list_players with
+  | [] -> []
+  | h :: t -> Player.player_bet h :: get_list_bets t
+
+let rec bets_to_string bets acc indx =
+  match bets with
+  | [] -> acc
+  | h :: t ->
+      bets_to_string t
+        (acc ^ "[Player " ^ string_of_int indx ^ " bet "
+       ^ string_of_int h ^ "] ")
+        (indx + 1)
+
+let all_bets_to_string (bets : int list) =
+  print_endline "All Player Bets: ";
+  print_endline (bets_to_string bets "" 0);
+  ()
+
+let print_list_bets list_players =
+  let list_bets = get_list_bets list_players in
+  all_bets_to_string list_bets;
+  list_players
+
 let play_round (rnd : t) =
   (* Shuffle Deck *)
   match
@@ -161,6 +185,7 @@ let play_round (rnd : t) =
       |> assign_hands rnd.players
       (* We now run bidding. *)
       |> run_bidding rnd.round_num 0 rnd.num_players 0
+      |> print_list_bets
       (* Now we start game play*)
       (* After round is over prepair for next round *)
       |> gen_next_round rnd
