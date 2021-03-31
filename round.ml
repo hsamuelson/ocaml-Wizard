@@ -137,11 +137,6 @@ let rec first_trump
         "precondition violated, need at least one tuple containing a \
          trump card"
 
-let highest_trump_helper = failwith "unimp"
-
-let highest_trump player_card trump =
-  highest_trump_helper player_card trump 0
-
 (**[all_zeros] returns true if the given list of (plyer, card) has only
    cards with the number 0, else false*)
 let rec all_zeros (player_card_lst : (Player.t * Card.card) list) : bool
