@@ -94,9 +94,7 @@ let rec assign_hands (players : Player.t list) hands =
    wizard card in one of its tuples*)
 let rec exists_wizard (player_card_lst : (Player.t * Card.card) list) :
     bool =
-  List.map
-    (fun (x, y) -> if Card.get_num y = 14 then true else false)
-    player_card_lst
+  List.map (fun (x, y) -> Card.get_num y = 14) player_card_lst
   |> List.fold_left ( || ) false
 
 (**[first_wizard] returns the first wizard card in a list of (player,
