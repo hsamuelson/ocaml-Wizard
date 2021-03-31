@@ -294,6 +294,11 @@ let rec choose_card_rec trump (player : t) =
         (* let player_card = play_card player in match player_card with
            p, c -> player_card *)
         play_card player
-      else
+      else if command = "prev" || command = "next" then
         let new_selected_player = choose_card command player in
         choose_card_rec trump new_selected_player
+      else 
+        begin
+        print_endline "Invalid command! \n";
+        choose_card_rec trump player
+        end

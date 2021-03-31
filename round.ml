@@ -20,7 +20,15 @@ let init_first_round
 
 (* Change round object to be ready to be run on next round *)
 let gen_next_round (rnd : t) (plyrs : Player.t list) =
-  { rnd with round_num = rnd.round_num + 1; players = plyrs }
+  { 
+    (* Increase round number *)
+    rnd with round_num = rnd.round_num + 1;
+     (*Rotate who leads in the next round  *)
+    players = match plyrs with
+    | hd::tl -> tl @ [hd]
+    | _ -> failwith "Less than 2 players! Immpossible!"
+    
+  }
 
 (* This function asks the usr for a bet *)
 let usr_bet () =
