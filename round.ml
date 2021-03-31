@@ -181,12 +181,12 @@ let rec play_cards_helper list_players acc =
   | h :: t -> play_cards_helper t (Player.choose_card_rec h :: acc)
   | [] -> acc
 
-let update_players_in_list_helper list_players player acc =
+let rec update_players_in_list_helper list_players player acc =
   match list_players with
   | h :: t ->
       if Player.player_id player = Player.player_id h then
         acc @ [ player ]
-      else acc @ [ h ]
+      else update_players_in_list_helper t player acc @ [ h ]
   | [] -> acc
 
 let update_players_in_list list_players player =
@@ -199,9 +199,9 @@ let play_cards trump list_players =
   update_players_in_list list_players
     (Player.win_trick (fst player_card_tuple))
 
-let finish_players_helper player_list acc =
+let rec finish_players_helper player_list acc =
   match player_list with
-  | h :: t -> acc @ [ Player.finish_round h ]
+  | h :: t -> finish_players_helper t acc @ [ Player.finish_round h ]
   | [] -> acc
 
 let finish_players list_players = finish_players_helper list_players []
@@ -239,15 +239,19 @@ let play_round (rnd : t) =
       |> print_list_bets
       (* Now we start game play*)
       |> play_cards trump rnd.round_num
+<<<<<<< HEAD
       |> Player.print_player_list
       (*need to have each player select a card and play that card (by
         adding the player card tuples as an input to find_winning_card),
         then take the winning player, augment their score, and have the
         process repeat with the winning player playing first until the
         players are not holding cards, then we have completed one round*)
+=======
+      |> Player.print_player_list |> finish_players
+      |> Player.print_player_list
+>>>>>>> 7c26584cd6dd97d0241190646eeaaa11e6620d2d
       (* After round is over prepair for next round *)
-      |> finish_players
-      |> Player.print_player_list |> gen_next_round rnd
+      |> gen_next_round rnd
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
    rnd.main_deck mod num_players *)
