@@ -21,3 +21,4 @@ let init_players_tests =
            [ 0; 0; 0; 0; 0; 0; 4 ];
          ];
   ]
+
