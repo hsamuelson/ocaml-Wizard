@@ -145,10 +145,19 @@ let rec all_zeros (player_card_lst : (Player.t * Card.card) list) : bool
   | h :: t -> if Card.get_num (snd h) <> 0 then false else all_zeros t
   | [] -> true
 
+(** [compare_player_card_tuples] is a comparator function to sort a list
+    of cards in descending order according to their card numbers*)
 let compare_player_card_tuples t1 t2 =
-  if Card.get_num (snd t1) > Card.get_num (snd t2) then 1
-  else if Card.get_num (snd t1) < Card.get_num (snd t2) then -1
+  if Card.get_num (snd t1) > Card.get_num (snd t2) then -1
+  else if Card.get_num (snd t1) < Card.get_num (snd t2) then 1
   else 0
+
+let rec find_first_nonzero_card tuple_list =
+  match tuple_list with
+  | h :: t ->
+      if Card.get_num (snd h) = 0 then h else find_first_nonzero_card t
+  | [] ->
+      failwith "impossible to fail, somehow did not find non-zero card"
 
 (**[find_winning_card] takes the given [trump] card and [plyr_card] and
    returns the winning the winning (Player, Card) tuple*)
@@ -158,16 +167,16 @@ let find_winning_card
   (*TODO: factor in first_card_played*)
   (*TODO: write different compare function that just compares the card
     values*)
-  let sorted_list = List.rev (List.sort compare plyr_card) in
+  let sorted_list = List.sort compare_player_card_tuples plyr_card in
   if exists_wizard plyr_card then first_wizard plyr_card
     (*return first wizard *)
-  else if exists_trump plyr_card trump then first_trump plyr_card trump
-    (*TODO: modify to return highest trump*)
+  else if exists_trump sorted_list trump then
+    first_trump sorted_list trump
   else if all_zeros plyr_card then List.nth plyr_card 0
   else
-    match sorted_list with
-    | h :: t -> h
-    | [] -> failwith "given card list was invalid"
+    (*find first non-zero card, treat it like a trump card*)
+    let secondary_trump = find_first_nonzero_card plyr_card in
+    first_trump sorted_list (snd secondary_trump)
 
 (* Some comparator function *)
 let trick (trump : Card.card) (plyrs : Player.t list) =
