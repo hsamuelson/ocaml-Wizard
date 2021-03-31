@@ -145,6 +145,11 @@ let rec all_zeros (player_card_lst : (Player.t * Card.card) list) : bool
   | h :: t -> if Card.get_num (snd h) <> 0 then false else all_zeros t
   | [] -> true
 
+let compare_player_card_tuples t1 t2 =
+  if Card.get_num (snd t1) > Card.get_num (snd t2) then 1
+  else if Card.get_num (snd t1) < Card.get_num (snd t2) then -1
+  else 0
+
 (**[find_winning_card] takes the given [trump] card and [plyr_card] and
    returns the winning the winning (Player, Card) tuple*)
 let find_winning_card
