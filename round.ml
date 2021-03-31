@@ -138,10 +138,13 @@ let find_winning_card
     (trump : Card.card)
     (plyr_card : (Player.t * Card.card) list) =
   (*TODO: factor in first_card_played*)
+  (*TODO: write different compare function that just compares the card
+    values*)
   let sorted_list = List.rev (List.sort compare plyr_card) in
   if List.exists is_wizard plyr_card then first_wizard plyr_card
     (*return first wizard *)
   else if exists_trump plyr_card trump then first_trump plyr_card trump
+    (*TODO: modify to return highest trump*)
   else if all_zeros plyr_card then List.nth plyr_card 0
   else
     match sorted_list with
