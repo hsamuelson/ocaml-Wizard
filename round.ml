@@ -197,6 +197,29 @@ let play_cards trump list_players =
   update_players_in_list list_players
     (Player.win_trick (fst player_card_tuple))
 
+let finish_players_helper player_list acc =
+  match player_list with
+  | h :: t -> acc @ [ Player.finish_round h ]
+  | [] -> acc
+
+let finish_players list_players = finish_players_helper list_players []
+
+let rec play_cards_then_finish_helper trump list_players round_num =
+  if round_num > 0 then
+    let new_list_players = play_cards trump list_players in
+    play_cards_then_finish_helper trump new_list_players (round_num - 1)
+  else list_players
+
+(**[play_cards_then_finish] should run [play_cards] recursively until
+   there are no more cards to play, then it should call
+   [Player.finish_round] on each player replace each player in the
+   player_list and return that updated player_list*)
+let play_cards_then_finish trump round_num list_players =
+  let players_after_playing_cards =
+    play_cards_then_finish_helper trump list_players round_num
+  in
+  finish_players players_after_playing_cards
+
 let play_round (rnd : t) =
   (* Shuffle Deck *)
   match
@@ -211,7 +234,7 @@ let play_round (rnd : t) =
       (* |> trick trump *)
       |> print_list_bets
       (* Now we start game play*)
-      |> play_cards trump
+      |> play_cards_then_finish trump rnd.round_num
       (*need to have each player select a card and play that card (by
         adding the player card tuples as an input to find_winning_card),
         then take the winning player, augment their score, and have the
