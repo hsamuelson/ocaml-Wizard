@@ -291,8 +291,9 @@ let rec choose_card_rec (player : t) =
   | exception End_of_file -> (player, Card.make_no_card ())
   | command ->
       if command = "select" then
-        let player_card = play_card player in
-        match player_card with p, c -> player_card
+        (* let player_card = play_card player in match player_card with
+           p, c -> player_card *)
+        play_card player
       else
         let new_selected_player = choose_card command player in
         choose_card_rec new_selected_player

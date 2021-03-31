@@ -90,3 +90,5 @@ val player_bet : t -> int
 
 (** [print_player_list] prints the list of players then returns the original list of players*)
 val print_player_list : t list -> t list
+
+val print_cards_with_colors_short : Card.card list -> unit

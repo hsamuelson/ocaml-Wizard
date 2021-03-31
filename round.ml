@@ -30,15 +30,22 @@ let usr_bet () =
   | exception End_of_file -> 0
   | bet -> int_of_string bet
 
+let print_trump trump player_list : Player.t list =
+  print_string [] "TRUMP CARD: ";
+  Player.print_cards_with_colors_short [ trump ];
+  print_endline "\n \n";
+  player_list
+
 (* A single comment *)
 (* This will run the bidding by going through all players Asking for
    their bet *)
-let rec run_bidding t_trck bet_sum num_p cntr plyrs =
+let rec run_bidding trump t_trck bet_sum num_p cntr plyrs =
   if cntr < num_p then
     match plyrs with
     | hd :: tl ->
         (* print_endline (Player.player_to_string hd); *)
         ANSITerminal.erase Screen;
+        print_trump trump [];
         Player.print_player hd;
         let bet = usr_bet () in
         if bet + bet_sum = t_trck && cntr + 1 = num_p then (
@@ -47,11 +54,11 @@ let rec run_bidding t_trck bet_sum num_p cntr plyrs =
           (* ignore (Printf.printf "Bet cannot sum to number of
              tricks!") *)
           print_endline "Invalid bet. Please bet again.";
-          run_bidding t_trck bet_sum num_p cntr plyrs)
+          run_bidding trump t_trck bet_sum num_p cntr plyrs)
         else
           (* In this case the bet was correct - Assign bet to player -
              Move player to back of queue and ask next player*)
-          run_bidding t_trck (bet_sum + bet) num_p (cntr + 1)
+          run_bidding trump t_trck (bet_sum + bet) num_p (cntr + 1)
             (tl @ [ Player.make_bet bet hd ])
     (* Not positive that this is an error yet *)
     | _ -> failwith "Error in bidding"
@@ -131,7 +138,7 @@ let find_winning_card
     (trump : Card.card)
     (plyr_card : (Player.t * Card.card) list) =
   (*TODO: factor in first_card_played*)
-  let sorted_list = List.sort compare plyr_card in
+  let sorted_list = List.rev (List.sort compare plyr_card) in
   if List.exists is_wizard plyr_card then first_wizard plyr_card
     (*return first wizard *)
   else if exists_trump plyr_card trump then first_trump plyr_card trump
@@ -176,9 +183,9 @@ let print_list_bets list_players =
   all_bets_to_string list_bets;
   list_players
 
-let rec play_cards_helper list_players acc =
+let rec player_plays_card list_players acc =
   match list_players with
-  | h :: t -> play_cards_helper t (Player.choose_card_rec h :: acc)
+  | h :: t -> player_plays_card t (Player.choose_card_rec h :: acc)
   | [] -> acc
 
 let rec update_players_in_list_helper list_players player acc =
@@ -193,10 +200,10 @@ let update_players_in_list list_players player =
   update_players_in_list_helper list_players player []
 
 let play_card trump list_players =
-  let player_card_tuple =
-    find_winning_card trump (play_cards_helper list_players [])
-  in
-  update_players_in_list list_players
+  let players_played = player_plays_card list_players [] in
+  let updated_players = List.map fst players_played in
+  let player_card_tuple = find_winning_card trump players_played in
+  update_players_in_list updated_players
     (Player.win_trick (fst player_card_tuple))
 
 let rec finish_players_helper player_list acc =
@@ -219,10 +226,6 @@ let rec play_cards_helper trump list_players round_num =
 let play_cards trump round_num list_players =
   play_cards_helper trump list_players round_num
 
-let print_trump trump player_list : Player.t list =
-  print_string [] ("TRUMP CARD: " ^ Card.string_of_card trump ^ "\n \n");
-  player_list
-
 let play_round (rnd : t) =
   (* Shuffle Deck *)
   match
@@ -232,15 +235,13 @@ let play_round (rnd : t) =
       hands
       (* Assign hands *)
       |> assign_hands rnd.players
-      |> print_trump trump
       (* We now run bidding. *)
-      |> run_bidding rnd.round_num 0 rnd.num_players 0
+      |> run_bidding trump rnd.round_num 0 rnd.num_players 0
       (* |> trick trump *)
       |> print_list_bets
       (* Now we start game play*)
       |> play_cards trump rnd.round_num
-      |> Player.print_player_list |> finish_players
-      |> Player.print_player_list
+      |> finish_players |> Player.print_player_list |> print_trump trump
       (* After round is over prepair for next round *)
       |> gen_next_round rnd
 
