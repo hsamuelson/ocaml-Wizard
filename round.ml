@@ -192,7 +192,7 @@ let rec update_players_in_list_helper list_players player acc =
 let update_players_in_list list_players player =
   update_players_in_list_helper list_players player []
 
-let play_cards trump list_players =
+let play_card trump list_players =
   let player_card_tuple =
     find_winning_card trump (play_cards_helper list_players [])
   in
@@ -208,7 +208,7 @@ let finish_players list_players = finish_players_helper list_players []
 
 let rec play_cards_helper trump list_players round_num =
   if round_num > 0 then
-    let new_list_players = play_cards trump list_players in
+    let new_list_players = play_card trump list_players in
     play_cards_helper trump new_list_players (round_num - 1)
   else list_players
 
