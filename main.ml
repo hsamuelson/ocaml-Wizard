@@ -1,4 +1,4 @@
-(*main should just print something in the terminal*)
+(* main should just print something in the terminal*)
 (*to compile and run, input "make play" *)
 
 (* >> brew install cloc >> cloc --by-file --include-lang=OCaml . *)
@@ -43,7 +43,8 @@ let deal_cards_2 num_players file =
 (* [play_game f] starts the adventure in file [f]. *)
 let play_game f : unit =
   print_string [ Bold ] ("you have selected: " ^ f ^ "\n\n");
-  print_endline "Please enter the number of players.\n";
+  print_endline
+    "Please enter the number of players (at least 2, at most 6).\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> ()
@@ -67,7 +68,8 @@ let main () =
     [ ANSITerminal.cyan; Bold ]
     "\n\nWelcome to the 3110 Wizard Game engine.\n";
   print_endline
-    "Please enter the name of the deck json file you want to play with.\n";
+    "Please enter the name of the deck json file you want to play with \
+     (we recommend: main_deck.json).\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> ()

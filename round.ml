@@ -29,6 +29,7 @@ let usr_bet () =
   match read_line () with
   | exception End_of_file -> 0
   | bet -> int_of_string bet
+
 (* A single comment *)
 (* This will run the bidding by going through all players Asking for
    their bet *)
@@ -39,7 +40,7 @@ let rec run_bidding t_trck bet_sum num_p cntr plyrs =
         (* print_endline (Player.player_to_string hd); *)
         Player.print_player hd;
         let bet = usr_bet () in
-        if bet + bet_sum = t_trck then
+        if bet + bet_sum = t_trck && cntr + 1 = num_p then
           (*This should only be the case for the last player*)
           (* Invalid bet *)
           (* ignore (Printf.printf "Bet cannot sum to number of
@@ -139,12 +140,11 @@ let find_winning_card
     | [] -> failwith "given card list was invalid"
 
 (* Some comparator function *)
-let trick (trump : Card.card) (plyrs : Player.t list)
-    =
+let trick (trump : Card.card) (plyrs : Player.t list) =
   List.map Player.choose_card_rec plyrs
   |> List.map Player.play_card
   |> find_winning_card trump
-  
+
 (* |> List.map (fun (x, y) -> if Card.get_num y = 14 then (*For now
    ignore wizard*) Player.win_trick x
 
@@ -174,6 +174,14 @@ let print_list_bets list_players =
   all_bets_to_string list_bets;
   list_players
 
+let rec play_cards_helper list_players acc = failwith "unimplemented"
+
+(* match list_players with | h :: t -> Player.choose_card h :: acc | []
+   -> acc *)
+let play_cards list_players = failwith "unimplemented"
+(* let player_card_tuple = find_winning_card (play_cards_helper
+   list_players []) in (*update player scores, return player list *)*)
+
 let play_round (rnd : t) =
   (* Shuffle Deck *)
   match
@@ -188,12 +196,18 @@ let play_round (rnd : t) =
       (* |> trick trump *)
       |> print_list_bets
       (* Now we start game play*)
+      |> play_cards
+      (*need to have each player select a card and play that card (by
+        adding the player card tuples as an input to find_winning_card),
+        then take the winning player, augment their score, and have the
+        process repeat with the winning player playing first until the
+        players are not holding cards, then we have completed one round*)
       (* After round is over prepair for next round *)
-      (* |> gen_next_round rnd *)
+      |> gen_next_round rnd
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
    rnd.main_deck mod num_players *)
 
-   (* Mabye a function that prints player bets for round *)
+(* Mabye a function that prints player bets for round *)
 
 let all_bets players = failwith "unimp"
