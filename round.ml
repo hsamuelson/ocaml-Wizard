@@ -28,7 +28,9 @@ let usr_bet () =
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> 0
-  | bet -> int_of_string bet
+  | bet ->
+      ANSITerminal.erase Screen;
+      int_of_string bet
 
 (* A single comment *)
 (* This will run the bidding by going through all players Asking for
@@ -242,6 +244,7 @@ let play_round (rnd : t) =
         process repeat with the winning player playing first until the
         players are not holding cards, then we have completed one round*)
       (* After round is over prepair for next round *)
+      |> Player.print_player_list
       |> gen_next_round rnd
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
