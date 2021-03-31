@@ -153,7 +153,7 @@ let compare_player_card_tuples t1 t2 =
 let rec find_first_nonzero_card tuple_list =
   match tuple_list with
   | h :: t ->
-      if Card.get_num (snd h) = 0 then h else find_first_nonzero_card t
+      if Card.get_num (snd h) > 0 then h else find_first_nonzero_card t
   | [] ->
       failwith "impossible to fail, somehow did not find non-zero card"
 
@@ -175,17 +175,6 @@ let find_winning_card
     (*find first non-zero card, treat it like a trump card*)
     let secondary_trump = find_first_nonzero_card plyr_card in
     first_trump sorted_list (snd secondary_trump)
-
-(* Some comparator function *)
-let trick (trump : Card.card) (plyrs : Player.t list) =
-  List.map (Player.choose_card_rec trump) plyrs
-  (* |> List.map Player.play_card *)
-  |> find_winning_card trump
-
-(* |> List.map (fun (x, y) -> if Card.get_num y = 14 then (*For now
-   ignore wizard*) Player.win_trick x
-
-   else x ) *)
 
 let rec get_list_bets list_players =
   match list_players with
@@ -251,10 +240,8 @@ let rec play_cards_helper trump list_players round_num =
     play_cards_helper trump new_list_players (round_num - 1)
   else list_players
 
-(**[play_cards_then_finish] should run [play_cards] recursively until
-   there are no more cards to play, then it should call
-   [Player.finish_round] on each player replace each player in the
-   player_list and return that updated player_list*)
+(**[play_cards] should run [play_cards] recursively until there are no
+   more cards to play*)
 let play_cards trump round_num list_players =
   play_cards_helper trump list_players round_num
 
