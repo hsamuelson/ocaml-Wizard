@@ -94,10 +94,10 @@ let rec assign_hands (players : Player.t list) hands =
    wizard card in one of its tuples*)
 let rec exists_wizard (player_card_lst : (Player.t * Card.card) list) :
     bool =
-  match player_card_lst with
-  | h :: t ->
-      if Card.get_num (snd h) = 14 then true else exists_wizard t
-  | [] -> false
+  List.map
+    (fun (x, y) -> if Card.get_num y = 14 then true else false)
+    player_card_lst
+  |> List.fold_left ( || ) false
 
 (**[first_wizard] returns the first wizard card in a list of (player,
    card) tuples.Card. Assumes there is at least one tuple containing a
@@ -116,11 +116,11 @@ let rec first_wizard (plyr_card : (Player.t * Card.card) list) :
 let rec exists_trump
     (player_card_lst : (Player.t * Card.card) list)
     (trump_card : Card.card) : bool =
-  match player_card_lst with
-  | h :: t ->
-      if Card.get_suit (snd h) = Card.get_suit trump_card then true
-      else exists_trump t trump_card
-  | [] -> false
+  List.map
+    (fun (x, y) ->
+      if Card.get_suit y = Card.get_suit trump_card then true else false)
+    player_card_lst
+  |> List.fold_left ( || ) false
 
 (**[first_trump] returns the first trump card in a list of (player,
    card) tuples. Assumes there is at least one tuple containing a trump
@@ -136,6 +136,11 @@ let rec first_trump
       failwith
         "precondition violated, need at least one tuple containing a \
          trump card"
+
+let highest_trump_helper = failwith "unimp"
+
+let highest_trump player_card trump =
+  highest_trump_helper player_card trump 0
 
 (**[all_zeros] returns true if the given list of (plyer, card) has only
    cards with the number 0, else false*)
