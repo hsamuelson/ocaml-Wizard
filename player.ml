@@ -255,7 +255,6 @@ let print_player (player : t) =
    player_id = pi;
    _;
   } ->
-      ANSITerminal.erase Screen;
       print_string ("Player " ^ string_of_int pi);
       print_string (" information: \nCurrent bet: " ^ string_of_int b);
       print_string ("\nTricks won this round: " ^ string_of_int t);
@@ -266,6 +265,10 @@ let print_player (player : t) =
       print_cards_with_colors_short [ cc ];
       print_endline
         ("\nCurrently selected index: " ^ string_of_int csi ^ "\n")
+
+let print_player_list list_players =
+  List.map print_player list_players;
+  list_players
 
 let player_bet player = player.bet
 
