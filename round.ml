@@ -150,7 +150,7 @@ let find_winning_card
 
 (* Some comparator function *)
 let trick (trump : Card.card) (plyrs : Player.t list) =
-  List.map Player.choose_card_rec plyrs
+  List.map (Player.choose_card_rec trump) plyrs
   (* |> List.map Player.play_card *)
   |> find_winning_card trump
 
@@ -174,18 +174,22 @@ let rec bets_to_string bets acc indx =
         (indx + 1)
 
 let all_bets_to_string (bets : int list) =
+  ANSITerminal.erase Screen;
   print_endline "All Player Bets: ";
   print_endline (bets_to_string bets "" 0);
-  ()
+  print_endline "\n\n"
 
 let print_list_bets list_players =
   let list_bets = get_list_bets list_players in
   all_bets_to_string list_bets;
   list_players
 
-let rec player_plays_card list_players acc =
+let rec player_plays_card trump list_players acc =
+  ANSITerminal.erase Screen;
+  print_trump trump [];
   match list_players with
-  | h :: t -> player_plays_card t (Player.choose_card_rec h :: acc)
+  | h :: t ->
+      player_plays_card trump t (Player.choose_card_rec trump h :: acc)
   | [] -> acc
 
 let rec update_players_in_list_helper list_players player acc =
@@ -200,7 +204,7 @@ let update_players_in_list list_players player =
   update_players_in_list_helper list_players player []
 
 let play_card trump list_players =
-  let players_played = player_plays_card list_players [] in
+  let players_played = player_plays_card trump list_players [] in
   let updated_players = List.map fst players_played in
   let player_card_tuple = find_winning_card trump players_played in
   update_players_in_list updated_players
@@ -241,8 +245,9 @@ let play_round (rnd : t) =
       |> print_list_bets
       (* Now we start game play*)
       |> play_cards trump rnd.round_num
-      |> finish_players |> Player.print_player_list |> print_trump trump
+      |> finish_players
       (* After round is over prepair for next round *)
+      |> Player.print_player_list
       |> gen_next_round rnd
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length

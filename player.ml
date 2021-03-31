@@ -283,7 +283,7 @@ let play_card (player : t) =
       (remove_current_selected_card player, card)
 
 (* Choose_card does not work on its own we need this rec funciton *)
-let rec choose_card_rec (player : t) =
+let rec choose_card_rec trump (player : t) =
   print_player player;
   print_endline "Play a card: (prev|next|select)\n";
   ANSITerminal.print_string [ Bold ] "> ";
@@ -296,4 +296,4 @@ let rec choose_card_rec (player : t) =
         play_card player
       else
         let new_selected_player = choose_card command player in
-        choose_card_rec new_selected_player
+        choose_card_rec trump new_selected_player
