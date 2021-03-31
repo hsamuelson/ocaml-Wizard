@@ -139,12 +139,12 @@ let find_winning_card
     | [] -> failwith "given card list was invalid"
 
 (* Some comparator function *)
-let trick (trump : Card.card) (plyrs : Player.t list) (trmp : Card.card)
+let trick (trump : Card.card) (plyrs : Player.t list)
     =
   List.map Player.choose_card_rec plyrs
   |> List.map Player.play_card
   |> find_winning_card trump
-
+  
 (* |> List.map (fun (x, y) -> if Card.get_num y = 14 then (*For now
    ignore wizard*) Player.win_trick x
 
@@ -185,10 +185,11 @@ let play_round (rnd : t) =
       |> assign_hands rnd.players
       (* We now run bidding. *)
       |> run_bidding rnd.round_num 0 rnd.num_players 0
+      (* |> trick trump *)
       |> print_list_bets
       (* Now we start game play*)
       (* After round is over prepair for next round *)
-      |> gen_next_round rnd
+      (* |> gen_next_round rnd *)
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
    rnd.main_deck mod num_players *)
