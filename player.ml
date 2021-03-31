@@ -1,3 +1,4 @@
+
 type t = {
   bet : int;  (** This player's current bet for this trick. *)
   tricks_won_this_round : int;
@@ -78,6 +79,8 @@ let select_next_card (player : t) =
 
 (* Choose_card does not work on its own we need this rec funciton *)
 let rec choose_card_rec (player : t) =
+  print_endline "Play a card: (prev|next|select)\n";
+  ANSITerminal.print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> player
   | command ->

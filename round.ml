@@ -29,6 +29,7 @@ let usr_bet () =
   match read_line () with
   | exception End_of_file -> 0
   | bet -> int_of_string bet
+
 (* A single comment *)
 (* This will run the bidding by going through all players Asking for
    their bet *)
@@ -139,8 +140,7 @@ let find_winning_card
     | [] -> failwith "given card list was invalid"
 
 (* Some comparator function *)
-let trick (trump : Card.card) (plyrs : Player.t list) (trmp : Card.card)
-    =
+let trick (trump : Card.card) (plyrs : Player.t list) =
   List.map Player.choose_card_rec plyrs
   |> List.map Player.play_card
   |> find_winning_card trump
@@ -194,6 +194,6 @@ let play_round (rnd : t) =
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
    rnd.main_deck mod num_players *)
 
-   (* Mabye a function that prints player bets for round *)
+(* Mabye a function that prints player bets for round *)
 
 let all_bets players = failwith "unimp"
