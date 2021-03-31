@@ -29,7 +29,7 @@ let usr_bet () =
   match read_line () with
   | exception End_of_file -> 0
   | bet -> int_of_string bet
-
+(* A single comment *)
 (* This will run the bidding by going through all players Asking for
    their bet *)
 let rec run_bidding t_trck bet_sum num_p cntr plyrs =
