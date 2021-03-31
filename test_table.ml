@@ -13,7 +13,12 @@ let init_players_tests =
   [
     p_list
     |> List.map Player.player_to_list
-    |> init_players_helper "Init all players" [[0; 0; 0; 0; 0; 0; 1]; [0; 0; 0; 0; 0; 0; 2]; [0; 0; 0; 0; 0; 0; 3];
-    [0; 0; 0; 0; 0; 0; 4]]
+    |> init_players_helper "Init all players"
+         [
+           [ 0; 0; 0; 0; 0; 0; 1 ];
+           [ 0; 0; 0; 0; 0; 0; 2 ];
+           [ 0; 0; 0; 0; 0; 0; 3 ];
+           [ 0; 0; 0; 0; 0; 0; 4 ];
+         ];
   ]
 

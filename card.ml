@@ -29,3 +29,5 @@ let string_of_card card =
   "[ " ^ string_of_int card.number ^ " , " ^ card.suit ^ " ]"
 
 let get_num card = card.number
+
+let get_suit card = card.suit

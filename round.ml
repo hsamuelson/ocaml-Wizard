@@ -36,7 +36,8 @@ let rec run_bidding t_trck bet_sum num_p cntr plyrs =
   if cntr < num_p then
     match plyrs with
     | hd :: tl ->
-        print_endline (Player.player_to_string hd);
+        (* print_endline (Player.player_to_string hd); *)
+        Player.print_player hd;
         let bet = usr_bet () in
         if bet + bet_sum = t_trck then
           (*This should only be the case for the last player*)
@@ -70,23 +71,108 @@ let rec assign_hands (players : Player.t list) hands =
    :: tl -> begin trick rnd (cntr + 1) ( tl @ [Player.choose_card_rec
    hd]) end | _ -> plyrs else plyrs *)
 
-(* let compare_cards () *)
-let compare_played_cards
+(**[is_wizard] checks whether the given [player_card] tuple has a wizard
+   card*)
+let is_wizard (player_card : Player.t * Card.card) : bool =
+  if Card.get_num (snd player_card) = 14 then true else false
+
+(**[first_wizard] returns the first wizard card in a list of (player,
+   card) tuples.Card. Assumes there is at least one tuple containing a
+   wizard card*)
+let rec first_wizard (plyr_card : (Player.t * Card.card) list) :
+    Player.t * Card.card =
+  match plyr_card with
+  | h :: t -> if Card.get_num (snd h) = 14 then h else first_wizard t
+  | [] ->
+      failwith
+        "precondition violated, need at least one tuple containing a \
+         wizard card"
+
+(**[exists_trump] checks whether the given [player_card_lst] has a trump
+   suit card in one of its tuples*)
+let rec exists_trump
+    (player_card_lst : (Player.t * Card.card) list)
+    (trump_card : Card.card) : bool =
+  match player_card_lst with
+  | h :: t ->
+      if Card.get_suit (snd h) = Card.get_suit trump_card then true
+      else exists_trump t trump_card
+  | [] -> false
+
+(**[first_trump] returns the first trump card in a list of (player,
+   card) tuples. Assumes there is at least one tuple containing a trump
+   card*)
+let rec first_trump
+    (plyr_card : (Player.t * Card.card) list)
+    (trump : Card.card) : Player.t * Card.card =
+  match plyr_card with
+  | h :: t ->
+      if Card.get_suit (snd h) = Card.get_suit trump then h
+      else first_wizard t
+  | [] ->
+      failwith
+        "precondition violated, need at least one tuple containing a \
+         wizard card"
+
+(**[all_zeros] returns true if the given list of (plyer, card) has only
+   cards with the number 0, else false*)
+let rec all_zeros (player_card_lst : (Player.t * Card.card) list) : bool
+    =
+  match player_card_lst with
+  | h :: t -> if Card.get_num (snd h) <> 0 then false else all_zeros t
+  | [] -> true
+
+(**[find_winning_card] takes the given [trump] card and [plyr_card] and
+   returns the winning the winning (Player, Card) tuple*)
+let find_winning_card
     (trump : Card.card)
     (plyr_card : (Player.t * Card.card) list) =
-  failwith " unimp"
+  (*TODO: factor in first_card_played*)
+  let sorted_list = List.sort compare plyr_card in
+  if List.exists is_wizard plyr_card then first_wizard plyr_card
+    (*return first wizard *)
+  else if exists_trump plyr_card trump then first_trump plyr_card trump
+  else if all_zeros plyr_card then List.nth plyr_card 0
+  else
+    match sorted_list with
+    | h :: t -> h
+    | [] -> failwith "given card list was invalid"
 
 (* Some comparator function *)
 let trick (trump : Card.card) (plyrs : Player.t list) (trmp : Card.card)
     =
   List.map Player.choose_card_rec plyrs
   |> List.map Player.play_card
-  |> compare_played_cards trump
+  |> find_winning_card trump
 
 (* |> List.map (fun (x, y) -> if Card.get_num y = 14 then (*For now
    ignore wizard*) Player.win_trick x
 
    else x ) *)
+
+let rec get_list_bets list_players =
+  match list_players with
+  | [] -> []
+  | h :: t -> Player.player_bet h :: get_list_bets t
+
+let rec bets_to_string bets acc indx =
+  match bets with
+  | [] -> acc
+  | h :: t ->
+      bets_to_string t
+        (acc ^ "[Player " ^ string_of_int indx ^ " bet "
+       ^ string_of_int h ^ "] ")
+        (indx + 1)
+
+let all_bets_to_string (bets : int list) =
+  print_endline "All Player Bets: ";
+  print_endline (bets_to_string bets "" 0);
+  ()
+
+let print_list_bets list_players =
+  let list_bets = get_list_bets list_players in
+  all_bets_to_string list_bets;
+  list_players
 
 let play_round (rnd : t) =
   (* Shuffle Deck *)
@@ -99,8 +185,8 @@ let play_round (rnd : t) =
       |> assign_hands rnd.players
       (* We now run bidding. *)
       |> run_bidding rnd.round_num 0 rnd.num_players 0
+      |> print_list_bets
       (* Now we start game play*)
-
       (* After round is over prepair for next round *)
       |> gen_next_round rnd
 
