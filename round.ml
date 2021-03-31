@@ -53,7 +53,7 @@ let rec run_bidding trump t_trck bet_sum num_p cntr plyrs =
     match plyrs with
     | hd :: tl ->
         (* print_endline (Player.player_to_string hd); *)
-        ANSITerminal.erase Screen;
+        (* ANSITerminal.erase Screen; *)
         print_trump trump [];
         Player.print_player hd;
         let bet = usr_bet () in
@@ -96,7 +96,13 @@ let rec exists_wizard (player_card_lst : (Player.t * Card.card) list) :
     bool =
   match player_card_lst with
   | h :: t ->
-      if Card.get_num (snd h) = 14 then true else exists_wizard t
+      if Card.get_num (snd h) = 14 then (
+        print_endline ("WIZARD: " ^ string_of_int (Card.get_num (snd h)));
+        true)
+      else (
+        print_endline
+          ("NOT WIZARD: " ^ string_of_int (Card.get_num (snd h)));
+        exists_wizard t)
   | [] -> false
 
 (**[first_wizard] returns the first wizard card in a list of (player,
@@ -190,7 +196,7 @@ let rec bets_to_string bets acc indx =
         (indx + 1)
 
 let all_bets_to_string (bets : int list) =
-  ANSITerminal.erase Screen;
+  (* ANSITerminal.erase Screen; *)
   print_endline "All Player Bets: ";
   print_endline (bets_to_string bets "" 0);
   print_endline "\n\n"
