@@ -239,17 +239,8 @@ let play_round (rnd : t) =
       |> print_list_bets
       (* Now we start game play*)
       |> play_cards trump rnd.round_num
-<<<<<<< HEAD
-      |> Player.print_player_list
-      (*need to have each player select a card and play that card (by
-        adding the player card tuples as an input to find_winning_card),
-        then take the winning player, augment their score, and have the
-        process repeat with the winning player playing first until the
-        players are not holding cards, then we have completed one round*)
-=======
       |> Player.print_player_list |> finish_players
       |> Player.print_player_list
->>>>>>> 7c26584cd6dd97d0241190646eeaaa11e6620d2d
       (* After round is over prepair for next round *)
       |> gen_next_round rnd
 
