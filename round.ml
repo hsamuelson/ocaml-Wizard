@@ -193,7 +193,7 @@ let play_round (rnd : t) =
       |> assign_hands rnd.players
       (* We now run bidding. *)
       |> run_bidding rnd.round_num 0 rnd.num_players 0
-      (* print finalized bets for all players*)
+      (* |> trick trump *)
       |> print_list_bets
       (* Now we start game play*)
       |> play_cards

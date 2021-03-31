@@ -1,4 +1,3 @@
-
 type t = {
   bet : int;  (** This player's current bet for this trick. *)
   tricks_won_this_round : int;
@@ -270,6 +269,7 @@ let print_player (player : t) =
    player_id = pi;
    _;
   } ->
+      ANSITerminal.erase Screen;
       print_string ("Player " ^ string_of_int pi);
       print_string (" information: \nCurrent bet: " ^ string_of_int b);
       print_string ("\nTricks won this round: " ^ string_of_int t);
