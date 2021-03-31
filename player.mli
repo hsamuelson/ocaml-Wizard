@@ -45,7 +45,7 @@ val reset_round_player : t -> t
     NotValidMovement if the number is not 0 or 1*)
 val choose_card : string -> t -> t
 
-val choose_card_rec : t -> t
+val choose_card_rec : t -> t * Card.card
 (** [play_card] allows a player to play the current chosen card. Returns
     a tuple of the updated player and the played card *)
 val play_card : t -> t * Card.card

@@ -142,7 +142,7 @@ let find_winning_card
 (* Some comparator function *)
 let trick (trump : Card.card) (plyrs : Player.t list) =
   List.map Player.choose_card_rec plyrs
-  |> List.map Player.play_card
+  (* |> List.map Player.play_card *)
   |> find_winning_card trump
 
 (* |> List.map (fun (x, y) -> if Card.get_num y = 14 then (*For now
@@ -174,13 +174,16 @@ let print_list_bets list_players =
   all_bets_to_string list_bets;
   list_players
 
-let rec play_cards_helper list_players acc = failwith "unimplemented"
+let rec play_cards_helper list_players acc =
+  match list_players with
+  | h :: t -> Player.choose_card_rec h :: acc
+  | [] -> acc
 
-(* match list_players with | h :: t -> Player.choose_card h :: acc | []
-   -> acc *)
-let play_cards list_players = failwith "unimplemented"
-(* let player_card_tuple = find_winning_card (play_cards_helper
-   list_players []) in (*update player scores, return player list *)*)
+let play_cards trump list_players =
+  let player_card_tuple =
+    find_winning_card trump (play_cards_helper list_players [])
+  in 
+  (* (update player scores, return player list) *)
 
 let play_round (rnd : t) =
   (* Shuffle Deck *)
@@ -196,7 +199,7 @@ let play_round (rnd : t) =
       (* print finalized bets for all players*)
       |> print_list_bets
       (* Now we start game play*)
-      |> play_cards
+      |> play_cards trump
       (*need to have each player select a card and play that card (by
         adding the player card tuples as an input to find_winning_card),
         then take the winning player, augment their score, and have the

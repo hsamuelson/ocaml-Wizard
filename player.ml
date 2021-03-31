@@ -1,4 +1,3 @@
-
 type t = {
   bet : int;  (** This player's current bet for this trick. *)
   tricks_won_this_round : int;
@@ -77,15 +76,6 @@ let select_next_card (player : t) =
         current_selected_card = find_card_at_index hand (index + 1);
       }
 
-(* Choose_card does not work on its own we need this rec funciton *)
-let rec choose_card_rec (player : t) =
-  print_endline "Play a card: (prev|next|select)\n";
-  ANSITerminal.print_string [ Bold ] "> ";
-  match read_line () with
-  | exception End_of_file -> player
-  | command ->
-      if command = "select" then player else choose_card_rec player
-
 (** [choose_card a] is the function that will output the card we are
     currently looking at a = 0 or 1 for moving between cards. Raises
     NotValidMovement if the number is not 0 or 1 *)
@@ -138,6 +128,18 @@ let play_card (player : t) =
   match player with
   | { current_selected_card = card; _ } ->
       (remove_current_selected_card player, card)
+
+(* Choose_card does not work on its own we need this rec funciton *)
+let rec choose_card_rec (player : t) =
+  print_endline "Play a card: (prev|next|select)\n";
+  ANSITerminal.print_string [ Bold ] "> ";
+  match read_line () with
+  | exception End_of_file -> (player, Card.make_no_card ())
+  | command ->
+      if command = "select" then play_card player
+      else
+        let new_selected_player = choose_card command player in
+        choose_card_rec new_selected_player
 
 (** [win_trick ] allows this player to win a trick and returns the
     current state of the player *)
