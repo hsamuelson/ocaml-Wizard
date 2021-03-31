@@ -135,7 +135,7 @@ let rec first_trump
   | [] ->
       failwith
         "precondition violated, need at least one tuple containing a \
-         wizard card"
+         trump card"
 
 (**[all_zeros] returns true if the given list of (plyer, card) has only
    cards with the number 0, else false*)
