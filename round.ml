@@ -223,6 +223,10 @@ let play_cards_then_finish trump round_num list_players =
   in
   finish_players players_after_playing_cards
 
+let print_trump trump player_list : Player.t list =
+  print_string [] ("TRUMP CARD: " ^ Card.string_of_card trump ^ "\n \n");
+  player_list
+
 let play_round (rnd : t) =
   (* Shuffle Deck *)
   match
@@ -232,6 +236,7 @@ let play_round (rnd : t) =
       hands
       (* Assign hands *)
       |> assign_hands rnd.players
+      |> print_trump trump
       (* We now run bidding. *)
       |> run_bidding rnd.round_num 0 rnd.num_players 0
       (* |> trick trump *)
