@@ -179,11 +179,23 @@ let rec play_cards_helper list_players acc =
   | h :: t -> Player.choose_card_rec h :: acc
   | [] -> acc
 
+let update_players_in_list_helper list_players player acc =
+  match list_players with
+  | h :: t ->
+      if Player.player_id player = Player.player_id h then
+        acc @ [ player ]
+      else acc @ [ h ]
+  | [] -> acc
+
+let update_players_in_list list_players player =
+  update_players_in_list_helper list_players player []
+
 let play_cards trump list_players =
   let player_card_tuple =
     find_winning_card trump (play_cards_helper list_players [])
-  in 
-  (* (update player scores, return player list) *)
+  in
+  update_players_in_list list_players
+    (Player.win_trick (fst player_card_tuple))
 
 let play_round (rnd : t) =
   (* Shuffle Deck *)
