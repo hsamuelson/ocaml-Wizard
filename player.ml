@@ -267,6 +267,9 @@ let print_player (player : t) =
         ("\nCurrently selected index: " ^ string_of_int csi ^ "\n")
 
 let print_player_list list_players =
+  print_endline
+    ("players list length: "
+    ^ string_of_int (get_hand_size list_players));
   List.map print_player list_players;
   list_players
 

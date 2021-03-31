@@ -28,9 +28,7 @@ let usr_bet () =
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> 0
-  | bet ->
-      ANSITerminal.erase Screen;
-      int_of_string bet
+  | bet -> int_of_string bet
 
 (* A single comment *)
 (* This will run the bidding by going through all players Asking for
@@ -40,6 +38,7 @@ let rec run_bidding t_trck bet_sum num_p cntr plyrs =
     match plyrs with
     | hd :: tl ->
         (* print_endline (Player.player_to_string hd); *)
+        ANSITerminal.erase Screen;
         Player.print_player hd;
         let bet = usr_bet () in
         if bet + bet_sum = t_trck && cntr + 1 = num_p then (
