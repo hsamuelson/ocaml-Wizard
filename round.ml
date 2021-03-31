@@ -106,3 +106,7 @@ let play_round (rnd : t) =
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
    rnd.main_deck mod num_players *)
+
+   (* Mabye a function that prints player bets for round *)
+
+let all_bets players = failwith "unimp"

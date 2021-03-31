@@ -16,3 +16,4 @@ let init_players_tests =
     |> init_players_helper "Init all players" [[0; 0; 0; 0; 0; 0; 1]; [0; 0; 0; 0; 0; 0; 2]; [0; 0; 0; 0; 0; 0; 3];
     [0; 0; 0; 0; 0; 0; 4]]
   ]
+
