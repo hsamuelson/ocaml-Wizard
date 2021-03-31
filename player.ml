@@ -278,18 +278,15 @@ let play_card (player : t) =
 
 (* Choose_card does not work on its own we need this rec funciton *)
 let rec choose_card_rec (player : t) =
+  print_player player;
   print_endline "Play a card: (prev|next|select)\n";
   ANSITerminal.print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> (player, Card.make_no_card ())
   | command ->
-      if command = "select" then (
+      if command = "select" then
         let player_card = play_card player in
-        match player_card with
-        | p, c ->
-            print_player p;
-            player_card)
+        match player_card with p, c -> player_card
       else
         let new_selected_player = choose_card command player in
-        print_player new_selected_player;
         choose_card_rec new_selected_player

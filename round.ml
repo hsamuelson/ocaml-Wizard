@@ -40,12 +40,13 @@ let rec run_bidding t_trck bet_sum num_p cntr plyrs =
         (* print_endline (Player.player_to_string hd); *)
         Player.print_player hd;
         let bet = usr_bet () in
-        if bet + bet_sum = t_trck && cntr + 1 = num_p then
+        if bet + bet_sum = t_trck && cntr + 1 = num_p then (
           (*This should only be the case for the last player*)
           (* Invalid bet *)
           (* ignore (Printf.printf "Bet cannot sum to number of
              tricks!") *)
-          run_bidding t_trck bet_sum num_p cntr plyrs
+          print_endline "Invalid bet. Please bet again.";
+          run_bidding t_trck bet_sum num_p cntr plyrs)
         else
           (* In this case the bet was correct - Assign bet to player -
              Move player to back of queue and ask next player*)
