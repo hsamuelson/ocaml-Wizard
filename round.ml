@@ -206,21 +206,18 @@ let finish_players_helper player_list acc =
 
 let finish_players list_players = finish_players_helper list_players []
 
-let rec play_cards_then_finish_helper trump list_players round_num =
+let rec play_cards_helper trump list_players round_num =
   if round_num > 0 then
     let new_list_players = play_cards trump list_players in
-    play_cards_then_finish_helper trump new_list_players (round_num - 1)
+    play_cards_helper trump new_list_players (round_num - 1)
   else list_players
 
 (**[play_cards_then_finish] should run [play_cards] recursively until
    there are no more cards to play, then it should call
    [Player.finish_round] on each player replace each player in the
    player_list and return that updated player_list*)
-let play_cards_then_finish trump round_num list_players =
-  let players_after_playing_cards =
-    play_cards_then_finish_helper trump list_players round_num
-  in
-  finish_players players_after_playing_cards
+let play_cards trump round_num list_players =
+  play_cards_helper trump list_players round_num
 
 let print_trump trump player_list : Player.t list =
   print_string [] ("TRUMP CARD: " ^ Card.string_of_card trump ^ "\n \n");
@@ -241,15 +238,15 @@ let play_round (rnd : t) =
       (* |> trick trump *)
       |> print_list_bets
       (* Now we start game play*)
-      |> play_cards_then_finish trump rnd.round_num
+      |> play_cards trump rnd.round_num
       (*need to have each player select a card and play that card (by
         adding the player card tuples as an input to find_winning_card),
         then take the winning player, augment their score, and have the
         process repeat with the winning player playing first until the
         players are not holding cards, then we have completed one round*)
       (* After round is over prepair for next round *)
-      |> Player.print_player_list
-      |> gen_next_round rnd
+      |> finish_players
+      |> Player.print_player_list |> gen_next_round rnd
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
    rnd.main_deck mod num_players *)
