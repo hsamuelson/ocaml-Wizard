@@ -185,7 +185,7 @@ let rec update_players_in_list_helper list_players player acc =
   match list_players with
   | h :: t ->
       if Player.player_id player = Player.player_id h then
-        acc @ [ player ]
+        update_players_in_list_helper t player acc @ [ player ]
       else update_players_in_list_helper t player acc @ [ h ]
   | [] -> acc
 
