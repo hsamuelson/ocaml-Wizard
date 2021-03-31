@@ -53,7 +53,7 @@ let rec run_bidding trump t_trck bet_sum num_p cntr plyrs =
     match plyrs with
     | hd :: tl ->
         (* print_endline (Player.player_to_string hd); *)
-        (* ANSITerminal.erase Screen; *)
+        ANSITerminal.erase Screen;
         print_trump trump [];
         Player.print_player hd;
         let bet = usr_bet () in
@@ -190,7 +190,7 @@ let rec bets_to_string bets acc indx =
         (indx + 1)
 
 let all_bets_to_string (bets : int list) =
-  (* ANSITerminal.erase Screen; *)
+  ANSITerminal.erase Screen;
   print_endline "All Player Bets: ";
   print_endline (bets_to_string bets "" 0);
   print_endline "\n\n"
