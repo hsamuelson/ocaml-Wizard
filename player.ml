@@ -42,6 +42,11 @@ let reset_round_player (player : t) =
     current_selected_card = Card.make_no_card ();
   }
 
+(** [get_hand_size a] returns the number of cards that are in the given
+    hand a *)
+let rec get_hand_size hand =
+  match hand with [] -> 0 | h :: t -> 1 + get_hand_size t
+
 (** [find_card_at_index a b] returns the card object in the list at the
     given index Raises OutOfBounds if the index is outside the list's
     capacity*)
@@ -61,7 +66,8 @@ let select_previous_card (player : t) =
   | { current_hand = hand; current_selected_index = index; _ } ->
       {
         player with
-        current_selected_index = index - 1;
+        current_selected_index =
+          (if index = 0 then index else index - 1);
         current_selected_card = find_card_at_index hand (index - 1);
       }
 
@@ -72,7 +78,8 @@ let select_next_card (player : t) =
   | { current_hand = hand; current_selected_index = index; _ } ->
       {
         player with
-        current_selected_index = index + 1;
+        current_selected_index =
+          (if index = get_hand_size hand - 1 then index else index + 1);
         current_selected_card = find_card_at_index hand (index + 1);
       }
 
@@ -97,11 +104,6 @@ let rec remove_index player_list index =
       | [] -> raise OutOfBounds
       | h :: t -> h :: remove_index t (index - 1))
 
-(** [get_hand_size a] returns the number of cards that are in the given
-    hand a *)
-let rec get_hand_size hand =
-  match hand with [] -> 0 | h :: t -> 1 + get_hand_size t
-
 (** [remove_current_selected_card] returns a new player without the card
     in hand that is currently selected. Used in play_card. If the
     selected card is 0, we keep the selected index at 0. Otherwise, we
@@ -121,25 +123,6 @@ let remove_current_selected_card (player : t) =
        else find_card_at_index curr_hand (curr_index + 1)
       else find_card_at_index curr_hand (curr_index - 1));
   }
-
-(** [play_card] allows a player to play the current chosen card. Returns
-    a tuple of the updated player and the played card *)
-let play_card (player : t) =
-  match player with
-  | { current_selected_card = card; _ } ->
-      (remove_current_selected_card player, card)
-
-(* Choose_card does not work on its own we need this rec funciton *)
-let rec choose_card_rec (player : t) =
-  print_endline "Play a card: (prev|next|select)\n";
-  ANSITerminal.print_string [ Bold ] "> ";
-  match read_line () with
-  | exception End_of_file -> (player, Card.make_no_card ())
-  | command ->
-      if command = "select" then play_card player
-      else
-        let new_selected_player = choose_card command player in
-        choose_card_rec new_selected_player
 
 (** [win_trick ] allows this player to win a trick and returns the
     current state of the player *)
@@ -285,3 +268,28 @@ let print_player (player : t) =
         ("\nCurrently selected index: " ^ string_of_int csi ^ "\n")
 
 let player_bet player = player.bet
+
+(** [play_card] allows a player to play the current chosen card. Returns
+    a tuple of the updated player and the played card *)
+let play_card (player : t) =
+  match player with
+  | { current_selected_card = card; _ } ->
+      (remove_current_selected_card player, card)
+
+(* Choose_card does not work on its own we need this rec funciton *)
+let rec choose_card_rec (player : t) =
+  print_endline "Play a card: (prev|next|select)\n";
+  ANSITerminal.print_string [ Bold ] "> ";
+  match read_line () with
+  | exception End_of_file -> (player, Card.make_no_card ())
+  | command ->
+      if command = "select" then (
+        let player_card = play_card player in
+        match player_card with
+        | p, c ->
+            print_player p;
+            player_card)
+      else
+        let new_selected_player = choose_card command player in
+        print_player new_selected_player;
+        choose_card_rec new_selected_player

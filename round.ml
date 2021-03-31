@@ -176,7 +176,7 @@ let print_list_bets list_players =
 
 let rec play_cards_helper list_players acc =
   match list_players with
-  | h :: t -> Player.choose_card_rec h :: acc
+  | h :: t -> play_cards_helper t (Player.choose_card_rec h :: acc)
   | [] -> acc
 
 let update_players_in_list_helper list_players player acc =
