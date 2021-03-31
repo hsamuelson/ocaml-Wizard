@@ -89,10 +89,14 @@ let rec assign_hands (players : Player.t list) hands =
    :: tl -> begin trick rnd (cntr + 1) ( tl @ [Player.choose_card_rec
    hd]) end | _ -> plyrs else plyrs *)
 
-(**[is_wizard] checks whether the given [player_card] tuple has a wizard
-   card*)
-let is_wizard (player_card : Player.t * Card.card) : bool =
-  if Card.get_num (snd player_card) = 14 then true else false
+(**[exists_wizard] checks whether the given [player_card_lst] has a
+   wizard card in one of its tuples*)
+let rec exists_wizard (player_card_lst : (Player.t * Card.card) list) :
+    bool =
+  match player_card_lst with
+  | h :: t ->
+      if Card.get_num (snd h) = 14 then true else exists_wizard t
+  | [] -> false
 
 (**[first_wizard] returns the first wizard card in a list of (player,
    card) tuples.Card. Assumes there is at least one tuple containing a
@@ -149,7 +153,7 @@ let find_winning_card
   (*TODO: write different compare function that just compares the card
     values*)
   let sorted_list = List.rev (List.sort compare plyr_card) in
-  if List.exists is_wizard plyr_card then first_wizard plyr_card
+  if exists_wizard plyr_card then first_wizard plyr_card
     (*return first wizard *)
   else if exists_trump plyr_card trump then first_trump plyr_card trump
     (*TODO: modify to return highest trump*)
