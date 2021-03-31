@@ -239,6 +239,7 @@ let play_round (rnd : t) =
       |> print_list_bets
       (* Now we start game play*)
       |> play_cards trump rnd.round_num
+      |> Player.print_player_list
       (*need to have each player select a card and play that card (by
         adding the player card tuples as an input to find_winning_card),
         then take the winning player, augment their score, and have the
