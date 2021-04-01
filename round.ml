@@ -42,7 +42,7 @@ let usr_bet () =
 let print_trump trump player_list : Player.t list =
   ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
   Player.print_cards_with_colors_short [ trump ];
-  print_endline "\n \n";
+  print_endline "\n";
   player_list
 
 (* A single comment *)
@@ -215,6 +215,11 @@ let rec player_plays_card trump list_players acc =
   ANSITerminal.erase Screen;
   print_endline "\n";
   print_trump trump [];
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold ]
+    "PLAYED CARDS: ";
+  Player.print_cards_with_colors_short (List.rev (List.map snd acc));
+  print_endline "\n\n";
   match list_players with
   | h :: t ->
       player_plays_card trump t (Player.choose_card_rec trump h :: acc)
@@ -231,10 +236,30 @@ let rec update_players_in_list_helper list_players player acc =
 let update_players_in_list list_players player =
   update_players_in_list_helper list_players player []
 
+let print_winner winner_tuple player_tuples =
+  ANSITerminal.erase Screen;
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold ]
+    "PLAYED CARDS: ";
+  Player.print_cards_with_colors_short (List.map snd player_tuples);
+  print_endline "\n";
+  ANSITerminal.print_string [ ANSITerminal.white; Bold ] "WINNER: ";
+  ANSITerminal.print_string
+    [ ANSITerminal.magenta; Bold ]
+    ("Player " ^ string_of_int (Player.player_id (fst winner_tuple)));
+  print_endline "\n";
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold ]
+    "WINNING CARD: ";
+  Player.print_cards_with_colors_short [ snd winner_tuple ];
+  print_endline "\n\n";
+  match read_line () with exception End_of_file -> () | _ -> ()
+
 let play_card trump list_players =
   let players_played = player_plays_card trump list_players [] in
   let updated_players = List.map fst players_played in
   let player_card_tuple = find_winning_card trump players_played in
+  print_winner player_card_tuple players_played;
   update_players_in_list updated_players
     (Player.win_trick (fst player_card_tuple))
 
