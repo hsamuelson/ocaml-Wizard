@@ -11,7 +11,7 @@ type t = {
 }
 
 let rec run_game (tb : t) =
-  if tb.round_num < 5 / tb.num_players then
+  if tb.round_num < 60 / tb.num_players then
     run_game
       {
         round = Round.play_round tb.round;
