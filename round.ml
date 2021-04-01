@@ -287,8 +287,9 @@ let play_round (rnd : t) =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     ("\nRound #" ^ string_of_int rnd.round_num ^ "\n");
-    print_string [] (" Player ID: " ^ (fst scores) ^ "\n");
-    print_string [] ("\n Score: " ^ (snd scores) ^ "\n");
+  print_string [] (" Player ID: " ^ fst scores ^ "\n");
+  print_string [] ("\n Score: " ^ snd scores ^ "\n");
+
   (* Shuffle Deck *)
   match
     Deck.deal (Deck.shuffle rnd.main_deck) rnd.num_players rnd.round_num
@@ -307,8 +308,8 @@ let play_round (rnd : t) =
       (* After round is over prepair for next round *)
       (* |> Player.print_player_list *)
       |> List.map Player.reset_round_player
-      |> gen_next_round rnd 
-      
+      |> gen_next_round rnd
+
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
    rnd.main_deck mod num_players *)
 
