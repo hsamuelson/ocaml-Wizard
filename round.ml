@@ -169,14 +169,21 @@ let rec find_first_nonzero_card tuple_list =
 let find_winning_card
     (trump : Card.card)
     (plyr_card : (Player.t * Card.card) list) =
-  let sorted_list = List.sort compare_player_card_tuples plyr_card in
-  if exists_wizard plyr_card then first_wizard plyr_card
+  let plyr_card_right_order = List.rev plyr_card in
+  let sorted_list =
+    List.sort compare_player_card_tuples plyr_card_right_order
+  in
+  if exists_wizard plyr_card_right_order then
+    first_wizard plyr_card_right_order
   else if exists_trump sorted_list trump then
     first_trump sorted_list trump
-  else if all_zeros plyr_card then List.nth plyr_card 0
+  else if all_zeros plyr_card_right_order then
+    List.nth plyr_card_right_order 0
   else
     (*find first non-zero card, treat it like a trump card*)
-    let secondary_trump = find_first_nonzero_card plyr_card in
+    let secondary_trump =
+      find_first_nonzero_card plyr_card_right_order
+    in
     first_trump sorted_list (snd secondary_trump)
 
 let rec get_list_bets list_players =
