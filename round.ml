@@ -33,16 +33,14 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
 
 (* This function asks the usr for a bet *)
 let usr_bet () =
-  print_endline "Enter bet.\n";
+  print_string [ ANSITerminal.green; Bold ] "\nEnter bet.\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> 0
   | bet -> int_of_string bet
 
 let print_trump trump player_list : Player.t list =
-  ANSITerminal.print_string
-    [ ANSITerminal.white; Bold; Blink ]
-    "TRUMP CARD: ";
+  ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
   Player.print_cards_with_colors_short [ trump ];
   print_endline "\n \n";
   player_list
