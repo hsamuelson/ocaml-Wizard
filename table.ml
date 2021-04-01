@@ -11,7 +11,7 @@ type t = {
 }
 
 let rec run_game (tb : t) =
-  if tb.round_num < 60 / tb.num_players then
+  if tb.round_num < 5 / tb.num_players then
     run_game
       {
         round = Round.play_round tb.round;
@@ -40,23 +40,3 @@ let init_tb (num_p : int) json_file =
     num_players = num_p;
     round_num = 1;
   }
-
-let rec list_to_string acc lst =
-  match lst with
-  | [] -> acc
-  | hd :: tl -> list_to_string (acc ^ " " ^ string_of_int hd) tl
-
-let scoreboard (p_list : Player.t list) =
-  let scores =
-    p_list
-    |> List.map (fun x -> Player.player_score x)
-    (* |> List.map string_of_int *)
-    |> list_to_string ""
-  in
-  let ids =
-    p_list
-    |> List.map (fun x -> Player.player_id x)
-    (* |> List.map string_of_int *)
-    |> list_to_string ""
-  in
-  (ids, scores)
