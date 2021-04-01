@@ -6,4 +6,4 @@ val init_tb : int -> Yojson.Basic.t -> t
 
 val run_game : t -> Round.t
 
-val scoreboard : Player.t list -> string list * string list
+val scoreboard : Player.t list -> string * string

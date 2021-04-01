@@ -50,11 +50,13 @@ let scoreboard (p_list : Player.t list) =
   let scores =
     p_list
     |> List.map (fun x -> Player.player_score x)
-    |> List.map string_of_int
+    (* |> List.map string_of_int *)
+    |> list_to_string ""
   in
   let ids =
     p_list
     |> List.map (fun x -> Player.player_id x)
-    |> List.map string_of_int
+    (* |> List.map string_of_int *)
+    |> list_to_string "" 
   in
   (ids, scores)
