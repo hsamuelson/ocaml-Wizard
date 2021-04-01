@@ -7,3 +7,7 @@ No additional dependencies are required. <br>
 To play the game run, <br>
 ```` make clean ```` <br> 
 ```` make play````
+
+## Contributors
+pcm82 <br> ml2359 <br> hes227
+
