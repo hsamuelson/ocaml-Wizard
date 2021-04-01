@@ -42,9 +42,10 @@ let deal_cards_2 num_players file =
 
 (* [play_game f] starts the adventure in file [f]. *)
 let play_game f : unit =
-  print_string [ Bold ] ("you have selected: " ^ f ^ "\n\n");
-  print_endline
-    "Please enter the number of players (at least 2, at most 6).\n";
+  ANSITerminal.print_string [] ("You have selected: " ^ f ^ "\n\n");
+  ANSITerminal.print_string
+    [ ANSITerminal.cyan; Bold ]
+    "Please enter the number of players (at least 2, at most 6).\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> ()
@@ -52,14 +53,15 @@ let play_game f : unit =
       (*TODO: Catch error if inputting bad information for inputs?*)
       let number = int_of_string number_string in
       if number > 0 && number <= 6 then begin
-        print_string [ Bold ]
-          ("you have selected: " ^ string_of_int number
+        ANSITerminal.print_string
+          [ ANSITerminal.cyan; Bold ]
+          ("You have selected: " ^ string_of_int number
          ^ " player(s).\n\n");
         deal_cards_2 number f
       end
       else
         print_string [ Bold ]
-          "number of players must be at least 1 and at most 6"
+          "Number of players must be at least 1 and at most 6."
 
 (* [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -68,9 +70,9 @@ let main () =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     "\n\nWelcome to the 3110 Wizard Game engine.\n";
-  print_endline
+  ANSITerminal.print_string []
     "Please enter the name of the deck json file you want to play with \
-     (we recommend: main_deck.json).\n";
+     (we recommend: main_deck.json).\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> ()

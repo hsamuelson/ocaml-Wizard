@@ -257,7 +257,8 @@ let print_player (player : t) =
   } ->
       ANSITerminal.print_string
         [ ANSITerminal.magenta; Underlined; Bold ]
-        ("●○● Player " ^ string_of_int pi ^ " ●○●\n");
+        ("●○●○●○●○● Player " ^ string_of_int pi
+       ^ " ●○●○●○●○●\n");
       print_string ("\nCurrent bet: " ^ string_of_int b);
       print_string ("\nTricks won this round: " ^ string_of_int t);
       print_string ("\nCurrent score: " ^ string_of_int c);
@@ -265,6 +266,10 @@ let print_player (player : t) =
       print_cards_with_colors_short ch;
       print_string "\nCurrently selected card: ";
       print_cards_with_colors_short [ cc ];
+      ANSITerminal.print_string
+        [ ANSITerminal.magenta; Underlined; Bold ]
+        "\n\n\
+         ●○●○●○●○●○●○●○●○●○●○●○●○●○●○\n";
       print_string "\n"
 
 (* print_endline ("\nCurrently selected index: " ^ string_of_int csi ^
@@ -289,7 +294,9 @@ let play_card (player : t) =
 (* Choose_card does not work on its own we need this rec funciton *)
 let rec choose_card_rec trump (player : t) =
   print_player player;
-  print_endline "Play a card: (prev|next|select)\n";
+  print_endline "\n";
+  ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
+  ANSITerminal.print_string [] "(prev|next|select)\n\n";
   ANSITerminal.print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> (player, Card.make_no_card ())

@@ -33,18 +33,16 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
 
 (* This function asks the usr for a bet *)
 let usr_bet () =
-  print_endline "Enter bet.\n";
+  print_string [ ANSITerminal.green; Bold ] "\nEnter bet.\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> 0
   | bet -> int_of_string bet
 
 let print_trump trump player_list : Player.t list =
-  ANSITerminal.print_string
-    [ ANSITerminal.white; Bold; Blink ]
-    "TRUMP CARD: ";
+  ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
   Player.print_cards_with_colors_short [ trump ];
-  print_endline "\n \n";
+  print_endline "\n";
   player_list
 
 (* A single comment *)
@@ -171,14 +169,21 @@ let rec find_first_nonzero_card tuple_list =
 let find_winning_card
     (trump : Card.card)
     (plyr_card : (Player.t * Card.card) list) =
-  let sorted_list = List.sort compare_player_card_tuples plyr_card in
-  if exists_wizard plyr_card then first_wizard plyr_card
+  let plyr_card_right_order = List.rev plyr_card in
+  let sorted_list =
+    List.sort compare_player_card_tuples plyr_card_right_order
+  in
+  if exists_wizard plyr_card_right_order then
+    first_wizard plyr_card_right_order
   else if exists_trump sorted_list trump then
     first_trump sorted_list trump
-  else if all_zeros plyr_card then List.nth plyr_card 0
+  else if all_zeros plyr_card_right_order then
+    List.nth plyr_card_right_order 0
   else
     (*find first non-zero card, treat it like a trump card*)
-    let secondary_trump = find_first_nonzero_card plyr_card in
+    let secondary_trump =
+      find_first_nonzero_card plyr_card_right_order
+    in
     first_trump sorted_list (snd secondary_trump)
 
 let rec get_list_bets list_players =
@@ -210,6 +215,11 @@ let rec player_plays_card trump list_players acc =
   ANSITerminal.erase Screen;
   print_endline "\n";
   print_trump trump [];
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold ]
+    "PLAYED CARDS: ";
+  Player.print_cards_with_colors_short (List.rev (List.map snd acc));
+  print_endline "\n\n";
   match list_players with
   | h :: t ->
       player_plays_card trump t (Player.choose_card_rec trump h :: acc)
@@ -226,10 +236,30 @@ let rec update_players_in_list_helper list_players player acc =
 let update_players_in_list list_players player =
   update_players_in_list_helper list_players player []
 
+let print_winner winner_tuple player_tuples =
+  ANSITerminal.erase Screen;
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold ]
+    "PLAYED CARDS: ";
+  Player.print_cards_with_colors_short (List.map snd player_tuples);
+  print_endline "\n";
+  ANSITerminal.print_string [ ANSITerminal.white; Bold ] "WINNER: ";
+  ANSITerminal.print_string
+    [ ANSITerminal.magenta; Bold ]
+    ("Player " ^ string_of_int (Player.player_id (fst winner_tuple)));
+  print_endline "\n";
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold ]
+    "WINNING CARD: ";
+  Player.print_cards_with_colors_short [ snd winner_tuple ];
+  print_endline "\n\n";
+  match read_line () with exception End_of_file -> () | _ -> ()
+
 let play_card trump list_players =
   let players_played = player_plays_card trump list_players [] in
   let updated_players = List.map fst players_played in
   let player_card_tuple = find_winning_card trump players_played in
+  print_winner player_card_tuple players_played;
   update_players_in_list updated_players
     (Player.win_trick (fst player_card_tuple))
 

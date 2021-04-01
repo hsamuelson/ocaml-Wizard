@@ -1,0 +1,21 @@
+{
+  "cards": [
+    {
+      "number": 0,
+      "suit": "red"
+    },
+    {
+      "number": 0,
+      "suit": "green"
+    },
+    {
+      "number": 0,
+      "suit": "blue"
+    },
+    {
+      "number": 0,
+      "suit": "yellow"
+    }
+  ],
+  "size": 2
+}
