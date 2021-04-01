@@ -1,4 +1,5 @@
 # ocaml-Wizard
+![](https://i.ebayimg.com/images/g/UmQAAOSwge9gU7Ju/s-l225.jpg)
 ## 3110 Final Project
 We have created the card game called Wizard, which can be seen here: https://en.wikipedia.org/wiki/Wizard_(card_game).
 
