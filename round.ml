@@ -119,7 +119,10 @@ let rec exists_trump
     (trump_card : Card.card) : bool =
   List.map
     (fun (x, y) ->
-      if Card.get_suit y = Card.get_suit trump_card then true else false)
+      if
+        Card.get_suit y = Card.get_suit trump_card && Card.get_num y > 0
+      then true
+      else false)
     player_card_lst
   |> List.fold_left ( || ) false
 
@@ -131,7 +134,10 @@ let rec first_trump
     (trump : Card.card) : Player.t * Card.card =
   match plyr_card with
   | h :: t ->
-      if Card.get_suit (snd h) = Card.get_suit trump then h
+      if
+        Card.get_suit (snd h) = Card.get_suit trump
+        && Card.get_num (snd h) > 0
+      then h
       else first_trump t trump
   | [] ->
       failwith
@@ -165,15 +171,8 @@ let rec find_first_nonzero_card tuple_list =
 let find_winning_card
     (trump : Card.card)
     (plyr_card : (Player.t * Card.card) list) =
-  (* print_endline "COMPARING CARDS: "; *)
-  (* Player.print_cards_with_colors_short (List.map snd plyr_card); *)
-  (*TODO: factor in first_card_played*)
-  (*TODO: write different compare function that just compares the card
-    values*)
   let sorted_list = List.sort compare_player_card_tuples plyr_card in
-  if exists_wizard plyr_card then
-    (* print_endline "THERES A WIZARD!"; *)
-    first_wizard plyr_card (*return first wizard *)
+  if exists_wizard plyr_card then first_wizard plyr_card
   else if exists_trump sorted_list trump then
     first_trump sorted_list trump
   else if all_zeros plyr_card then List.nth plyr_card 0
