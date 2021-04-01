@@ -11,10 +11,10 @@ To play the game run, <br>
 ```` make play````
 ## How to Play
 To play first enter in a valid deck, in this case a great deck to use is ````main_deck.json````. <br>
-Next select the number of players, it expects you to give it a ````int````.<br>
+Next select the number of players, it expects you to give it an ````int````.<br>
 Next each player will make a bet this expects an ````int````. <br>
 Next each player will select a card, use the commands ````prev````, ````next```` to move the selected card. 
-Once a card is selected type ````select```` to equipt the card.
+Once a card is selected type ````select```` to equip the card.
 
 ## Contributors
 pcm82 <br> ml2359 <br> hes227
