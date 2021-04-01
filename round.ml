@@ -40,7 +40,9 @@ let usr_bet () =
   | bet -> int_of_string bet
 
 let print_trump trump player_list : Player.t list =
-  print_string [] "TRUMP CARD: ";
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold; Blink ]
+    "TRUMP CARD: ";
   Player.print_cards_with_colors_short [ trump ];
   print_endline "\n \n";
   player_list

@@ -255,16 +255,20 @@ let print_player (player : t) =
    player_id = pi;
    _;
   } ->
-      print_string ("Player " ^ string_of_int pi);
-      print_string (" information: \nCurrent bet: " ^ string_of_int b);
+      ANSITerminal.print_string
+        [ ANSITerminal.magenta; Underlined; Bold ]
+        ("●○● Player " ^ string_of_int pi ^ " ●○●\n");
+      print_string ("\nCurrent bet: " ^ string_of_int b);
       print_string ("\nTricks won this round: " ^ string_of_int t);
       print_string ("\nCurrent score: " ^ string_of_int c);
       print_string "\nCurrent hand: ";
       print_cards_with_colors_short ch;
       print_string "\nCurrently selected card: ";
       print_cards_with_colors_short [ cc ];
-      print_endline
-        ("\nCurrently selected index: " ^ string_of_int csi ^ "\n")
+      print_string "\n"
+
+(* print_endline ("\nCurrently selected index: " ^ string_of_int csi ^
+   "\n") *)
 
 let print_player_list list_players =
   print_endline
@@ -297,8 +301,7 @@ let rec choose_card_rec trump (player : t) =
       else if command = "prev" || command = "next" then
         let new_selected_player = choose_card command player in
         choose_card_rec trump new_selected_player
-      else 
-        begin
+      else begin
         print_endline "Invalid command! \n";
         choose_card_rec trump player
-        end
+      end
