@@ -267,7 +267,8 @@ let play_round (rnd : t) =
       |> play_cards trump rnd.round_num
       |> finish_players
       (* After round is over prepair for next round *)
-      |> Player.print_player_list
+      (* |> Player.print_player_list *)
+      |> List.map Player.reset_round_player
       |> gen_next_round rnd
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
