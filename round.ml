@@ -33,7 +33,9 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
 
 (* This function asks the usr for a bet *)
 let usr_bet () =
-  print_string [ ANSITerminal.green; Bold ] "\nEnter bet.\n\n";
+  print_string
+    [ ANSITerminal.green; Bold ]
+    "\nEnter bet. [an integer within range [0, 50]]\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> 0
