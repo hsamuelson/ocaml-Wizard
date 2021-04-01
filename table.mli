@@ -5,5 +5,3 @@ val init_players : int -> Player.t list
 val init_tb : int -> Yojson.Basic.t -> t
 
 val run_game : t -> Round.t
-
-val scoreboard : Player.t list -> string * string
