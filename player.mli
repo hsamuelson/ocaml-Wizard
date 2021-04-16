@@ -46,9 +46,6 @@ val reset_round_player : t -> t
 val choose_card : string -> t -> t
 
 val choose_card_rec : Card.card -> t -> Card.card list -> t * Card.card
-(** [play_card] allows a player to play the current chosen card. Returns
-    a tuple of the updated player and the played card *)
-val play_card : t -> Card.card list -> t * Card.card
 
 (** [win_trick ] allows this player to win a trick and returns the
     current state of the player *)
@@ -75,8 +72,8 @@ val get_player_hand : t -> string
     testing*)
 val player_to_string : t -> string
 
-(** [print_player] prints the player using print_string 
-    (also will print the colors of the cards)*)
+(** [print_player] prints the player using print_string (also will print
+    the colors of the cards)*)
 val print_player : t -> unit
 
 (** [player_score] returns the score of the player *)
@@ -88,7 +85,8 @@ val player_id : t -> int
 (** [player_bet] returns the bet of the player*)
 val player_bet : t -> int
 
-(** [print_player_list] prints the list of players then returns the original list of players*)
+(** [print_player_list] prints the list of players then returns the
+    original list of players*)
 val print_player_list : t list -> t list
 
 val print_cards_with_colors_short : Card.card list -> unit
