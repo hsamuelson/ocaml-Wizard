@@ -4,6 +4,7 @@
 (* >> brew install cloc >> cloc --by-file --include-lang=OCaml . *)
 
 open ANSITerminal
+open Sys
 
 (* play_game should print the table, and have a function to continually
    poll for inputs I guess, or to just type in inputs. Ask for number of
@@ -40,9 +41,7 @@ let deal_cards_2 num_players file =
   Table.run_game new_table;
   ()
 
-(* [play_game f] starts the adventure in file [f]. *)
-let play_game f : unit =
-  ANSITerminal.print_string [] ("You have selected: " ^ f ^ "\n\n");
+let rec num_players_input_helper f =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     "Please enter the number of players (at least 2, at most 6).\n\n";
@@ -52,7 +51,7 @@ let play_game f : unit =
   | number_string ->
       (*TODO: Catch error if inputting bad information for inputs?*)
       let number = int_of_string number_string in
-      if number > 0 && number <= 6 then begin
+      if number > 1 && number <= 6 then begin
         ANSITerminal.print_string
           [ ANSITerminal.cyan; Bold ]
           ("You have selected: " ^ string_of_int number
@@ -60,8 +59,30 @@ let play_game f : unit =
         deal_cards_2 number f
       end
       else
-        print_string [ Bold ]
-          "Number of players must be at least 1 and at most 6."
+        print_string
+          [ Bold; ANSITerminal.red ]
+          "Number of players must be at least 1 and at most 6.\n\n";
+      num_players_input_helper f
+
+(* [play_game f] starts the adventure in file [f]. *)
+let play_game f : unit =
+  ANSITerminal.print_string [] ("You have selected: " ^ f ^ "\n\n");
+  num_players_input_helper f
+
+let rec deck_input_helper () =
+  ANSITerminal.print_string []
+    "Please enter the name of the deck json file you want to play with \
+     (we recommend: main_deck.json).\n\n";
+  print_string [ Bold ] "> ";
+  match read_line () with
+  | exception End_of_file -> ()
+  | file_name ->
+      if Sys.file_exists file_name then play_game file_name
+      else
+        ANSITerminal.print_string
+          [ Bold; ANSITerminal.red ]
+          "File not found. \n\n";
+      deck_input_helper ()
 
 (* [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -70,13 +91,7 @@ let main () =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     "\n\nWelcome to the 3110 Wizard Game engine.\n";
-  ANSITerminal.print_string []
-    "Please enter the name of the deck json file you want to play with \
-     (we recommend: main_deck.json).\n\n";
-  print_string [ Bold ] "> ";
-  match read_line () with
-  | exception End_of_file -> ()
-  | file_name -> play_game file_name
+  deck_input_helper ()
 
 (* Execute the game engine. *)
 let () = main ()
