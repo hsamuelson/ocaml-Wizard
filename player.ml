@@ -284,15 +284,36 @@ let print_player_list list_players =
 
 let player_bet player = player.bet
 
-(** [play_card] allows a player to play the current chosen card. Returns
-    a tuple of the updated player and the played card *)
-let play_card (player : t) =
+let has_card_of_suit player suit = failwith "unimplemented"
+
+(** [play_card] allows a player to play the current chosen card, as long
+    as the card is a valid card to be played. Returns a tuple of the
+    updated player and the played card *)
+let rec play_card (player : t) played_cards =
   match player with
   | { current_selected_card = card; _ } ->
-      (remove_current_selected_card player, card)
+      let first_suit =
+        match played_cards with
+        | h :: t -> Card.get_suit h
+        | [] -> "No_Card"
+      in
+      if
+        Card.get_suit card = first_suit
+        || first_suit = "No_Card"
+        || has_card_of_suit player first_suit = false
+      then (remove_current_selected_card player, card)
+      else (
+        ANSITerminal.print_string
+          [ ANSITerminal.red; Bold ]
+          "\n\n\
+          \ You must follow suit or play a wizard (14) or naar (0) \n";
+        play_card player played_cards)
 
 (* Choose_card does not work on its own we need this rec funciton *)
-let rec choose_card_rec trump (player : t) =
+let rec choose_card_rec
+    trump
+    (player : t)
+    (played_cards : Card.card list) =
   print_player player;
   print_endline "\n";
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
@@ -304,11 +325,11 @@ let rec choose_card_rec trump (player : t) =
       if command = "select" then
         (* let player_card = play_card player in match player_card with
            p, c -> player_card *)
-        play_card player
+        play_card player played_cards
       else if command = "prev" || command = "next" then
         let new_selected_player = choose_card command player in
-        choose_card_rec trump new_selected_player
+        choose_card_rec trump new_selected_player played_cards
       else begin
         print_endline "Invalid command! \n";
-        choose_card_rec trump player
+        choose_card_rec trump player played_cards
       end

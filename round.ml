@@ -224,7 +224,9 @@ let rec player_plays_card trump list_players acc =
   print_endline "\n\n";
   match list_players with
   | h :: t ->
-      player_plays_card trump t (Player.choose_card_rec trump h :: acc)
+      let played_cards = List.map snd acc in
+      player_plays_card trump t
+        (Player.choose_card_rec trump h played_cards :: acc)
   | [] -> acc
 
 let rec update_players_in_list_helper list_players player acc =
