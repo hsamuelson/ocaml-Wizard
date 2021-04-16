@@ -288,7 +288,10 @@ let print_player_list list_players =
 
 let player_bet player = player.bet
 
-let has_card_of_suit player suit = failwith "unimplemented"
+let has_card_of_suit player suit =
+  List.fold_left
+    (fun b x -> b || Card.get_suit x = suit)
+    false player.current_hand
 
 (** [play_card] allows a player to play the current chosen card, as long
     as the card is a valid card to be played. Returns a tuple of the
@@ -305,6 +308,8 @@ let rec play_card (player : t) played_cards =
         Card.get_suit card = first_suit
         || first_suit = "No_Card"
         || has_card_of_suit player first_suit = false
+        || Card.get_num card = 14
+        || Card.get_num card = 0
       then (remove_current_selected_card player, card)
       else (
         ANSITerminal.print_string
