@@ -48,21 +48,28 @@ let rec num_players_input_helper f =
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> ()
-  | number_string ->
+  | number_string -> (
       (*TODO: Catch error if inputting bad information for inputs?*)
-      let number = int_of_string number_string in
-      if number > 1 && number <= 6 then begin
-        ANSITerminal.print_string
-          [ ANSITerminal.cyan; Bold ]
-          ("You have selected: " ^ string_of_int number
-         ^ " player(s).\n\n");
-        deal_cards_2 number f
-      end
-      else
+      try
+        let number = int_of_string number_string in
+        if number > 1 && number <= 6 then begin
+          ANSITerminal.print_string
+            [ ANSITerminal.cyan; Bold ]
+            ("You have selected: " ^ string_of_int number
+           ^ " player(s).\n\n");
+          deal_cards_2 number f
+        end
+        else
+          print_string
+            [ Bold; ANSITerminal.red ]
+            "Number of players must be at least 2 and at most 6.\n\n";
+        num_players_input_helper f
+      with Failure _ ->
         print_string
           [ Bold; ANSITerminal.red ]
-          "Number of players must be at least 1 and at most 6.\n\n";
-      num_players_input_helper f
+          "Number of players must be a number that is at least 2 and \
+           at most 6.\n\n";
+        num_players_input_helper f)
 
 (* [play_game f] starts the adventure in file [f]. *)
 let play_game f : unit =
