@@ -64,11 +64,13 @@ let rec find_card_at_index (card_list : Card.card list) index =
 let select_previous_card (player : t) =
   match player with
   | { current_hand = hand; current_selected_index = index; _ } ->
+      let new_idx =
+        if index = 0 then get_hand_size hand - 1 else index - 1
+      in
       {
         player with
-        current_selected_index =
-          (if index = 0 then index else index - 1);
-        current_selected_card = find_card_at_index hand (index - 1);
+        current_selected_index = new_idx;
+        current_selected_card = find_card_at_index hand new_idx;
       }
 
 (** [select_next_card a] returns the card object in the player's hand at
@@ -76,11 +78,13 @@ let select_previous_card (player : t) =
 let select_next_card (player : t) =
   match player with
   | { current_hand = hand; current_selected_index = index; _ } ->
+      let new_idx =
+        if index = get_hand_size hand - 1 then 0 else index + 1
+      in
       {
         player with
-        current_selected_index =
-          (if index = get_hand_size hand - 1 then index else index + 1);
-        current_selected_card = find_card_at_index hand (index + 1);
+        current_selected_index = new_idx;
+        current_selected_card = find_card_at_index hand new_idx;
       }
 
 (** [choose_card a] is the function that will output the card we are
