@@ -5,6 +5,7 @@
 
 open ANSITerminal
 open Sys
+open Printexc
 
 (* play_game should print the table, and have a function to continually
    poll for inputs I guess, or to just type in inputs. Ask for number of
@@ -41,6 +42,11 @@ let deal_cards_2 num_players file =
   Table.run_game new_table;
   ()
 
+let end_game () =
+  ANSITerminal.print_string [] "Game over. Thank you for playing wizard! \n\n";
+  (** TODO : Print scoreboard and winner*)
+  exit 0
+
 let rec num_players_input_helper f =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
@@ -64,11 +70,13 @@ let rec num_players_input_helper f =
             [ Bold; ANSITerminal.red ]
             "Number of players must be at least 2 and at most 6.\n\n";
         num_players_input_helper f
-      with Failure _ ->
-        print_string
-          [ Bold; ANSITerminal.red ]
-          "Number of players must be a number that is at least 2 and \
-           at most 6.\n\n";
+      with Failure e ->
+        if e = "Not enough cards" then end_game ()
+        else
+          print_string
+            [ Bold; ANSITerminal.red ]
+            "Number of players must be a number that is at least 2 and \
+             at most 6.\n\n";
         num_players_input_helper f)
 
 (* [play_game f] starts the adventure in file [f]. *)

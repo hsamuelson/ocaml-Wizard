@@ -51,7 +51,8 @@ let deal (deck : Card.card_list) num_players round_number =
   let cards = Card.get_cards deck in
   let trump_card =
     if num_cards * num_players < size then List.nth cards (size - 1)
-    else Card.make_no_trump ()
+    else if num_cards * num_players = size then Card.make_no_trump ()
+    else failwith "Not enough cards"
   in
   (deal_helper cards num_cards [] num_players 0, trump_card)
 
