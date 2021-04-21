@@ -35,17 +35,25 @@ let deal_cards num_players file =
     Player.print_player player
   done
 
+  let end_game (finalRound : Round.t) =
+    let score_b = Round.scoreboard (Round.players finalRound) in
+    ANSITerminal.print_string
+      [ ANSITerminal.cyan; Bold ]
+      ("\nRound  \n");
+    print_string [] (" Player ID: " ^ fst score_b ^ "\n");
+    print_string [] ("\n Score: " ^ snd score_b ^ "\n");
+    ANSITerminal.print_string [] "Game over. Thank you for playing wizard! \n\n";
+    (** TODO : Print scoreboard and winner*)
+    exit 0
+
 let deal_cards_2 num_players file =
   let json_file = Yojson.Basic.from_file file in
   let new_table = Table.init_tb num_players json_file in
 
-  Table.run_game new_table;
-  ()
+  end_game (Table.run_game new_table)
+  
 
-let end_game () =
-  ANSITerminal.print_string [] "Game over. Thank you for playing wizard! \n\n";
-  (** TODO : Print scoreboard and winner*)
-  exit 0
+
 
 let rec num_players_input_helper f =
   ANSITerminal.print_string
@@ -63,7 +71,8 @@ let rec num_players_input_helper f =
             [ ANSITerminal.cyan; Bold ]
             ("You have selected: " ^ string_of_int number
            ^ " player(s).\n\n");
-          deal_cards_2 number f
+          deal_cards_2 number f;
+          ()
         end
         else
           print_string
@@ -71,7 +80,8 @@ let rec num_players_input_helper f =
             "Number of players must be at least 2 and at most 6.\n\n";
         num_players_input_helper f
       with Failure e ->
-        if e = "Not enough cards" then end_game ()
+        if e = "Not enough cards" then 
+          ()
         else
           print_string
             [ Bold; ANSITerminal.red ]

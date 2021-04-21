@@ -6,6 +6,8 @@ type t = {
   num_players : int;
   round_num : int;
 }
+let players t = t.players
+let round_num t = t.round_num
 
 let init_first_round
     (p_num : int)
