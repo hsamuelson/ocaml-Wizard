@@ -30,7 +30,7 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
     players =
       (match plyrs with
       | hd :: tl -> tl @ [ hd ]
-      | _ -> failwith "Less than 2 players! Immpossible!");
+      | _ -> failwith "Less than 2 players! Impossible!");
   }
 
 (* This function asks the usr for a bet *)
