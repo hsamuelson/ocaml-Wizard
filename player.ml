@@ -293,6 +293,18 @@ let has_card_of_suit player suit =
     (fun b x -> b || Card.get_suit x = suit)
     false player.current_hand
 
+let rec find_first_round_trump played_cards =
+  match played_cards with
+  | h :: t ->
+      if Card.get_num h > 0 then Card.get_suit h
+      else find_first_round_trump t
+  | [] -> "No_Card"
+
+let rec check_for_wizards played_cards =
+  match played_cards with
+  | h :: t -> if Card.get_num h = 14 then true else check_for_wizards t
+  | [] -> false
+
 let rec choose_card_rec
     trump
     (player : t)
@@ -318,13 +330,10 @@ let rec choose_card_rec
 and choose_card_rec_helper player played_cards trump f =
   match player with
   | { current_selected_card = card; _ } ->
-      let first_suit =
-        match played_cards with
-        | h :: t -> Card.get_suit h
-        | [] -> "No_Card"
-      in
+      let first_suit = find_first_round_trump played_cards in
       if
         Card.get_suit card = first_suit
+        || check_for_wizards played_cards = true
         || first_suit = "No_Card"
         || has_card_of_suit player first_suit = false
         || Card.get_num card = 14
