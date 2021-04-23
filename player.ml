@@ -1,3 +1,5 @@
+open Unix
+
 type t = {
   bet : int;  (** This player's current bet for this trick. *)
   tricks_won_this_round : int;
@@ -11,6 +13,10 @@ type t = {
   current_selected_index : int;  (** Index of currently selected card*)
   player_id : int; (* the id of the player *)
 }
+
+let next = "\027[C"
+
+let prev = "\027[D"
 
 exception OutOfBounds
 
@@ -91,8 +97,8 @@ let select_next_card (player : t) =
     currently looking at a = 0 or 1 for moving between cards. Raises
     NotValidMovement if the number is not 0 or 1 *)
 let choose_card move (player : t) =
-  if move = "next" || move = "prev" then
-    if move = "prev" then select_previous_card player
+  if move = next || move = prev then
+    if move = prev then select_previous_card player
     else select_next_card player
   else raise NotValidSelection
 
@@ -328,17 +334,27 @@ let rec choose_card_rec
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
   ANSITerminal.print_string [] "(prev|next|select)\n\n";
   ANSITerminal.print_string [ Bold ] "> ";
-  match read_line () with
-  | exception End_of_file -> (player, Card.make_no_card ())
-  | command ->
-      if command = "select" then
-        (* let player_card = play_card player in match player_card with
-           p, c -> player_card *)
-        play_card player played_cards
-      else if command = "prev" || command = "next" then
-        let new_selected_player = choose_card command player in
-        choose_card_rec trump new_selected_player played_cards
-      else begin
-        print_endline "Invalid command! \n";
-        choose_card_rec trump player played_cards
-      end
+
+  let terminfo = tcgetattr stdin in
+  let newterminfo =
+    {
+      terminfo with
+      c_icanon = false;
+      c_vmin = 3;
+      c_vtime = 3;
+      c_echo = false;
+    }
+  in
+  at_exit (fun _ -> tcsetattr stdin TCSAFLUSH terminfo);
+  (* reset stdin when you quit*)
+  tcsetattr stdin TCSAFLUSH newterminfo;
+  choose_card_rec trump player played_cards
+
+(* match read_line () with | exception End_of_file -> (player,
+   Card.make_no_card ()) | command -> if command = "select" then (* let
+   player_card = play_card player in match player_card with p, c ->
+   player_card *) play_card player played_cards else if command = prev
+   || command = next then let new_selected_player = choose_card command
+   player in choose_card_rec trump new_selected_player played_cards else
+   begin print_endline "Invalid command! \n"; choose_card_rec trump
+   player played_cards end *)

@@ -32,14 +32,18 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
   }
 
 (* This function asks the usr for a bet *)
-let usr_bet () =
+let rec usr_bet () =
   print_string
     [ ANSITerminal.green; Bold ]
     "\nEnter bet. [an integer within range [0, 50]]\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> 0
-  | bet -> int_of_string bet
+  | bet -> (
+      try int_of_string bet
+      with _ ->
+        print_string [ ANSITerminal.green; Bold ] "Not a valid input.\n";
+        usr_bet ())
 
 let print_trump trump player_list : Player.t list =
   ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
@@ -313,7 +317,8 @@ let play_round (rnd : t) =
     [ ANSITerminal.cyan; Bold ]
     ("\nRound #" ^ string_of_int rnd.round_num ^ "\n");
   print_string [] (" Player ID: " ^ fst score_b ^ "\n");
-  print_string [] ("\n Score: " ^ snd score_b ^ "\n");
+  print_string [] ("\n Score:     " ^ snd score_b ^ "\n");
+  print_string [] "\n\nPress enter to continue...\n";
   match read_line () with
   | _ -> (
       ();
