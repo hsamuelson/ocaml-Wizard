@@ -7,6 +7,10 @@ type t = {
   round_num : int;
 }
 
+let players t = t.players
+
+let round_num t = t.round_num
+
 let init_first_round
     (p_num : int)
     (dck : Card.card_list)
@@ -28,21 +32,29 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
     players =
       (match plyrs with
       | hd :: tl -> tl @ [ hd ]
-      | _ -> failwith "Less than 2 players! Immpossible!");
+      | _ -> failwith "Less than 2 players! Impossible!");
   }
 
 (* This function asks the usr for a bet *)
 let rec usr_bet () =
   print_string
     [ ANSITerminal.green; Bold ]
-    "\nEnter bet. [an integer within range [0, 50]]\n\n";
+    "\nEnter bet. [a natural number 0 or larger]]\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> 0
   | bet -> (
-      try int_of_string bet
-      with _ ->
-        print_string [ ANSITerminal.green; Bold ] "Not a valid input.\n";
+      try
+        if int_of_string bet >= 0 then int_of_string bet
+        else (
+          ANSITerminal.print_string
+            [ ANSITerminal.red; Bold ]
+            "Please enter bet of at least 0";
+          usr_bet ())
+      with Failure _ ->
+        ANSITerminal.print_string
+          [ ANSITerminal.red; Bold ]
+          "Bet must be a number of at least 0";
         usr_bet ())
 
 let print_trump trump player_list : Player.t list =

@@ -5,6 +5,7 @@
 
 open ANSITerminal
 open Sys
+open Printexc
 
 (* play_game should print the table, and have a function to continually
    poll for inputs I guess, or to just type in inputs. Ask for number of
@@ -34,12 +35,25 @@ let deal_cards num_players file =
     Player.print_player player
   done
 
+  let end_game (finalRound : Round.t) =
+    let score_b = Round.scoreboard (Round.players finalRound) in
+    ANSITerminal.print_string
+      [ ANSITerminal.cyan; Bold ]
+      ("\nRound  \n");
+    print_string [] (" Player ID: " ^ fst score_b ^ "\n");
+    print_string [] ("\n Score: " ^ snd score_b ^ "\n");
+    ANSITerminal.print_string [] "Game over. Thank you for playing wizard! \n\n";
+    (** TODO : Print scoreboard and winner*)
+    exit 0
+
 let deal_cards_2 num_players file =
   let json_file = Yojson.Basic.from_file file in
   let new_table = Table.init_tb num_players json_file in
 
-  Table.run_game new_table;
-  ()
+  end_game (Table.run_game new_table)
+  
+
+
 
 let rec num_players_input_helper f =
   ANSITerminal.print_string
@@ -48,21 +62,32 @@ let rec num_players_input_helper f =
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> ()
-  | number_string ->
+  | number_string -> (
       (*TODO: Catch error if inputting bad information for inputs?*)
-      let number = int_of_string number_string in
-      if number > 1 && number <= 6 then begin
-        ANSITerminal.print_string
-          [ ANSITerminal.cyan; Bold ]
-          ("You have selected: " ^ string_of_int number
-         ^ " player(s).\n\n");
-        deal_cards_2 number f
-      end
-      else
-        print_string
-          [ Bold; ANSITerminal.red ]
-          "Number of players must be at least 1 and at most 6.\n\n";
-      num_players_input_helper f
+      try
+        let number = int_of_string number_string in
+        if number > 1 && number <= 6 then begin
+          ANSITerminal.print_string
+            [ ANSITerminal.cyan; Bold ]
+            ("You have selected: " ^ string_of_int number
+           ^ " player(s).\n\n");
+          deal_cards_2 number f;
+          ()
+        end
+        else
+          print_string
+            [ Bold; ANSITerminal.red ]
+            "Number of players must be at least 2 and at most 6.\n\n";
+        num_players_input_helper f
+      with Failure e ->
+        if e = "Not enough cards" then 
+          ()
+        else
+          print_string
+            [ Bold; ANSITerminal.red ]
+            "Number of players must be a number that is at least 2 and \
+             at most 6.\n\n";
+        num_players_input_helper f)
 
 (* [play_game f] starts the adventure in file [f]. *)
 let play_game f : unit =
