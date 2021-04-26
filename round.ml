@@ -9,6 +9,7 @@ type t = {
 
 let players t = t.players
 
+let deck_size t =  Card.get_cards_size t.main_deck
 let round_num t = t.round_num
 
 let init_first_round
