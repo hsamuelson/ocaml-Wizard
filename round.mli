@@ -10,3 +10,5 @@ val scoreboard : Player.t list -> string * string
 val players : t -> Player.t list
 val round_num : t ->  int 
 val deck_size : t -> int
+
+val print_scoreboard : t -> unit

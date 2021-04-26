@@ -9,7 +9,8 @@ type t = {
 
 let players t = t.players
 
-let deck_size t =  Card.get_cards_size t.main_deck
+let deck_size t = Card.get_cards_size t.main_deck
+
 let round_num t = t.round_num
 
 let init_first_round
@@ -323,40 +324,52 @@ let scoreboard (p_list : Player.t list) =
   in
   (ids, scores)
 
-let play_round (rnd : t) =
-  (* Print round number *)
+let print_scoreboard (rnd : t) : unit =
   let score_b = scoreboard rnd.players in
+  (* Round number print *)
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
-    ("\nRound #" ^ string_of_int rnd.round_num ^ "\n");
-  print_string [] (" Player ID: " ^ fst score_b ^ "\n");
-  print_string [] ("\n Score:     " ^ snd score_b ^ "\n");
-  print_string [] "\n\nPress enter to continue...\n";
-  match read_line () with
-  | _ -> (
-      ();
+    ("\nRound " ^ string_of_int rnd.round_num ^ "\n");
+  ANSITerminal.print_string
+    [ ANSITerminal.red; Bold ]
+    "\n          --<{ SCOREBOARD }>--   ";
+  ANSITerminal.print_string
+    [ ANSITerminal.red; Bold ]
+    "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
 
-      (* Shuffle Deck *)
-      match
-        Deck.deal
-          (Deck.shuffle rnd.main_deck)
-          rnd.num_players rnd.round_num
-      with
-      | hands, trump ->
-          hands
-          (* Assign hands *)
-          |> assign_hands rnd.players
-          (* We now run bidding. *)
-          |> run_bidding trump rnd.round_num 0 rnd.num_players 0
-          (* |> trick trump *)
-          |> print_list_bets
-          (* Now we start game play*)
-          |> play_cards trump rnd.round_num
-          |> finish_players
-          (* After round is over prepair for next round *)
-          (* |> Player.print_player_list *)
-          |> List.map Player.reset_round_player
-          |> gen_next_round rnd)
+  print_string [] ("\n Player ID: " ^ fst score_b);
+
+  print_string [] ("\n Score:     " ^ snd score_b ^ "\n");
+  ANSITerminal.print_string
+    [ ANSITerminal.red; Bold ]
+    "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
+  print_string [] "\n\nPress enter to continue...\n";
+  match read_line () with _ -> ()
+
+let play_round (rnd : t) =
+  (* Print round number *)
+  (* Print scoreboard *)
+  print_scoreboard rnd;
+
+  (* Shuffle Deck *)
+  match
+    Deck.deal (Deck.shuffle rnd.main_deck) rnd.num_players rnd.round_num
+  with
+  | hands, trump ->
+      hands
+      (* Assign hands *)
+      |> assign_hands rnd.players
+      (* We now run bidding. *)
+      |> run_bidding trump rnd.round_num 0 rnd.num_players 0
+      (* |> trick trump *)
+      |> print_list_bets
+      (* Now we start game play*)
+      |> play_cards trump rnd.round_num
+      |> finish_players
+      (* After round is over prepair for next round *)
+      (* |> Player.print_player_list *)
+      |> List.map Player.reset_round_player
+      |> gen_next_round rnd
 
 (* let run_all_rounds (rnd : t) (num_players : int) = List.length
    rnd.main_deck mod num_players *)

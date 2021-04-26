@@ -36,12 +36,13 @@ let deal_cards num_players file =
   done
 
   let end_game (finalRound : Round.t) =
-    let score_b = Round.scoreboard (Round.players finalRound) in
+    Round.print_scoreboard finalRound;
+    (* let score_b = Round.scoreboard (Round.players finalRound) in
     ANSITerminal.print_string
       [ ANSITerminal.cyan; Bold ]
       ("\nRound  \n");
     print_string [] (" Player ID: " ^ fst score_b ^ "\n");
-    print_string [] ("\n Score: " ^ snd score_b ^ "\n");
+    print_string [] ("\n Score: " ^ snd score_b ^ "\n"); *)
     ANSITerminal.print_string [] "Game over. Thank you for playing wizard! \n\n";
     (** TODO : Print scoreboard and winner*)
     exit 0
