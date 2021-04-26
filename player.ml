@@ -14,9 +14,11 @@ type t = {
   player_id : int; (* the id of the player *)
 }
 
-let next = "\027[C"
+(* let next = "\027[C" *)
+let next = "next"
 
-let prev = "\027[D"
+(* let prev = "\027[D" *)
+let prev = "prev"
 
 exception OutOfBounds
 
@@ -92,6 +94,15 @@ let select_next_card (player : t) =
         current_selected_index = new_idx;
         current_selected_card = find_card_at_index hand new_idx;
       }
+
+let choose_card_at_index (player : t) (index : int) =
+  let new_card = find_card_at_index player.current_hand index in
+  ( {
+      player with
+      current_selected_index = index;
+      current_selected_card = new_card;
+    },
+    new_card )
 
 (** [choose_card a] is the function that will output the card we are
     currently looking at a = 0 or 1 for moving between cards. Raises
@@ -318,20 +329,25 @@ let rec choose_card_rec
   print_player player;
   print_endline "\n";
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
-  ANSITerminal.print_string [] "(prev|next|select)\n\n";
+  ANSITerminal.print_string []
+    "(prev|next|select|[integer index of card])\n\n";
   ANSITerminal.print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> (player, Card.make_no_card ())
-  | command ->
+  | command -> (
       if command = "select" then
         choose_card_rec_helper player played_cards trump choose_card_rec
-      else if command = "prev" || command = "next" then
+      else if command = prev || command = next then
         let new_selected_player = choose_card command player in
         choose_card_rec trump new_selected_player played_cards
-      else begin
-        print_endline "Invalid command! \n";
-        choose_card_rec trump player played_cards
-      end
+      else
+        try
+          let index = int_of_string command in
+          let new_player = choose_card_at_index player index in
+          choose_card_rec trump (fst new_player) played_cards
+        with _ ->
+          print_endline "Invalid command! \n";
+          choose_card_rec trump player played_cards)
 
 and choose_card_rec_helper player played_cards trump f =
   match player with
