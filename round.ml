@@ -324,27 +324,27 @@ let scoreboard (p_list : Player.t list) =
   in
   (ids, scores)
 
-let print_scoreboard (rnd : t) : unit =
-  let score_b = scoreboard rnd.players in
-  (* Round number print *)
-  ANSITerminal.print_string
-    [ ANSITerminal.cyan; Bold ]
-    ("\nRound " ^ string_of_int rnd.round_num ^ "\n");
-  ANSITerminal.print_string
-    [ ANSITerminal.red; Bold ]
-    "\n          --<{ SCOREBOARD }>--   ";
-  ANSITerminal.print_string
-    [ ANSITerminal.red; Bold ]
-    "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
-
-  print_string [] ("\n Player ID: " ^ fst score_b);
-
-  print_string [] ("\n Score:     " ^ snd score_b ^ "\n");
-  ANSITerminal.print_string
-    [ ANSITerminal.red; Bold ]
-    "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
-  print_string [] "\n\nPress enter to continue...\n";
-  match read_line () with _ -> ()
+  let print_scoreboard rnd : unit =
+    let score_b = scoreboard rnd.players in
+    (* Round number print *)
+    ANSITerminal.print_string
+      [ ANSITerminal.cyan; Bold ]
+      ("\nRound " ^ string_of_int rnd.round_num ^ "\n");
+    ANSITerminal.print_string
+      [ ANSITerminal.red; Bold ]
+      "\n          --<{ SCOREBOARD }>--   ";
+    ANSITerminal.print_string
+      [ ANSITerminal.red; Bold ]
+      "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
+  
+    print_string [] ("\n Player ID: " ^ fst score_b);
+  
+    print_string [] ("\n Score:     " ^ snd score_b ^ "\n");
+    ANSITerminal.print_string
+      [ ANSITerminal.red; Bold ]
+      "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
+    print_string [] "\n\nPress enter to continue...\n";
+    match read_line () with _ -> ()
 
 let play_round (rnd : t) =
   (* Print round number *)
