@@ -96,10 +96,16 @@ let select_next_card (player : t) =
       }
 
 let choose_card_at_index (player : t) (index : int) =
-  let new_card = find_card_at_index player.current_hand index in
+  let new_index =
+    if index >= get_hand_size player.current_hand then
+      get_hand_size player.current_hand - 1
+    else if index < 0 then 0
+    else index
+  in
+  let new_card = find_card_at_index player.current_hand new_index in
   ( {
       player with
-      current_selected_index = index;
+      current_selected_index = new_index;
       current_selected_card = new_card;
     },
     new_card )
@@ -334,20 +340,23 @@ let rec choose_card_rec
   ANSITerminal.print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> (player, Card.make_no_card ())
-  | command -> (
+  | command ->
       if command = "select" then
         choose_card_rec_helper player played_cards trump choose_card_rec
       else if command = prev || command = next then
         let new_selected_player = choose_card command player in
         choose_card_rec trump new_selected_player played_cards
       else
-        try
-          let index = int_of_string command in
-          let new_player = choose_card_at_index player index in
-          choose_card_rec trump (fst new_player) played_cards
-        with _ ->
-          print_endline "Invalid command! \n";
-          choose_card_rec trump player played_cards)
+        let new_player =
+          try
+            let index = int_of_string command in
+            fst (choose_card_at_index player index)
+          with _ ->
+            print_endline "Invalid command! \n";
+            fst (choose_card_rec trump player played_cards)
+        in
+
+        choose_card_rec trump new_player played_cards
 
 and choose_card_rec_helper player played_cards trump f =
   match player with
