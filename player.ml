@@ -1,4 +1,5 @@
 open Unix
+open Float
 
 type t = {
   bet : int;  (** This player's current bet for this trick. *)
@@ -353,13 +354,17 @@ let rec choose_card_rec
   print_endline "\n";
   ANSITerminal.print_string
     [ ANSITerminal.yellow; Bold ]
-    "Probability that others have better cards: ";
-  ANSITerminal.print_string []
-    (string_of_float
-       (Calculator.odds_of_card_winning player.current_selected_card
-          trump
-          (Calculator.get_unplayed calc))
-    ^ " \n");
+    "% unplayed cards strictly worse than current card: ";
+  let percentage =
+    trunc
+      (100.0 *. 100.0
+      *. (1.
+         -. Calculator.odds_of_card_winning player.current_selected_card
+              trump
+              (Calculator.get_unplayed calc)))
+    /. 100.0
+  in
+  ANSITerminal.print_string [] (string_of_float percentage ^ " \n");
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
   ANSITerminal.print_string []
     "(prev|next|select|[integer index of card])\n\n";

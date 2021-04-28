@@ -59,7 +59,7 @@ let deal_cards_2 num_players file =
 let rec num_players_input_helper f =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
-    "Please enter the number of players (at least 2, at most 6).  \n\n";
+    "Please enter the number of players (at least 2, at most 6).\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> ()
@@ -78,7 +78,7 @@ let rec num_players_input_helper f =
         else
           print_string
             [ Bold; ANSITerminal.red ]
-            "Number of players must be at least 2 and at most 6. \n\n";
+            "Number of players must be at least 2 and at most 6.\n\n";
         num_players_input_helper f
       with Failure e ->
         if e = "Not enough cards" then 
@@ -87,7 +87,7 @@ let rec num_players_input_helper f =
           print_string
             [ Bold; ANSITerminal.red ]
             "Number of players must be a number that is at least 2 and \
-             at most 6. \n\n";
+             at most 6.\n\n";
         num_players_input_helper f)
 
 (* [play_game f] starts the adventure in file [f]. *)
@@ -130,10 +130,24 @@ let read_lines file =
 let print_ruleset () = ANSITerminal.print_string
 [ ANSITerminal.magenta; ]
 ((List.fold_left (fun a b -> a ^ "\n" ^ b ) "" (read_lines "rules.txt"))^ "\n\n\n") ; 
+print_string [ Bold ] "Press any key to finish reading rules...";
+  match read_line () with _ -> 
+    ANSITerminal.erase Screen;
 ANSITerminal.print_string
 [ ANSITerminal.red; Bold] "Those were the rules, now let the game begin! \n \n";() 
 
 
+let rec main_helper () = ANSITerminal.print_string []
+"Press enter to start the game, or type 'rules' to read the rules\n\n";
+print_string [ Bold ] "> ";
+match read_line () with response -> if response = "rules" then ((print_ruleset ()); deck_input_helper ())
+else 
+if response = "" then 
+deck_input_helper ()
+else ANSITerminal.print_string
+[ ANSITerminal.red; Bold ]
+"\n\n Please either press enter or type 'rules' and press enter\n";
+main_helper ()
 let main () =
   
   (*prompt for json file and number of players*)
@@ -145,14 +159,8 @@ let main () =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     "\n\nWelcome to the 3110 Wizard Game engine.\n";
-    ANSITerminal.print_string []
-    "Press enter to start the game, or type 'rules' to read the rules\n\n";
-  print_string [ Bold ] "> ";
-  match read_line () with 
-  | exception End_of_file -> ()
-  |response -> if response = "rules" then ((print_ruleset ()); deck_input_helper ())
-  else 
-    deck_input_helper ()
+    main_helper ()
+    
 
 (* Execute the game engine. *)
 let () = main ()
