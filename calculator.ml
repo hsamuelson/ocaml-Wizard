@@ -12,7 +12,7 @@ let update_unplayed calc (card : Card.card) =
   let new_unplayed = update_unplayed_helper calc card in
   { calc with unplayed_cards = new_unplayed }
 
-let count_cards_better_than num suit (cards : Card.card_list) =
+let count_cards_better_than num suit cards =
   List.fold_left
     (fun x y ->
       if Card.get_suit y = suit && Card.get_num y > num then x + 1
