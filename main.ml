@@ -137,6 +137,17 @@ ANSITerminal.print_string
 [ ANSITerminal.red; Bold] "Those were the rules, now let the game begin! \n \n";() 
 
 
+let rec main_helper () = ANSITerminal.print_string []
+"Press enter to start the game, or type 'rules' to read the rules\n\n";
+print_string [ Bold ] "> ";
+match read_line () with response -> if response = "rules" then ((print_ruleset ()); deck_input_helper ())
+else 
+if response = "" then 
+deck_input_helper ()
+else ANSITerminal.print_string
+[ ANSITerminal.red; Bold ]
+"\n\n Please either press enter or type 'rules' and press enter\n";
+main_helper ()
 let main () =
   
   (*prompt for json file and number of players*)
@@ -148,12 +159,8 @@ let main () =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     "\n\nWelcome to the 3110 Wizard Game engine.\n";
-    ANSITerminal.print_string []
-    "Press enter to start the game, or type 'rules' to read the rules\n\n";
-  print_string [ Bold ] "> ";
-  match read_line () with response -> if response = "rules" then ((print_ruleset ()); deck_input_helper ())
-  else 
-    deck_input_helper ()
+    main_helper ()
+    
 
 (* Execute the game engine. *)
 let () = main ()
