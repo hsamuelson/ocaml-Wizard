@@ -26,7 +26,8 @@ let odds_of_card_winning card trump_card unplayed_card_list =
       count_cards_better_than (Card.get_num card) (Card.get_suit card)
         unplayed_cards
     in
-    num_better_cards / Card.get_cards_size unplayed_card_list
+    float_of_int num_better_cards
+    /. float_of_int (Card.get_cards_size unplayed_card_list)
   else
     let num_better_cards =
       count_cards_better_than 0
@@ -35,4 +36,5 @@ let odds_of_card_winning card trump_card unplayed_card_list =
       + count_cards_better_than (Card.get_num card) (Card.get_suit card)
           unplayed_cards
     in
-    num_better_cards / Card.get_cards_size unplayed_card_list
+    float_of_int num_better_cards
+    /. float_of_int (Card.get_cards_size unplayed_card_list)
