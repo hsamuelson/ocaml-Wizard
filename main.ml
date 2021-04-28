@@ -113,7 +113,9 @@ let rec deck_input_helper () =
 (* [main ()] prompts for the game to play, then starts it. *)
 
 
-
+let print_ruleset () = ANSITerminal.print_string
+[ ANSITerminal.cyan; Bold ]
+"\n\n THESE ARE THE RULES\n"; () 
                                 
  
 let main () =
@@ -127,7 +129,12 @@ let main () =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     "\n\nWelcome to the 3110 Wizard Game engine.\n";
-  deck_input_helper ()
+    ANSITerminal.print_string []
+    "Press enter to start the game, or type 'rules' to read the rules\n\n";
+  print_string [ Bold ] "> ";
+  match read_line () with response -> if response = "rules" then ((print_ruleset ()); deck_input_helper ())
+  else 
+    deck_input_helper ()
 
 (* Execute the game engine. *)
 let () = main ()
