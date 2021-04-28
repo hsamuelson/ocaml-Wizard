@@ -121,6 +121,7 @@ let main () =
   (*prompt for json file and number of players*)
   ANSITerminal.erase Screen;
   PrintFunct.intro_screen ();
+  (* PrintFunct.print_hand [{number = 1; suit = "red"};{number = 2, suit = "blue"}] *)
   (* PrintFunct.zero ANSITerminal.red ();
   PrintFunct.one ANSITerminal.green (); 
   PrintFunct.two ANSITerminal.blue (); *)

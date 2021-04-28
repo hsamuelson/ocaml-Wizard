@@ -276,6 +276,9 @@ let print_player (player : t) =
    player_id = pi;
    _;
   } ->
+      PrintFunct.print_hand ch 0;
+      ANSITerminal.print_string [] "\n";
+      ANSITerminal.print_string [] "\n";
       ANSITerminal.print_string
         [ ANSITerminal.magenta; Underlined; Bold ]
         ("●○●○●○●○● Player " ^ string_of_int pi
@@ -285,6 +288,7 @@ let print_player (player : t) =
       print_string ("\nCurrent score: " ^ string_of_int c);
       print_string "\nCurrent hand: ";
       print_cards_with_colors_short ch;
+
       print_string "\nCurrently selected card: ";
       print_cards_with_colors_short [ cc ];
       ANSITerminal.print_string
