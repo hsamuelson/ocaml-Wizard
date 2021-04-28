@@ -361,7 +361,9 @@ let rec choose_card_rec
       *. (1.
          -. Calculator.odds_of_card_winning player.current_selected_card
               trump
-              (Calculator.get_unplayed calc)))
+              (Calculator.get_unplayed calc)
+              (Card.make_card_list player.current_hand
+                 (get_hand_size player.current_hand))))
     /. 100.0
   in
   ANSITerminal.print_string [] (string_of_float percentage ^ " \n");

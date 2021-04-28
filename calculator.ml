@@ -1,15 +1,10 @@
 type t = {
   total_deck : Card.card_list;
   unplayed_cards : Card.card_list;
-  player_cards : Card.card_list;
 }
 
 let init main_deck =
-  {
-    total_deck = main_deck;
-    unplayed_cards = main_deck;
-    player_cards = Card.make_card_list [] 0;
-  }
+  { total_deck = main_deck; unplayed_cards = main_deck }
 
 let get_unplayed calc = calc.unplayed_cards
 
