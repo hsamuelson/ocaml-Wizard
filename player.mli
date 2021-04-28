@@ -98,3 +98,5 @@ val print_player_list : t list -> t list
 val print_cards_with_colors_short : Card.card list -> unit
 
 val choose_card_at_index : t -> int -> t * Card.card
+
+val get_card_color : string -> ANSITerminal.style

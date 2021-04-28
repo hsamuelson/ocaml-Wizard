@@ -286,6 +286,7 @@ let print_player (player : t) =
       PrintFunct.print_hand ch 0;
       ANSITerminal.print_string [] "\n";
       ANSITerminal.print_string [] "\n";
+      ANSITerminal.print_string [] "\n";
       ANSITerminal.print_string
         [ ANSITerminal.magenta; Underlined; Bold ]
         ("●○●○●○●○● Player " ^ string_of_int pi
