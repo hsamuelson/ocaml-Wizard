@@ -329,12 +329,16 @@ let rec check_for_wizards played_cards =
   | [] -> false
 
 let rec choose_card_rec
+    calc
     trump
     (player : t)
     (played_cards : Card.card list) =
   print_player player;
   print_endline "\n";
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
+  ANSITerminal.print_string
+    [ ANSITerminal.yellow; Bold ]
+    "Probability that others have better cards: ";
   ANSITerminal.print_string []
     "(prev|next|select|[integer index of card])\n\n";
   ANSITerminal.print_string [ Bold ] "> ";
@@ -342,10 +346,11 @@ let rec choose_card_rec
   | exception End_of_file -> (player, Card.make_no_card ())
   | command ->
       if command = "select" then
-        choose_card_rec_helper player played_cards trump choose_card_rec
+        choose_card_rec_helper player played_cards trump
+          (choose_card_rec calc)
       else if command = prev || command = next then
         let new_selected_player = choose_card command player in
-        choose_card_rec trump new_selected_player played_cards
+        choose_card_rec calc trump new_selected_player played_cards
       else
         let new_player =
           try
@@ -353,10 +358,10 @@ let rec choose_card_rec
             fst (choose_card_at_index player index)
           with _ ->
             print_endline "Invalid command! \n";
-            fst (choose_card_rec trump player played_cards)
+            fst (choose_card_rec calc trump player played_cards)
         in
 
-        choose_card_rec trump new_player played_cards
+        choose_card_rec calc trump new_player played_cards
 
 and choose_card_rec_helper player played_cards trump f =
   match player with

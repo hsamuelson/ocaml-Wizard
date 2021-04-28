@@ -245,11 +245,20 @@ let rec player_plays_card round trump list_players acc =
   match list_players with
   | h :: t ->
       let played_cards = List.map snd acc in
+      let calc = round.calculator in
       let new_played_card =
-        Player.choose_card_rec trump h played_cards
+        Player.choose_card_rec calc trump h played_cards
       in
-      Calculator.update_unplayed round.calculator (snd new_played_card);
-      player_plays_card round trump t (new_played_card :: acc)
+      let new_round =
+        {
+          round with
+          calculator =
+            Calculator.update_unplayed round.calculator
+              (snd new_played_card);
+        }
+      in
+
+      player_plays_card new_round trump t (new_played_card :: acc)
   | [] -> acc
 
 let rec update_players_in_list_helper list_players player acc =

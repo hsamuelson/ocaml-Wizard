@@ -45,7 +45,8 @@ val reset_round_player : t -> t
     NotValidMovement if the number is not 0 or 1*)
 val choose_card : string -> t -> t
 
-val choose_card_rec : Card.card -> t -> Card.card list -> t * Card.card
+val choose_card_rec :
+  Calculator.t -> Card.card -> t -> Card.card list -> t * Card.card
 
 (** [win_trick ] allows this player to win a trick and returns the
     current state of the player *)
