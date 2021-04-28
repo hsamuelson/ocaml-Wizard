@@ -347,17 +347,16 @@ let print_scoreboard rnd : unit =
     ("\nRound " ^ string_of_int rnd.round_num ^ "\n");
   ANSITerminal.print_string
     [ ANSITerminal.red; Bold ]
-    "\n          --<{ SCOREBOARD }>--   ";
-  ANSITerminal.print_string
-    [ ANSITerminal.red; Bold ]
-    "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
+    "\n             ▄▄▄███ SCOREBOARD ███▄▄▄   \n";
+  print_string [ ANSITerminal.red; Bold ] "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n";
 
-  print_string [] ("\n Player ID: " ^ fst score_b);
-
-  print_string [] ("\n Score:     " ^ snd score_b ^ "\n");
-  ANSITerminal.print_string
-    [ ANSITerminal.red; Bold ]
-    "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
+  print_string [ANSITerminal.red; Bold]  ("█           █                            \n");
+  print_string [ANSITerminal.red; Bold]  ("█ Player ID █ " ^ fst score_b ^ "        \n");
+  print_string [ANSITerminal.red; Bold]  ("█▄▄▄▄▄▄▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n");
+  print_string [ANSITerminal.red; Bold]  ("█           █                            \n");
+  print_string [ANSITerminal.red; Bold]  ("█ Score     █ " ^ snd score_b ^ "        \n");
+  print_string [ANSITerminal.red; Bold]  ("█           █                            \n");
+  print_string [ANSITerminal.red; Bold]   "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ \n";
   print_string [] "\n\nPress enter to continue...\n";
   match read_line () with _ -> ()
 
