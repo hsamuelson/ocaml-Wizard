@@ -65,6 +65,8 @@ val finish_round : t -> t
     feild*)
 val make_bet : int -> t -> t
 
+val get_player_hand_list : t -> Card.card list
+
 (** [give_cards lst t] Returns a player with t's previous stats and a
     new hand of cards lst*)
 val give_cards : Card.card list -> t -> t
@@ -100,3 +102,7 @@ val print_cards_with_colors_short : Card.card list -> unit
 val choose_card_at_index : t -> int -> t * Card.card
 
 val get_card_color : string -> ANSITerminal.style
+
+val get_is_robot : t -> bool
+
+val get_percentage : t -> Card.card -> Calculator.t -> float

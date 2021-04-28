@@ -37,7 +37,7 @@ let deal_cards num_real_players num_robot_players file =
   end_game (Table.run_game new_table)
   
 let rec num_ai_players_input_helper num_real_players f : unit= ANSITerminal.print_string
-[ ANSITerminal.cyan; Bold ]
+[ ANSITerminal.green; Bold ]
 "Please enter the number of robot players (at least 0, at most 6).\n\n";
 print_string [ Bold ] "> ";
 match read_line () with
@@ -48,14 +48,14 @@ match read_line () with
     let number = int_of_string number_string in
     if number >= 0 && number <= 6 then begin
       ANSITerminal.print_string
-        [ ANSITerminal.cyan; Bold ]
+        [ ANSITerminal.green; Bold ]
         ("You have selected: " ^ string_of_int number
-       ^ " player(s).\n\n");
+       ^ " robot player(s).\n\n");
        deal_cards num_real_players number f
     end
     else begin
       print_string
-        [ Bold; ANSITerminal.red ]
+        [ Bold; ANSITerminal.green ]
         "Number of robot must be at least 0 and at most 6.\n\n";
         num_ai_players_input_helper num_real_players f
     end
@@ -85,7 +85,7 @@ let rec num_players_input_helper f : int =
           ANSITerminal.print_string
             [ ANSITerminal.cyan; Bold ]
             ("You have selected: " ^ string_of_int number
-           ^ " robot player(s).\n\n");
+           ^ " player(s).\n\n");
           number
         end
         else begin

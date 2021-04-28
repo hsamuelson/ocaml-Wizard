@@ -181,6 +181,8 @@ let finish_round (player : t) =
           current_score = curr_score - Int.abs (bet - tricks);
         }
 
+let get_is_robot player = player.is_robot
+
 (** [give_cards a b] returns a new player as a copy of b with new hand a*)
 let give_cards lst player =
   {
@@ -349,31 +351,32 @@ let print_played_cards acc =
   print_cards_with_colors_short acc;
   print_endline "\n"
 
-let rec choose_card_rec
+let get_percentage player trump calc =
+  trunc
+    (100.0 *. 100.0
+    *. (1.
+       -. Calculator.odds_of_card_winning player.current_selected_card
+            trump
+            (Calculator.get_unplayed calc)
+            (Card.make_card_list player.current_hand
+               (get_hand_size player.current_hand))))
+  /. 100.0
+
+let rec choose_card_normal
     played_cards
     calc
     trump
     (player : t)
     (played_cards : Card.card list) =
   ANSITerminal.erase Screen;
-  print_trump trump;
   print_played_cards played_cards;
   print_player player;
   print_endline "\n";
+  print_trump trump;
   ANSITerminal.print_string
     [ ANSITerminal.yellow; Bold ]
-    "% unplayed cards strictly worse than current card: ";
-  let percentage =
-    trunc
-      (100.0 *. 100.0
-      *. (1.
-         -. Calculator.odds_of_card_winning player.current_selected_card
-              trump
-              (Calculator.get_unplayed calc)
-              (Card.make_card_list player.current_hand
-                 (get_hand_size player.current_hand))))
-    /. 100.0
-  in
+    "Percentage of unplayed cards strictly worse than current card: ";
+  let percentage = get_percentage player trump calc in
   ANSITerminal.print_string [] (string_of_float percentage ^ " \n");
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
   ANSITerminal.print_string []
@@ -381,29 +384,32 @@ let rec choose_card_rec
   ANSITerminal.print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> (player, Card.make_no_card ())
-  | command ->
+  | command -> (
       if command = "select" then
-        choose_card_rec_helper played_cards calc player played_cards
-          trump choose_card_rec
+        choose_card_normal_helper played_cards calc player played_cards
+          trump choose_card_normal
       else if command = prev || command = next then
         let new_selected_player = choose_card command player in
-        choose_card_rec played_cards calc trump new_selected_player
+        choose_card_normal played_cards calc trump new_selected_player
           played_cards
       else
-        let new_player =
-          try
-            let index = int_of_string command in
-            fst (choose_card_at_index player index)
-          with _ ->
-            print_endline "Invalid command! \n";
-            fst
-              (choose_card_rec played_cards calc trump player
-                 played_cards)
-        in
-        choose_card_rec played_cards calc trump new_player played_cards
+        try
+          let index = int_of_string command in
+          let new_player = fst (choose_card_at_index player index) in
+          choose_card_normal played_cards calc trump new_player
+            played_cards
+        with _ ->
+          print_endline "Invalid command! \n";
+          choose_card_normal played_cards calc trump player played_cards
+      )
 
-and choose_card_rec_helper played_cards calc player played_cards trump f
-    =
+and choose_card_normal_helper
+    played_cards
+    calc
+    player
+    played_cards
+    trump
+    f =
   match player with
   | { current_selected_card = card; _ } ->
       let first_suit = find_first_round_trump played_cards in
@@ -421,3 +427,86 @@ and choose_card_rec_helper played_cards calc player played_cards trump f
           "\n\n\
           \ You must follow suit or play a wizard (14) or naar (0) \n";
         f played_cards calc trump player played_cards)
+
+let valid_robot_card player played_cards =
+  match player with
+  | { current_selected_card = card; _ } ->
+      let first_suit = find_first_round_trump played_cards in
+      if
+        Card.get_suit card = first_suit
+        || check_for_wizards played_cards = true
+        || first_suit = "No_Card"
+        || has_card_of_suit player first_suit = false
+        || Card.get_num card = 14
+        || Card.get_num card = 0
+      then true
+      else false
+
+let rec choose_best_card_helper
+    played_cards
+    (player : t)
+    (player_list : Card.card list)
+    (calc : Calculator.t)
+    (trump : Card.card)
+    best_index
+    curr_index
+    best_percentage =
+  match player_list with
+  | [] -> best_index
+  | h :: t ->
+      let percentage = get_percentage player h calc in
+      if
+        percentage > best_percentage
+        && valid_robot_card player played_cards
+      then
+        choose_best_card_helper played_cards player t calc trump
+          curr_index (curr_index + 1) percentage
+      else
+        choose_best_card_helper played_cards player t calc trump
+          best_index (curr_index + 1) best_percentage
+
+let choose_best_card
+    (played_cards : Card.card list)
+    (calc : Calculator.t)
+    (trump : Card.card)
+    (player : t) =
+  let player_hand = player.current_hand in
+  let best_index =
+    choose_best_card_helper played_cards player player_hand calc trump
+      (-1) 0 (-1.)
+  in
+  fst (choose_card_at_index player best_index)
+
+let rec choose_card_robot
+    played_cards
+    calc
+    trump
+    (player : t)
+    (played_cards : Card.card list) =
+  ANSITerminal.erase Screen;
+  print_trump trump;
+  print_played_cards played_cards;
+  print_player player;
+  print_endline "\n";
+  ANSITerminal.print_string
+    [ ANSITerminal.yellow; Bold ]
+    "Robot choosing card... press enter.\n";
+  let new_robot_player =
+    choose_best_card played_cards calc trump player
+  in
+  match read_line () with
+  | _ ->
+      let card = new_robot_player.current_selected_card in
+      (remove_current_selected_card new_robot_player, card)
+
+let rec choose_card_rec
+    played_cards
+    calc
+    trump
+    (player : t)
+    (played_cards : Card.card list) =
+  if player.is_robot then
+    choose_card_robot played_cards calc trump player played_cards
+  else choose_card_normal played_cards calc trump player played_cards
+
+let get_player_hand_list player = player.current_hand
