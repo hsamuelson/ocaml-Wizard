@@ -8,6 +8,8 @@ let init main_deck =
 
 let rec update_unplayed_helper calc card = failwith "unimplimented"
 
+let get_unplayed calc = calc.unplayed_cards
+
 let update_unplayed calc (card : Card.card) =
   let new_unplayed = update_unplayed_helper calc card in
   { calc with unplayed_cards = new_unplayed }

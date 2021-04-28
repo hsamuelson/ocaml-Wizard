@@ -333,12 +333,15 @@ let rec choose_card_rec
     trump
     (player : t)
     (played_cards : Card.card list) =
+  print_endline "Choose card rec";
   print_player player;
   print_endline "\n";
+  (* ANSITerminal.print_string [ ANSITerminal.yellow; Bold ]
+     "Probability that others have better cards: ";
+     ANSITerminal.print_string [] (string_of_float
+     (Calculator.odds_of_card_winning player.current_selected_card trump
+     (Calculator.get_unplayed calc)) ^ " \n"); *)
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
-  ANSITerminal.print_string
-    [ ANSITerminal.yellow; Bold ]
-    "Probability that others have better cards: ";
   ANSITerminal.print_string []
     "(prev|next|select|[integer index of card])\n\n";
   ANSITerminal.print_string [ Bold ] "> ";
@@ -346,8 +349,8 @@ let rec choose_card_rec
   | exception End_of_file -> (player, Card.make_no_card ())
   | command ->
       if command = "select" then
-        choose_card_rec_helper player played_cards trump
-          (choose_card_rec calc)
+        choose_card_rec_helper calc player played_cards trump
+          choose_card_rec
       else if command = prev || command = next then
         let new_selected_player = choose_card command player in
         choose_card_rec calc trump new_selected_player played_cards
@@ -360,10 +363,9 @@ let rec choose_card_rec
             print_endline "Invalid command! \n";
             fst (choose_card_rec calc trump player played_cards)
         in
-
         choose_card_rec calc trump new_player played_cards
 
-and choose_card_rec_helper player played_cards trump f =
+and choose_card_rec_helper calc player played_cards trump f =
   match player with
   | { current_selected_card = card; _ } ->
       let first_suit = find_first_round_trump played_cards in
@@ -380,4 +382,4 @@ and choose_card_rec_helper player played_cards trump f =
           [ ANSITerminal.red; Bold ]
           "\n\n\
           \ You must follow suit or play a wizard (14) or naar (0) \n";
-        f trump player played_cards)
+        f calc trump player played_cards)
