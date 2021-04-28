@@ -12,7 +12,9 @@ type t = {
   current_selected_card : Card.card;
       (** The card we are focused on (current selection)*)
   current_selected_index : int;  (** Index of currently selected card*)
-  player_id : int; (* the id of the player *)
+  player_id : int;
+  (* the id of the player *)
+  is_robot : bool;
 }
 
 (* let next = "\027[C" *)
@@ -28,7 +30,7 @@ exception NoCardsLeft
 exception NotValidSelection
 
 (** [initialize_player a] initializes all feilds of a player object a. *)
-let initialize_player (p_num : int) =
+let initialize_player (p_num : int) (robot : bool) =
   {
     bet = 0;
     tricks_won_this_round = 0;
@@ -37,6 +39,7 @@ let initialize_player (p_num : int) =
     current_selected_card = Card.make_no_card ();
     current_selected_index = 0;
     player_id = p_num;
+    is_robot = robot;
   }
 
 (** [reset_round_player a] resets all necessary parts of a player object

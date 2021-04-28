@@ -34,7 +34,7 @@ exception NotValidSelection
 exception NoCardsLeft
 
 (** [initialize_player a] initializes all feilds of a player object a. *)
-val initialize_player : int -> t
+val initialize_player : int -> bool -> t
 
 (** [reset_round_player a] resets all necessary parts of a player object
     a. *)
