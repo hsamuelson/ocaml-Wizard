@@ -6,11 +6,12 @@ type t = {
 let init main_deck =
   { total_deck = main_deck; unplayed_cards = main_deck }
 
-let rec update_unplayed_helper calc card = failwith "unimplimented"
-
 let get_unplayed calc = calc.unplayed_cards
 
-let update_unplayed calc (card : Card.card) =
+let rec update_unplayed_helper (calc : t) card : Card.card_list =
+  Card.make_card_list [] 0
+
+let update_unplayed (calc : t) (card : Card.card) =
   let new_unplayed = update_unplayed_helper calc card in
   { calc with unplayed_cards = new_unplayed }
 
