@@ -11,3 +11,27 @@ let rec update_unplayed_helper calc card = failwith "unimplimented"
 let update_unplayed calc (card : Card.card) =
   let new_unplayed = update_unplayed_helper calc card in
   { calc with unplayed_cards = new_unplayed }
+
+let count_cards_better_than num suit cards =
+  List.fold_left
+    (fun x y ->
+      if Card.get_suit y = suit && Card.get_num y > num then x + 1
+      else x)
+    0 cards
+
+let odds_of_card_winning card trump_card unplayed_cards =
+  if Card.get_suit card = Card.get_suit trump_card then
+    let num_better_cards =
+      count_cards_better_than (Card.get_num card) (Card.get_suit card)
+        unplayed_cards
+    in
+    num_better_cards / List.length unplayed_cards
+  else
+    let num_better_cards =
+      count_cards_better_than 0
+        (Card.get_suit trump_card)
+        unplayed_cards
+      + count_cards_better_than (Card.get_num card) (Card.get_suit card)
+          unplayed_cards
+    in
+    num_better_cards / List.length unplayed_cards
