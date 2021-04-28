@@ -328,12 +328,27 @@ let rec check_for_wizards played_cards =
   | h :: t -> if Card.get_num h = 14 then true else check_for_wizards t
   | [] -> false
 
+let print_trump trump =
+  ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
+  print_cards_with_colors_short [ trump ];
+  print_endline "\n"
+
+let print_played_cards acc =
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold ]
+    "PLAYED CARDS: ";
+  print_cards_with_colors_short acc;
+  print_endline "\n"
+
 let rec choose_card_rec
+    played_cards
     calc
     trump
     (player : t)
     (played_cards : Card.card list) =
-  print_endline "Choose card rec";
+  ANSITerminal.erase Screen;
+  print_trump trump;
+  print_played_cards played_cards;
   print_player player;
   print_endline "\n";
   ANSITerminal.print_string
@@ -353,11 +368,12 @@ let rec choose_card_rec
   | exception End_of_file -> (player, Card.make_no_card ())
   | command ->
       if command = "select" then
-        choose_card_rec_helper calc player played_cards trump
-          choose_card_rec
+        choose_card_rec_helper played_cards calc player played_cards
+          trump choose_card_rec
       else if command = prev || command = next then
         let new_selected_player = choose_card command player in
-        choose_card_rec calc trump new_selected_player played_cards
+        choose_card_rec played_cards calc trump new_selected_player
+          played_cards
       else
         let new_player =
           try
@@ -365,11 +381,14 @@ let rec choose_card_rec
             fst (choose_card_at_index player index)
           with _ ->
             print_endline "Invalid command! \n";
-            fst (choose_card_rec calc trump player played_cards)
+            fst
+              (choose_card_rec played_cards calc trump player
+                 played_cards)
         in
-        choose_card_rec calc trump new_player played_cards
+        choose_card_rec played_cards calc trump new_player played_cards
 
-and choose_card_rec_helper calc player played_cards trump f =
+and choose_card_rec_helper played_cards calc player played_cards trump f
+    =
   match player with
   | { current_selected_card = card; _ } ->
       let first_suit = find_first_round_trump played_cards in
@@ -386,4 +405,4 @@ and choose_card_rec_helper calc player played_cards trump f =
           [ ANSITerminal.red; Bold ]
           "\n\n\
           \ You must follow suit or play a wizard (14) or naar (0) \n";
-        f calc trump player played_cards)
+        f played_cards calc trump player played_cards)

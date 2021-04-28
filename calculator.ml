@@ -8,8 +8,19 @@ let init main_deck =
 
 let get_unplayed calc = calc.unplayed_cards
 
+let rec remove_card lst card acc =
+  match lst with
+  | [] -> acc
+  | h :: t ->
+      if Card.equals h card then acc @ t
+      else remove_card t card acc @ [ h ]
+
 let rec update_unplayed_helper (calc : t) card : Card.card_list =
-  Card.make_card_list [] 0
+  let new_list =
+    remove_card (Card.get_cards calc.unplayed_cards) card []
+  in
+  Card.make_card_list new_list
+    (Card.get_cards_size calc.unplayed_cards - 1)
 
 let update_unplayed (calc : t) (card : Card.card) =
   let new_unplayed = update_unplayed_helper calc card in

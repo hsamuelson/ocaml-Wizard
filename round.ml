@@ -240,14 +240,15 @@ let rec player_plays_card round trump list_players acc =
   ANSITerminal.print_string
     [ ANSITerminal.white; Bold ]
     "PLAYED CARDS: ";
-  Player.print_cards_with_colors_short (List.rev (List.map snd acc));
+  let played_cards = List.rev (List.map snd acc) in
+  Player.print_cards_with_colors_short played_cards;
   print_endline "\n\n";
   match list_players with
   | h :: t ->
       let played_cards = List.map snd acc in
       let calc = round.calculator in
       let new_played_card =
-        Player.choose_card_rec calc trump h played_cards
+        Player.choose_card_rec played_cards calc trump h played_cards
       in
       let new_round =
         {
