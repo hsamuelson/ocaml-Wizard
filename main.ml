@@ -59,7 +59,7 @@ let deal_cards_2 num_players file =
 let rec num_players_input_helper f =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
-    "Please enter the number of players (at least 2, at most 6). (third) \n\n";
+    "Please enter the number of players (at least 2, at most 6).  \n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> ()
@@ -78,7 +78,7 @@ let rec num_players_input_helper f =
         else
           print_string
             [ Bold; ANSITerminal.red ]
-            "Number of players must be at least 2 and at most 6. (first)\n\n";
+            "Number of players must be at least 2 and at most 6. \n\n";
         num_players_input_helper f
       with Failure e ->
         if e = "Not enough cards" then 
@@ -87,7 +87,7 @@ let rec num_players_input_helper f =
           print_string
             [ Bold; ANSITerminal.red ]
             "Number of players must be a number that is at least 2 and \
-             at most 6. (second)\n\n";
+             at most 6. \n\n";
         num_players_input_helper f)
 
 (* [play_game f] starts the adventure in file [f]. *)
