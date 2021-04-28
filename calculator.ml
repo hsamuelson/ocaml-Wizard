@@ -33,8 +33,10 @@ let count_cards_better_than num suit cards =
       else x)
     0 cards
 
-let odds_of_card_winning card trump_card unplayed_card_list =
+let odds_of_card_winning card trump_card unplayed_card_list player_cards
+    =
   let unplayed_cards = Card.get_cards unplayed_card_list in
+  let cards_player = Card.get_cards player_cards in
   if Card.get_num card = 14 then 0.
   else if Card.get_num card = 0 then 1.
   else if Card.get_suit card = Card.get_suit trump_card then
@@ -42,8 +44,15 @@ let odds_of_card_winning card trump_card unplayed_card_list =
       count_cards_better_than (Card.get_num card) (Card.get_suit card)
         unplayed_cards
     in
-    float_of_int num_better_cards
-    /. float_of_int (Card.get_cards_size unplayed_card_list)
+    let num_better_cards_in_hand =
+      count_cards_better_than (Card.get_num card) (Card.get_suit card)
+        cards_player
+    in
+    float_of_int (num_better_cards + num_better_cards_in_hand)
+    /. float_of_int
+         (Card.get_cards_size unplayed_card_list
+         + Card.get_cards_size player_cards
+         - 1)
   else
     let num_better_cards =
       count_cards_better_than 0
@@ -52,5 +61,13 @@ let odds_of_card_winning card trump_card unplayed_card_list =
       + count_cards_better_than (Card.get_num card) (Card.get_suit card)
           unplayed_cards
     in
-    float_of_int num_better_cards
-    /. float_of_int (Card.get_cards_size unplayed_card_list)
+    let num_better_cards_in_hand =
+      count_cards_better_than 0 (Card.get_suit trump_card) cards_player
+      + count_cards_better_than (Card.get_num card) (Card.get_suit card)
+          cards_player
+    in
+    float_of_int (num_better_cards + num_better_cards_in_hand)
+    /. float_of_int
+         (Card.get_cards_size unplayed_card_list
+         + Card.get_cards_size player_cards
+         - 1)
