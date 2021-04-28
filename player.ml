@@ -336,11 +336,15 @@ let rec choose_card_rec
   print_endline "Choose card rec";
   print_player player;
   print_endline "\n";
-  (* ANSITerminal.print_string [ ANSITerminal.yellow; Bold ]
-     "Probability that others have better cards: ";
-     ANSITerminal.print_string [] (string_of_float
-     (Calculator.odds_of_card_winning player.current_selected_card trump
-     (Calculator.get_unplayed calc)) ^ " \n"); *)
+  ANSITerminal.print_string
+    [ ANSITerminal.yellow; Bold ]
+    "Probability that others have better cards: ";
+  ANSITerminal.print_string []
+    (string_of_float
+       (Calculator.odds_of_card_winning player.current_selected_card
+          trump
+          (Calculator.get_unplayed calc))
+    ^ " \n");
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
   ANSITerminal.print_string []
     "(prev|next|select|[integer index of card])\n\n";
