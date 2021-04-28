@@ -39,3 +39,5 @@ val get_num : card -> int
 
 (** [get_suit] returns the suit of the card*)
 val get_suit : card -> string
+
+val add_card_to_list : card_list -> card -> card_list
