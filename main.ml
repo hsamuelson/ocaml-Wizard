@@ -112,10 +112,42 @@ let rec deck_input_helper () =
 
 (* [main ()] prompts for the game to play, then starts it. *)
 
+(** I, Peter Munn, found this code from 
+https://stackoverflow.com/questions/5774934/how-do-i-read-in-lines-from-a-text-file-in-ocaml, 
+which is used to read the lines of a file into a list of strings*)
+let read_lines file = 
+  let lines = ref [] in
+  let channel = open_in file in
+  try
+    while true; do
+      lines := input_line channel :: !lines
+    done; !lines
+  with End_of_file ->
+    close_in channel;
+    List.rev !lines ;;
 
 
-                                
- 
+let print_ruleset () = ANSITerminal.print_string
+[ ANSITerminal.magenta; ]
+((List.fold_left (fun a b -> a ^ "\n" ^ b ) "" (read_lines "rules.txt"))^ "\n\n\n") ; 
+print_string [ Bold ] "Press any key to finish reading rules...";
+  match read_line () with _ -> 
+    ANSITerminal.erase Screen;
+ANSITerminal.print_string
+[ ANSITerminal.red; Bold] "Those were the rules, now let the game begin! \n \n";() 
+
+
+let rec main_helper () = ANSITerminal.print_string []
+"Press enter to start the game, or type 'rules' to read the rules\n\n";
+print_string [ Bold ] "> ";
+match read_line () with response -> if response = "rules" then ((print_ruleset ()); deck_input_helper ())
+else 
+if response = "" then 
+deck_input_helper ()
+else ANSITerminal.print_string
+[ ANSITerminal.red; Bold ]
+"\n\n Please either press enter or type 'rules' and press enter\n";
+main_helper ()
 let main () =
   
   (*prompt for json file and number of players*)
@@ -128,7 +160,8 @@ let main () =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     "\n\nWelcome to the 3110 Wizard Game engine.\n";
-  deck_input_helper ()
+    main_helper ()
+    
 
 (* Execute the game engine. *)
 let () = main ()

@@ -5,6 +5,7 @@ type t = {
   players : Player.t list;
   num_players : int;
   round_num : int;
+  calculator : Calculator.t;
 }
 
 let players t = t.players
@@ -22,6 +23,7 @@ let init_first_round
     players = plyrs;
     num_players = p_num;
     round_num = 1;
+    calculator = Calculator.init dck;
   }
 
 (* Change round object to be ready to be run on next round *)
@@ -231,20 +233,33 @@ let print_list_bets list_players =
   all_bets_to_string list_bets;
   list_players
 
-let rec player_plays_card trump list_players acc =
+let rec player_plays_card round trump list_players acc =
   ANSITerminal.erase Screen;
   print_endline "\n";
   print_trump trump [];
   ANSITerminal.print_string
     [ ANSITerminal.white; Bold ]
     "PLAYED CARDS: ";
-  Player.print_cards_with_colors_short (List.rev (List.map snd acc));
+  let played_cards = List.rev (List.map snd acc) in
+  Player.print_cards_with_colors_short played_cards;
   print_endline "\n\n";
   match list_players with
   | h :: t ->
       let played_cards = List.map snd acc in
-      player_plays_card trump t
-        (Player.choose_card_rec trump h played_cards :: acc)
+      let calc = round.calculator in
+      let new_played_card =
+        Player.choose_card_rec played_cards calc trump h played_cards
+      in
+      let new_round =
+        {
+          round with
+          calculator =
+            Calculator.update_unplayed round.calculator
+              (snd new_played_card);
+        }
+      in
+
+      player_plays_card new_round trump t (new_played_card :: acc)
   | [] -> acc
 
 let rec update_players_in_list_helper list_players player acc =
@@ -278,8 +293,8 @@ let print_winner winner_tuple player_tuples =
   print_endline "\n\n";
   match read_line () with exception End_of_file -> () | _ -> ()
 
-let play_card trump list_players =
-  let players_played = player_plays_card trump list_players [] in
+let play_card round trump list_players =
+  let players_played = player_plays_card round trump list_players [] in
   let updated_players = List.map fst players_played in
   let player_card_tuple = find_winning_card trump players_played in
   print_winner player_card_tuple players_played;
@@ -293,16 +308,16 @@ let rec finish_players_helper player_list acc =
 
 let finish_players list_players = finish_players_helper list_players []
 
-let rec play_cards_helper trump list_players round_num =
+let rec play_cards_helper round trump list_players round_num =
   if round_num > 0 then
-    let new_list_players = play_card trump list_players in
-    play_cards_helper trump new_list_players (round_num - 1)
+    let new_list_players = play_card round trump list_players in
+    play_cards_helper round trump new_list_players (round_num - 1)
   else list_players
 
 (**[play_cards] should run [play_cards] recursively until there are no
    more cards to play*)
-let play_cards trump round_num list_players =
-  play_cards_helper trump list_players round_num
+let play_cards round trump round_num list_players =
+  play_cards_helper round trump list_players round_num
 
 let rec list_to_string acc lst =
   match lst with
@@ -324,27 +339,27 @@ let scoreboard (p_list : Player.t list) =
   in
   (ids, scores)
 
-  let print_scoreboard rnd : unit =
-    let score_b = scoreboard rnd.players in
-    (* Round number print *)
-    ANSITerminal.print_string
-      [ ANSITerminal.cyan; Bold ]
-      ("\nRound " ^ string_of_int rnd.round_num ^ "\n");
-    ANSITerminal.print_string
-      [ ANSITerminal.red; Bold ]
-      "\n          --<{ SCOREBOARD }>--   ";
-    ANSITerminal.print_string
-      [ ANSITerminal.red; Bold ]
-      "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
-  
-    print_string [] ("\n Player ID: " ^ fst score_b);
-  
-    print_string [] ("\n Score:     " ^ snd score_b ^ "\n");
-    ANSITerminal.print_string
-      [ ANSITerminal.red; Bold ]
-      "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
-    print_string [] "\n\nPress enter to continue...\n";
-    match read_line () with _ -> ()
+let print_scoreboard rnd : unit =
+  let score_b = scoreboard rnd.players in
+  (* Round number print *)
+  ANSITerminal.print_string
+    [ ANSITerminal.cyan; Bold ]
+    ("\nRound " ^ string_of_int rnd.round_num ^ "\n");
+  ANSITerminal.print_string
+    [ ANSITerminal.red; Bold ]
+    "\n          --<{ SCOREBOARD }>--   ";
+  ANSITerminal.print_string
+    [ ANSITerminal.red; Bold ]
+    "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
+
+  print_string [] ("\n Player ID: " ^ fst score_b);
+
+  print_string [] ("\n Score:     " ^ snd score_b ^ "\n");
+  ANSITerminal.print_string
+    [ ANSITerminal.red; Bold ]
+    "\n [+][+][+][+][+][+][+][+][+][+][+][+] \n";
+  print_string [] "\n\nPress enter to continue...\n";
+  match read_line () with _ -> ()
 
 let play_round (rnd : t) =
   (* Print round number *)
@@ -364,7 +379,7 @@ let play_round (rnd : t) =
       (* |> trick trump *)
       |> print_list_bets
       (* Now we start game play*)
-      |> play_cards trump rnd.round_num
+      |> play_cards rnd trump rnd.round_num
       |> finish_players
       (* After round is over prepair for next round *)
       (* |> Player.print_player_list *)

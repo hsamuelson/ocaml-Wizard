@@ -1,4 +1,4 @@
-MODULES=player card deck round table
+MODULES=player card deck round table calculator printFunct
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)

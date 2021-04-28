@@ -1,0 +1,76 @@
+Objective: 
+  Predict the exact number of tricks you will take in each round. 
+  When there are no more cards to be dealt, 
+  the player with the highest score wins the game. 
+
+Components: 
+  There are four suits: red, blue, green, yellow. 
+  Each suit has cards 0-14, where 0 and 14 are special cards. 
+  0 is a naar, which loses to any other card, 
+  and 14 is a wizard, which beats any other card. 
+
+Scoring: 
+  If you are exactly correct, you receive 2 points for being correct,
+  and 1 point for each trick you won that round. 
+  If you are incorrect, you lose 1 point for each trick you were off by. 
+
+Vocabulary: 
+  A trick consists of a mini-round where each player plays one card. 
+  A round starts when you are dealt a new hand,
+  and ends when you have played enough tricks so your hand is empty. 
+
+Dealing cards: 
+  To select the first dealer, each player is dealt one card,
+  and the highest card deals. 
+  For the first deal, deal each player one card. 
+  For the second deal, deal each player two cards,
+  etc. until there are no more cards to be equally dealt. 
+
+  The deal passes to the left after each round and the new dealer
+  shuffles all 60 cards. After each deal, the next card on the deck
+  is turned up to determine the trump suit.
+  If the card turned up is a Naar (0), 
+  it is turned down and there is no trump for that round.
+
+  If the card turned up is a Wizard (14),
+  the dealer chooses one of the four suits as the trump suit.
+  On the last round of each game all cards
+  are dealt out so there is no trump suit. 
+
+Bidding: 
+  Each player, in turn, beginning to the left of the dealer
+  states the number of tricks he/she will take (zero or one on the first round)
+  and the scorer records it on the score pad. 
+  The total number of tricks bid may or may not equal the total number of
+  tricks available, meaning that if there are y tricks in a round,
+  and the bids up to the last person total z,
+  then the last person cannot bid y-z. 
+
+Gameplay:
+  The play begins to the left of the dealer. 
+  Any card may be led. 
+  Players continue to play in clockwise order and must follow suit of the
+  first card played in each trick, regardless of the trump suit.
+
+  If a player cannot follow the suit led, the player may play any other suit,
+  including the trump suit. A Wizard or a Jester may be played at any time,
+  even if the player is holding a card of the suit led.
+
+A trick is won:
+  By the first Wizard played.
+  if no Wizard is played, by the highest trump played.
+  if no trump is played, by the highest card of the suit led.
+  The winner of the trick leads next.
+
+Leading Wizards or Naar:
+  If the lead card is a Wizard,
+  it wins the trick and players may play any card they wish,
+  including another Wizard. If the lead card is a Naar,
+  it is a null card and the suit for this round is determined
+  by the next card played. Naars always lose.
+
+  The one exception to this is if only Naars are played,
+  the first Naar played wins the trick.
+
+Rules were derived from rules in the original wizard play-set, published here:
+  https: //www.ultraboardgames.com/wizard/game-rules.php

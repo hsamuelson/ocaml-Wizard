@@ -31,3 +31,11 @@ let string_of_card card =
 let get_num card = card.number
 
 let get_suit card = card.suit
+
+let add_card_to_list lst card =
+  let old_cards = lst.cards in
+  let old_size = lst.size in
+  { cards = card :: old_cards; size = old_size + 1 }
+
+let equals (card1 : card) (card2 : card) =
+  card1.number = card2.number && card1.suit = card2.suit

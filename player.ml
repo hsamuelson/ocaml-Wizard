@@ -1,4 +1,5 @@
 open Unix
+open Float
 
 type t = {
   bet : int;  (** This player's current bet for this trick. *)
@@ -96,10 +97,16 @@ let select_next_card (player : t) =
       }
 
 let choose_card_at_index (player : t) (index : int) =
-  let new_card = find_card_at_index player.current_hand index in
+  let new_index =
+    if index >= get_hand_size player.current_hand then
+      get_hand_size player.current_hand - 1
+    else if index < 0 then 0
+    else index
+  in
+  let new_card = find_card_at_index player.current_hand new_index in
   ( {
       player with
-      current_selected_index = index;
+      current_selected_index = new_index;
       current_selected_card = new_card;
     },
     new_card )
@@ -326,34 +333,73 @@ let rec check_for_wizards played_cards =
   | h :: t -> if Card.get_num h = 14 then true else check_for_wizards t
   | [] -> false
 
+let print_trump trump =
+  ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
+  print_cards_with_colors_short [ trump ];
+  print_endline "\n"
+
+let print_played_cards acc =
+  ANSITerminal.print_string
+    [ ANSITerminal.white; Bold ]
+    "PLAYED CARDS: ";
+  print_cards_with_colors_short acc;
+  print_endline "\n"
+
 let rec choose_card_rec
+    played_cards
+    calc
     trump
     (player : t)
     (played_cards : Card.card list) =
+  ANSITerminal.erase Screen;
+  print_trump trump;
+  print_played_cards played_cards;
   print_player player;
   print_endline "\n";
+  ANSITerminal.print_string
+    [ ANSITerminal.yellow; Bold ]
+    "% unplayed cards strictly worse than current card: ";
+  let percentage =
+    trunc
+      (100.0 *. 100.0
+      *. (1.
+         -. Calculator.odds_of_card_winning player.current_selected_card
+              trump
+              (Calculator.get_unplayed calc)
+              (Card.make_card_list player.current_hand
+                 (get_hand_size player.current_hand))))
+    /. 100.0
+  in
+  ANSITerminal.print_string [] (string_of_float percentage ^ " \n");
   ANSITerminal.print_string [ ANSITerminal.green; Bold ] "Play a card: ";
   ANSITerminal.print_string []
     "(prev|next|select|[integer index of card])\n\n";
   ANSITerminal.print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> (player, Card.make_no_card ())
-  | command -> (
+  | command ->
       if command = "select" then
-        choose_card_rec_helper player played_cards trump choose_card_rec
+        choose_card_rec_helper played_cards calc player played_cards
+          trump choose_card_rec
       else if command = prev || command = next then
         let new_selected_player = choose_card command player in
-        choose_card_rec trump new_selected_player played_cards
+        choose_card_rec played_cards calc trump new_selected_player
+          played_cards
       else
-        try
-          let index = int_of_string command in
-          let new_player = choose_card_at_index player index in
-          choose_card_rec trump (fst new_player) played_cards
-        with _ ->
-          print_endline "Invalid command! \n";
-          choose_card_rec trump player played_cards)
+        let new_player =
+          try
+            let index = int_of_string command in
+            fst (choose_card_at_index player index)
+          with _ ->
+            print_endline "Invalid command! \n";
+            fst
+              (choose_card_rec played_cards calc trump player
+                 played_cards)
+        in
+        choose_card_rec played_cards calc trump new_player played_cards
 
-and choose_card_rec_helper player played_cards trump f =
+and choose_card_rec_helper played_cards calc player played_cards trump f
+    =
   match player with
   | { current_selected_card = card; _ } ->
       let first_suit = find_first_round_trump played_cards in
@@ -370,4 +416,4 @@ and choose_card_rec_helper player played_cards trump f =
           [ ANSITerminal.red; Bold ]
           "\n\n\
           \ You must follow suit or play a wizard (14) or naar (0) \n";
-        f trump player played_cards)
+        f played_cards calc trump player played_cards)
