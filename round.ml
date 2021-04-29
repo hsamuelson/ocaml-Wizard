@@ -64,10 +64,10 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
     rnd with
     round_num = rnd.round_num + 1;
     (*Rotate who leads in the next round *)
-    players = match plyrs with
+    (* players = match plyrs with
               | h::t -> (t @ [h])
-              | _ -> failwith "Error"
-    (* (find_round_leader plyrs) (rnd.round_num+1) rnd *)
+              | _ -> failwith "Error" *)
+    players = (find_round_leader plyrs) (rnd.round_num+1) rnd
   }
 
 (* This function asks the usr for a bet *)
