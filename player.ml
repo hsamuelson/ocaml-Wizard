@@ -425,8 +425,12 @@ and choose_card_normal_helper
         ANSITerminal.print_string
           [ ANSITerminal.red; Bold ]
           "\n\n\
-          \ You must follow suit or play a wizard (14) or naar (0) \n";
-        f played_cards calc trump player played_cards)
+          \ You must follow suit or play a wizard (14) or naar (0) \n\n\
+          \        press enter to continue...";
+        match read_line () with
+        | _ ->
+            ANSITerminal.erase Screen;
+            f played_cards calc trump player played_cards)
 
 let valid_robot_card player played_cards =
   match player with
