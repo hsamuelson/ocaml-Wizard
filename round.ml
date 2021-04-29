@@ -26,6 +26,37 @@ let init_first_round
     calculator = Calculator.init dck;
   }
 
+let find_round_leader (plyrs : Player.t list) (round : int) (rnd : t) =
+  (* First set round leader to 1 to avoid any errors *)
+  let rec one_leader (plyrs : Player.t list) =
+    match plyrs with
+    | h::t -> begin
+      if (Player.player_id h) = 1 then
+        plyrs
+      else
+        one_leader (t  @ [h])
+    end
+    | _ -> failwith "Error less than 2 players"
+  in
+  (* Mod recursivly until we find the correct leader given round
+  return list *)
+  let rec find_leader (plyrs : Player.t list) (round: int) =
+    match plyrs with
+    | h::t -> begin
+      if ((Player.player_id h) mod round) = 0 then
+        plyrs
+      else
+        find_leader (t @ [h]) round
+    end
+    | _ -> failwith "Error less that 2 players"
+  in
+  (* Due to how run_game in table.ml works we need to make sure
+  that when this is called we dont initalize a invalid round number *)
+  if (round+1) <= ((deck_size rnd) / (rnd.num_players)) then
+    plyrs
+  else
+    find_leader (one_leader plyrs) round
+
 (* Change round object to be ready to be run on next round *)
 let gen_next_round (rnd : t) (plyrs : Player.t list) =
   {
@@ -33,10 +64,10 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
     rnd with
     round_num = rnd.round_num + 1;
     (*Rotate who leads in the next round *)
-    players =
-      (match plyrs with
-      | hd :: tl -> tl @ [ hd ]
-      | _ -> failwith "Less than 2 players! Impossible!");
+    players = match plyrs with
+              | h::t -> (t @ [h])
+              | _ -> failwith "Error"
+    (* (find_round_leader plyrs) (rnd.round_num+1) rnd *)
   }
 
 (* This function asks the usr for a bet *)
