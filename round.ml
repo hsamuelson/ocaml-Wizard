@@ -36,7 +36,7 @@ let find_round_leader (plyrs : Player.t list) (round : int) (rnd : t) =
       else
         one_leader (t  @ [h])
     end
-    | _ -> failwith "Error less than 2 players"
+    | _ -> plyrs
   in
   (* Mod recursivly until we find the correct leader given round
   return list *)
@@ -48,7 +48,7 @@ let find_round_leader (plyrs : Player.t list) (round : int) (rnd : t) =
       else
         find_leader (t @ [h]) round
     end
-    | _ -> failwith "Error less that 2 players"
+    | _ -> plyrs
   in
   (* Due to how run_game in table.ml works we need to make sure
   that when this is called we dont initalize a invalid round number *)
@@ -67,7 +67,7 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
     (* players = match plyrs with
               | h::t -> (t @ [h])
               | _ -> failwith "Error" *)
-    players = (find_round_leader plyrs) (rnd.round_num+1) rnd
+    players = (find_round_leader plyrs) (rnd.round_num) rnd
   }
 
 (* This function asks the usr for a bet *)

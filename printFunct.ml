@@ -459,10 +459,6 @@ let print_hand (c_list : Card.card list) i =
   let rec aux c_list i =
     match c_list with
     | h :: t ->
-        (* let w,h = size () in (* set_cursor (1) (1); *) (* move_cursor
-           (20+(i*10)) 0; *) set_cursor ((w/3)*i) (-1); one
-           ANSITerminal.green (); (* print_string [] "hello\n\n"; *) (*
-           save_cursor (); *) aux t (i+1) *)
         set_cursor (i * 25) 1;
         select_number (Card.get_num h)
           (get_card_color (Card.get_suit h));
