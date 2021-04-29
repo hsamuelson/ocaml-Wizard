@@ -92,37 +92,117 @@ let rec usr_bet () =
           "Bet must be a number of at least 0";
         usr_bet ())
 
+let rec robot_bet player trump calc list_cards curr_index acc =
+  match list_cards with
+  | [] -> acc
+  | h :: t ->
+      let new_player_card =
+        Player.choose_card_at_index player curr_index
+      in
+      let percentage =
+        Player.get_percentage (fst new_player_card)
+          (snd new_player_card) calc
+      in
+      if percentage > 50. then
+        robot_bet player trump calc t (curr_index + 1) (acc + 1)
+      else robot_bet player trump calc t (curr_index + 1) acc
+
 let print_trump trump player_list : Player.t list =
   ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
   Player.print_cards_with_colors_short [ trump ];
   print_endline "\n";
   player_list
 
+let normal_player_bet hd trump t_trck bet_sum num_p cntr plyrs =
+  (* print_endline (Player.player_to_string hd); *)
+  ANSITerminal.erase Screen;
+  print_endline "\n";
+  Player.print_player hd;
+  print_trump trump [];
+  let bet = usr_bet () in
+  if bet + bet_sum = t_trck && cntr + 1 = num_p then
+    (*This should only be the case for the last player*)
+    (* Invalid bet *)
+    (* ignore (Printf.printf "Bet cannot sum to number of tricks!") *)
+    (bet, true)
+  else
+    (* In this case the bet was correct - Assign bet to player - Move
+       player to back of queue and ask next player*)
+    (bet, false)
+
+let robot_player_bet round hd trump t_trck bet_sum num_p cntr plyrs =
+  (* print_endline (Player.player_to_string hd); *)
+  ANSITerminal.erase Screen;
+  print_endline "\n";
+  Player.print_player hd;
+  print_trump trump [];
+  ANSITerminal.print_string
+    [ ANSITerminal.green; Bold ]
+    "Robot making bet... press enter.";
+  match read_line () with
+  | _ ->
+      let bet =
+        robot_bet hd trump round.calculator
+          (Player.get_player_hand_list hd)
+          0 0
+      in
+      if bet + bet_sum = t_trck && cntr + 1 = num_p then
+        (*This should only be the case for the last player*)
+        (* Invalid bet *)
+        (* ignore (Printf.printf "Bet cannot sum to number of tricks!") *)
+        (bet, true)
+      else
+        (* In this case the bet was correct - Assign bet to player -
+           Move player to back of queue and ask next player*)
+        (bet, false)
+
 (* A single comment *)
 (* This will run the bidding by going through all players Asking for
    their bet *)
-let rec run_bidding trump t_trck bet_sum num_p cntr plyrs =
+let rec run_bidding round trump t_trck bet_sum num_p cntr plyrs =
   if cntr < num_p then
     match plyrs with
     | hd :: tl ->
         (* print_endline (Player.player_to_string hd); *)
-        ANSITerminal.erase Screen;
-        print_endline "\n";
-        print_trump trump [];
-        Player.print_player hd;
-        let bet = usr_bet () in
-        if bet + bet_sum = t_trck && cntr + 1 = num_p then (
-          (*This should only be the case for the last player*)
-          (* Invalid bet *)
-          (* ignore (Printf.printf "Bet cannot sum to number of
-             tricks!") *)
-          print_endline "Invalid bet. Please bet again.";
-          run_bidding trump t_trck bet_sum num_p cntr plyrs)
+        if not (Player.get_is_robot hd) then
+          let output =
+            normal_player_bet hd trump t_trck bet_sum num_p cntr plyrs
+          in
+          let bet = fst output in
+          if snd output then (
+            (*This should only be the case for the last player*)
+            (* Invalid bet *)
+            (* ignore (Printf.printf "Bet cannot sum to number of
+               tricks!") *)
+            print_endline "Invalid bet. Please bet again.";
+            run_bidding round trump t_trck bet_sum num_p cntr plyrs)
+          else
+            (* In this case the bet was correct - Assign bet to player -
+               Move player to back of queue and ask next player*)
+            run_bidding round trump t_trck (bet_sum + bet) num_p
+              (cntr + 1)
+              (tl @ [ Player.make_bet bet hd ])
         else
-          (* In this case the bet was correct - Assign bet to player -
-             Move player to back of queue and ask next player*)
-          run_bidding trump t_trck (bet_sum + bet) num_p (cntr + 1)
-            (tl @ [ Player.make_bet bet hd ])
+          let robot_output =
+            robot_player_bet round hd trump t_trck bet_sum num_p cntr
+              plyrs
+          in
+          let bet = fst robot_output in
+          if snd robot_output then
+            (*This should only be the case for the last player*)
+            (* Invalid bet *)
+            (* ignore (Printf.printf "Bet cannot sum to number of
+               tricks!") *)
+            let new_bet = bet + 1 in
+            run_bidding round trump t_trck (bet_sum + new_bet) num_p
+              (cntr + 1)
+              (tl @ [ Player.make_bet new_bet hd ])
+          else
+            (* In this case the bet was correct - Assign bet to player -
+               Move player to back of queue and ask next player*)
+            run_bidding round trump t_trck (bet_sum + bet) num_p
+              (cntr + 1)
+              (tl @ [ Player.make_bet bet hd ])
     (* Not positive that this is an error yet *)
     | _ -> failwith "Error in bidding"
   else plyrs
@@ -289,7 +369,6 @@ let rec player_plays_card round trump list_players acc =
               (snd new_played_card);
         }
       in
-
       player_plays_card new_round trump t (new_played_card :: acc)
   | [] -> acc
 
@@ -378,16 +457,33 @@ let print_scoreboard rnd : unit =
     ("\nRound " ^ string_of_int rnd.round_num ^ "\n");
   ANSITerminal.print_string
     [ ANSITerminal.red; Bold ]
-    "\n             ▄▄▄███ SCOREBOARD ███▄▄▄   \n";
-  print_string [ ANSITerminal.red; Bold ] "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n";
+    "\n\
+    \             ▄▄▄███ SCOREBOARD ███▄▄▄   \n";
+  print_string
+    [ ANSITerminal.red; Bold ]
+    "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n";
 
-  print_string [ANSITerminal.red; Bold]  ("█           █                            \n");
-  print_string [ANSITerminal.red; Bold]  ("█ Player ID █ " ^ fst score_b ^ "        \n");
-  print_string [ANSITerminal.red; Bold]  ("█▄▄▄▄▄▄▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n");
-  print_string [ANSITerminal.red; Bold]  ("█           █                            \n");
-  print_string [ANSITerminal.red; Bold]  ("█ Score     █ " ^ snd score_b ^ "        \n");
-  print_string [ANSITerminal.red; Bold]  ("█           █                            \n");
-  print_string [ANSITerminal.red; Bold]   "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ \n";
+  print_string
+    [ ANSITerminal.red; Bold ]
+    "█           █                            \n";
+  print_string
+    [ ANSITerminal.red; Bold ]
+    ("█ Player ID █ " ^ fst score_b ^ "        \n");
+  print_string
+    [ ANSITerminal.red; Bold ]
+    "█▄▄▄▄▄▄▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n";
+  print_string
+    [ ANSITerminal.red; Bold ]
+    "█           █                            \n";
+  print_string
+    [ ANSITerminal.red; Bold ]
+    ("█ Score     █ " ^ snd score_b ^ "        \n");
+  print_string
+    [ ANSITerminal.red; Bold ]
+    "█           █                            \n";
+  print_string
+    [ ANSITerminal.red; Bold ]
+    "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ \n";
   print_string [] "\n\nPress enter to continue...\n";
   match read_line () with _ -> ()
 
@@ -405,7 +501,7 @@ let play_round (rnd : t) =
       (* Assign hands *)
       |> assign_hands rnd.players
       (* We now run bidding. *)
-      |> run_bidding trump rnd.round_num 0 rnd.num_players 0
+      |> run_bidding rnd trump rnd.round_num 0 rnd.num_players 0
       (* |> trick trump *)
       |> print_list_bets
       (* Now we start game play*)

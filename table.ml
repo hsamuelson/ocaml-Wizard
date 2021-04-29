@@ -20,23 +20,35 @@ let rec run_game (tb : t) =
       }
   else tb.round
 
+let rec init_normal_helper p_num p_list =
+  if p_num > 0 then
+    init_normal_helper (p_num - 1)
+      (Player.initialize_player p_num false :: p_list)
+  else p_list
+
+let rec init_robot_helper num_normal_players robot_players p_list =
+  if robot_players > 0 then
+    init_robot_helper num_normal_players (robot_players - 1)
+      (Player.initialize_player
+         (num_normal_players + robot_players)
+         true
+      :: p_list)
+  else p_list
+
 (* Initialize players *)
-let init_players (p_num : int) : Player.t list =
-  let rec init_p_helper p_num p_list =
-    if p_num > 0 then
-      init_p_helper (p_num - 1)
-        (Player.initialize_player p_num :: p_list)
-    else p_list
-  in
-  init_p_helper p_num []
+let init_players (p_num : int) (robot_players : int) : Player.t list =
+  let normal_list = init_normal_helper p_num [] in
+  let robot_list = init_robot_helper p_num robot_players [] in
+  normal_list @ robot_list
 
 (* Initilize a table object *)
-let init_tb (num_p : int) json_file =
+let init_tb (num_p : int) (num_robot_players : int) json_file =
   {
     round =
-      Round.init_first_round num_p
+      Round.init_first_round
+        (num_p + num_robot_players)
         (Deck.make_deck json_file)
-        (init_players num_p);
-    num_players = num_p;
+        (init_players num_p num_robot_players);
+    num_players = num_p + num_robot_players;
     round_num = 1;
   }
