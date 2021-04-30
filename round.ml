@@ -28,9 +28,6 @@ let init_first_round
 
 let find_round_leader (plyrs : Player.t list) (round : int) (rnd : t) =
   (* First set round leader to 1 to avoid any errors *)
-  (* let rec one_leader (plyrs : Player.t list) = match plyrs with |
-     h::t -> begin if (Player.player_id h) = 1 then plyrs else
-     one_leader (t @ [h]) end | _ -> failwith "Error" *)
   let compare_sort a b =
     let a1 = Player.player_id a in
     let b2 = Player.player_id b in
