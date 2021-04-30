@@ -28,34 +28,33 @@ let init_first_round
 
 let find_round_leader (plyrs : Player.t list) (round : int) (rnd : t) =
   (* First set round leader to 1 to avoid any errors *)
-  let rec one_leader (plyrs : Player.t list) =
-    match plyrs with
-    | h::t -> begin
-      if (Player.player_id h) = 1 then
-        plyrs
-      else
-        one_leader (t  @ [h])
-    end
-    | _ -> plyrs
+  (* let rec one_leader (plyrs : Player.t list) = match plyrs with |
+     h::t -> begin if (Player.player_id h) = 1 then plyrs else
+     one_leader (t @ [h]) end | _ -> failwith "Error" *)
+  let compare_sort a b =
+    let a1 = Player.player_id a in
+    let b2 = Player.player_id b in
+    if a1 = b2 then 0 else if a1 > b2 then 1 else -1
   in
-  (* Mod recursivly until we find the correct leader given round
-  return list *)
-  let rec find_leader (plyrs : Player.t list) (round: int) =
-    match plyrs with
-    | h::t -> begin
-      if ((Player.player_id h) mod round) = 0 then
-        plyrs
-      else
-        find_leader (t @ [h]) round
-    end
-    | _ -> plyrs
+  let one_leader (plyrs : Player.t list) =
+    List.sort compare_sort plyrs
   in
-  (* Due to how run_game in table.ml works we need to make sure
-  that when this is called we dont initalize a invalid round number *)
-  if (round+1) <= ((deck_size rnd) / (rnd.num_players)) then
-    plyrs
-  else
-    find_leader (one_leader plyrs) round
+  (* Mod recursivly until we find the correct leader given round return
+     list *)
+  let rec find_leader (plyrs : Player.t list) (round : int) counter =
+    match plyrs with
+    | h :: t ->
+        if counter > List.length plyrs then one_leader plyrs
+        else if Player.player_id h = round then plyrs
+        else find_leader (t @ [ h ]) round (counter + 1)
+    | _ -> failwith "Error"
+  in
+  (* Due to how run_game in table.ml works we need to make sure that
+     when this is called we dont initalize a invalid round number *)
+  (* if (round) <= ((deck_size rnd) / (rnd.num_players)) then plyrs else *)
+  find_leader (one_leader plyrs) (round+1) 1
+
+(* one_leader plyrs *)
 
 (* Change round object to be ready to be run on next round *)
 let gen_next_round (rnd : t) (plyrs : Player.t list) =
@@ -64,10 +63,9 @@ let gen_next_round (rnd : t) (plyrs : Player.t list) =
     rnd with
     round_num = rnd.round_num + 1;
     (*Rotate who leads in the next round *)
-    (* players = match plyrs with
-              | h::t -> (t @ [h])
-              | _ -> failwith "Error" *)
-    players = (find_round_leader plyrs) (rnd.round_num) rnd
+    (* players = match plyrs with | h::t -> (t @ [h]) | _ -> failwith
+       "Error" *)
+    players = (find_round_leader plyrs) rnd.round_num rnd;
   }
 
 (* This function asks the usr for a bet *)
