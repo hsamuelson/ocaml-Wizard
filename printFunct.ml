@@ -37,7 +37,11 @@ let intro_screen () =
     "                                              pcm82, ml2359, \
      hes227"
 
-let zero clr () =
+let get_index idx =
+  if idx < 10 then "█ Index: " ^ string_of_int idx ^ "        █"
+  else "█ Index: " ^ string_of_int idx ^ "       █"
+
+let zero clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -45,7 +49,7 @@ let zero clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -62,7 +66,7 @@ let zero clr () =
   pr "▀█████████████████▀";
   restore_cursor ()
 
-let one clr () =
+let one clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -73,7 +77,7 @@ let one clr () =
   save_cursor ();
 
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -91,7 +95,7 @@ let one clr () =
 
   restore_cursor ()
 
-let two clr () =
+let two clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -99,7 +103,7 @@ let two clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -117,7 +121,7 @@ let two clr () =
 
   restore_cursor ()
 
-let three clr () =
+let three clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -125,7 +129,7 @@ let three clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -143,7 +147,7 @@ let three clr () =
 
   restore_cursor ()
 
-let four clr () =
+let four clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -151,7 +155,7 @@ let four clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -168,7 +172,7 @@ let four clr () =
   pr "▀█████████████████▀";
   restore_cursor ()
 
-let five clr () =
+let five clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -176,7 +180,7 @@ let five clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -194,7 +198,7 @@ let five clr () =
 
   restore_cursor ()
 
-let six clr () =
+let six clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -202,7 +206,7 @@ let six clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█    ▄█████▀      █";
@@ -220,7 +224,7 @@ let six clr () =
 
   restore_cursor ()
 
-let seven clr () =
+let seven clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -228,7 +232,7 @@ let seven clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -246,7 +250,7 @@ let seven clr () =
 
   restore_cursor ()
 
-let eight clr () =
+let eight clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -254,7 +258,7 @@ let eight clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -272,7 +276,7 @@ let eight clr () =
 
   restore_cursor ()
 
-let nine clr () =
+let nine clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -280,7 +284,7 @@ let nine clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -298,7 +302,7 @@ let nine clr () =
 
   restore_cursor ()
 
-let ten clr () =
+let ten clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -306,7 +310,7 @@ let ten clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -324,7 +328,7 @@ let ten clr () =
 
   restore_cursor ()
 
-let eleven clr () =
+let eleven clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -332,7 +336,7 @@ let eleven clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -346,11 +350,12 @@ let eleven clr () =
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
-  pr "▀█████████████████▀";;
+  pr "▀█████████████████▀"
 
-  restore_cursor ()
+;;
+restore_cursor ()
 
-let tweleve clr () =
+let tweleve clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -358,7 +363,7 @@ let tweleve clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -376,7 +381,7 @@ let tweleve clr () =
 
   restore_cursor ()
 
-let thirteen clr () =
+let thirteen clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -384,7 +389,7 @@ let thirteen clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -402,7 +407,7 @@ let thirteen clr () =
 
   restore_cursor ()
 
-let fourteen clr () =
+let fourteen clr idx () =
   let pr s =
     save_cursor ();
     ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
@@ -410,7 +415,7 @@ let fourteen clr () =
     move_cursor 0 1
   in
   pr "▄█████████████████▄";
-  pr "█                 █";
+  pr (get_index idx);
   pr "█                 █";
   pr "█                 █";
   pr "█                 █";
@@ -428,23 +433,23 @@ let fourteen clr () =
 
   restore_cursor ()
 
-let select_number number clr =
+let select_number number clr idx =
   match number with
-  | 0 -> zero clr ()
-  | 1 -> one clr ()
-  | 2 -> two clr ()
-  | 3 -> three clr ()
-  | 4 -> four clr ()
-  | 5 -> five clr ()
-  | 6 -> six clr ()
-  | 7 -> seven clr ()
-  | 8 -> eight clr ()
-  | 9 -> nine clr ()
-  | 10 -> ten clr ()
-  | 11 -> eleven clr ()
-  | 12 -> tweleve clr ()
-  | 13 -> thirteen clr ()
-  | 14 -> fourteen clr ()
+  | 0 -> zero clr idx ()
+  | 1 -> one clr idx ()
+  | 2 -> two clr idx ()
+  | 3 -> three clr idx ()
+  | 4 -> four clr idx ()
+  | 5 -> five clr idx ()
+  | 6 -> six clr idx ()
+  | 7 -> seven clr idx ()
+  | 8 -> eight clr idx ()
+  | 9 -> nine clr idx ()
+  | 10 -> ten clr idx ()
+  | 11 -> eleven clr idx ()
+  | 12 -> tweleve clr idx ()
+  | 13 -> thirteen clr idx ()
+  | 14 -> fourteen clr idx ()
   | _ -> failwith "Error"
 
 let get_card_color card_suit =
@@ -461,7 +466,8 @@ let print_hand (c_list : Card.card list) i =
     | h :: t ->
         set_cursor (i * 25) 1;
         select_number (Card.get_num h)
-          (get_card_color (Card.get_suit h));
+          (get_card_color (Card.get_suit h))
+          i;
         aux t (i + 1)
     | [] -> ()
   in
