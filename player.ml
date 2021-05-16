@@ -481,6 +481,251 @@ let choose_best_card
   in
   fst (choose_card_at_index player best_index)
 
+let rec choose_worst_card_helper
+    played_cards
+    (player : t)
+    (player_list : Card.card list)
+    (calc : Calculator.t)
+    (trump : Card.card)
+    best_index
+    curr_index
+    worst_percentage =
+  match player_list with
+  | [] -> best_index
+  | h :: t ->
+      let percentage = get_percentage player h calc in
+      if
+        percentage < worst_percentage
+        && valid_robot_card player played_cards
+      then
+        choose_best_card_helper played_cards player t calc trump
+          curr_index (curr_index + 1) percentage
+      else
+        choose_best_card_helper played_cards player t calc trump
+          best_index (curr_index + 1) worst_percentage
+
+let choose_worst_card
+    (played_cards : Card.card list)
+    (calc : Calculator.t)
+    (trump : Card.card)
+    (player : t) =
+  let player_hand = player.current_hand in
+  let best_index =
+    choose_best_card_helper played_cards player player_hand calc trump
+      (-1) 0 1.
+  in
+  fst (choose_card_at_index player best_index)
+
+let compare_cards c1 c2 =
+  if Card.get_num c1 > Card.get_num c2 then -1
+  else if Card.get_num c1 < Card.get_num c2 then 1
+  else 0
+
+let rec exists_wizard (player_card_lst : Card.card list) : bool =
+  List.map (fun y -> Card.get_num y = 14) player_card_lst
+  |> List.fold_left ( || ) false
+
+let rec first_wizard (plyr_card : Card.card list) : Card.card =
+  match plyr_card with
+  | h :: t -> if Card.get_num h = 14 then h else first_wizard t
+  | [] ->
+      failwith
+        "precondition violated, need at least one tuple containing a \
+         wizard card"
+
+let rec exists_trump
+    (player_card_lst : Card.card list)
+    (trump_card : Card.card) : bool =
+  List.map
+    (fun y ->
+      if
+        Card.get_suit y = Card.get_suit trump_card && Card.get_num y > 0
+      then true
+      else false)
+    player_card_lst
+  |> List.fold_left ( || ) false
+
+let rec first_trump (plyr_card : Card.card list) (trump : Card.card) :
+    Card.card =
+  match plyr_card with
+  | h :: t ->
+      if Card.get_suit h = Card.get_suit trump && Card.get_num h > 0
+      then h
+      else first_trump t trump
+  | [] ->
+      failwith
+        "precondition violated, need at least one tuple containing a \
+         trump card"
+
+let rec all_zeros (player_card_lst : Card.card list) : bool =
+  match player_card_lst with
+  | h :: t -> if Card.get_num h <> 0 then false else all_zeros t
+  | [] -> true
+
+let rec find_first_nonzero_card tuple_list =
+  match tuple_list with
+  | h :: t ->
+      if Card.get_num h > 0 then h else find_first_nonzero_card t
+  | [] ->
+      failwith "impossible to fail, somehow did not find non-zero card"
+
+let find_current_winning_card trump card_list =
+  let card_list = List.rev card_list in
+  let sorted_list = List.sort compare_cards card_list in
+  if exists_wizard card_list then first_wizard card_list
+  else if exists_trump sorted_list trump then
+    first_trump sorted_list trump
+  else if all_zeros card_list then List.nth card_list 0
+  else
+    (*find first non-zero card, treat it like a trump card*)
+    let secondary_trump = find_first_nonzero_card card_list in
+    first_trump sorted_list secondary_trump
+
+let card_wins trump played_cards card =
+  let card_list = card :: played_cards in
+  let winning_card = find_current_winning_card trump card_list in
+  winning_card = card
+
+let choose_best_losing_card_helper
+    played_cards
+    (player : t)
+    (player_list : Card.card list)
+    (calc : Calculator.t)
+    (trump : Card.card)
+    best_index
+    curr_index
+    best_percentage =
+  match player_list with
+  | [] -> best_index
+  | h :: t ->
+      let percentage = get_percentage player h calc in
+      if
+        percentage > best_percentage
+        && valid_robot_card player played_cards
+        && not (card_wins trump played_cards h)
+      then
+        choose_best_card_helper played_cards player t calc trump
+          curr_index (curr_index + 1) percentage
+      else
+        choose_best_card_helper played_cards player t calc trump
+          best_index (curr_index + 1) best_percentage
+
+let choose_best_losing_card played_cards calc trump player =
+  let player_hand = player.current_hand in
+  let best_index =
+    choose_best_losing_card_helper played_cards player player_hand calc
+      trump (-1) 0 (-1.)
+  in
+  fst (choose_card_at_index player best_index)
+
+let choose_best_winning_card_helper
+    played_cards
+    (player : t)
+    (player_list : Card.card list)
+    (calc : Calculator.t)
+    (trump : Card.card)
+    best_index
+    curr_index
+    best_percentage =
+  match player_list with
+  | [] -> best_index
+  | h :: t ->
+      let percentage = get_percentage player h calc in
+      if
+        percentage > best_percentage
+        && valid_robot_card player played_cards
+        && card_wins trump played_cards h
+      then
+        choose_best_card_helper played_cards player t calc trump
+          curr_index (curr_index + 1) percentage
+      else
+        choose_best_card_helper played_cards player t calc trump
+          best_index (curr_index + 1) best_percentage
+
+let choose_best_winning_card played_cards calc trump player =
+  let player_hand = player.current_hand in
+  let best_index =
+    choose_best_winning_card_helper played_cards player player_hand calc
+      trump (-1) 0 (-1.)
+  in
+  fst (choose_card_at_index player best_index)
+
+let choose_worst_winning_card_helper
+    played_cards
+    (player : t)
+    (player_list : Card.card list)
+    (calc : Calculator.t)
+    (trump : Card.card)
+    best_index
+    curr_index
+    worst_percentage =
+  match player_list with
+  | [] -> best_index
+  | h :: t ->
+      let percentage = get_percentage player h calc in
+      if
+        percentage < worst_percentage
+        && valid_robot_card player played_cards
+        && card_wins trump played_cards h
+      then
+        choose_best_card_helper played_cards player t calc trump
+          curr_index (curr_index + 1) percentage
+      else
+        choose_best_card_helper played_cards player t calc trump
+          best_index (curr_index + 1) worst_percentage
+
+let choose_worst_winning_card played_cards calc trump player =
+  let player_hand = player.current_hand in
+  let best_index =
+    choose_worst_winning_card_helper played_cards player player_hand
+      calc trump (-1) 0 1.
+  in
+  fst (choose_card_at_index player best_index)
+
+let rec no_winning_cards trump (card_list : Card.card list) played_cards
+    : bool =
+  match card_list with
+  | h :: t ->
+      if card_wins trump played_cards h then false
+      else no_winning_cards trump t played_cards
+  | [] -> true
+
+let no_losing_cards trump (card_list : Card.card list) played_cards :
+    bool =
+  match card_list with
+  | h :: t ->
+      if not (card_wins trump played_cards h) then false
+      else no_winning_cards trump t played_cards
+  | [] -> true
+
+let robot_needs_wins player : bool =
+  if player.bet > player.tricks_won_this_round then true else false
+
+let rng_true num =
+  let output = Random.int 9 in
+  num >= output
+
+let robot_decision_making_choose played_cards calc trump player =
+  let player_cards = player.current_hand in
+  if robot_needs_wins player then
+    if no_winning_cards trump player_cards played_cards then
+      choose_worst_card played_cards calc trump player
+    else if rng_true 7 then
+      choose_worst_winning_card played_cards calc trump player
+    else choose_best_winning_card played_cards calc trump player
+  else if no_losing_cards trump player_cards played_cards then
+    if rng_true 7 then choose_best_card played_cards calc trump player
+    else choose_worst_winning_card played_cards calc trump player
+  else choose_best_losing_card played_cards calc trump player
+
+(* if robot.need_wins: if robot cannot win with any card:
+   choose_worst_card else: if (1 through 10) > 7:
+   choose_worst_winning_card else: choose_best_winning_card
+
+   else: if robot cannot lose with any card: if (1 through 10 > 7):
+   choose_best_card else: choose worst_winning_card else:
+   choose_best_losing_card *)
+
 let rec choose_card_robot
     played_cards
     calc
@@ -496,7 +741,8 @@ let rec choose_card_robot
     [ ANSITerminal.yellow; Bold ]
     "Robot choosing card... press enter.\n";
   let new_robot_player =
-    choose_best_card played_cards calc trump player
+    (* choose_best_card played_cards calc trump player *)
+    robot_decision_making_choose played_cards calc trump player
   in
   match read_line () with
   | _ ->

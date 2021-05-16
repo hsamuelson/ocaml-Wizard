@@ -38,7 +38,7 @@ let deal_cards num_real_players num_robot_players file =
   
 let rec num_ai_players_input_helper num_real_players f : unit= ANSITerminal.print_string
 [ ANSITerminal.green; Bold ]
-"Please enter the number of robot players (at least 0, at most 6).\n\n";
+"Please enter the number of robot players (must be at least 2 and at most 6 players total (humans + robots)).\n\n";
 print_string [ Bold ] "> ";
 match read_line () with
 | exception End_of_file -> ()
@@ -46,7 +46,8 @@ match read_line () with
   (*TODO: Catch error if inputting bad information for inputs?*)
   try
     let number = int_of_string number_string in
-    if number >= 0 && number <= 6 then begin
+    let total_number = num_real_players + number in 
+    if total_number >= 2 && total_number <= 6 then begin
       ANSITerminal.print_string
         [ ANSITerminal.green; Bold ]
         ("You have selected: " ^ string_of_int number
@@ -56,7 +57,7 @@ match read_line () with
     else begin
       print_string
         [ Bold; ANSITerminal.green ]
-        "Number of robot must be at least 0 and at most 6.\n\n";
+        "Must be at least 2 and at most 6 players total (humans + robots)\n\n";
         num_ai_players_input_helper num_real_players f
     end
   with Failure e ->
@@ -65,15 +66,14 @@ match read_line () with
     else
       print_string
         [ Bold; ANSITerminal.red ]
-        "Number of players must be a number that is at least 2 and \
-         at most 6.\n\n";
+        "must be at least 2 and at most 6 players total (humans + robots)\n\n";
          num_ai_players_input_helper num_real_players f)
 
 
 let rec num_players_input_helper f : int =
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
-    "Please enter the number of players (at least 2, at most 6).\n\n";
+    "Please enter the number of human players (at least 0, at most 6).\n\n";
   print_string [ Bold ] "> ";
   match read_line () with
   | exception End_of_file -> 0
@@ -81,7 +81,7 @@ let rec num_players_input_helper f : int =
       (*TODO: Catch error if inputting bad information for inputs?*)
       try
         let number = int_of_string number_string in
-        if number > 1 && number <= 6 then begin
+        if number >= 0 && number <= 6 then begin
           ANSITerminal.print_string
             [ ANSITerminal.cyan; Bold ]
             ("You have selected: " ^ string_of_int number
@@ -91,7 +91,7 @@ let rec num_players_input_helper f : int =
         else begin
           print_string
             [ Bold; ANSITerminal.red ]
-            "Number of players must be at least 2 and at most 6.\n\n";
+            "Number of players must be at least 0 and at most 6.\n\n";
           num_players_input_helper f
         end
       with Failure e ->
@@ -100,7 +100,7 @@ let rec num_players_input_helper f : int =
         else
           print_string
             [ Bold; ANSITerminal.red ]
-            "Number of players must be a number that is at least 2 and \
+            "Number of players must be a number that is at least 0 and \
              at most 6.\n\n";
         num_players_input_helper f)
 
