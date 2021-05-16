@@ -49,7 +49,7 @@ let find_round_leader (plyrs : Player.t list) (round : int) (rnd : t) =
   (* Due to how run_game in table.ml works we need to make sure that
      when this is called we dont initalize a invalid round number *)
   (* if (round) <= ((deck_size rnd) / (rnd.num_players)) then plyrs else *)
-  find_leader (one_leader plyrs) (round+1) 1
+  find_leader (one_leader plyrs) (round + 1) 1
 
 (* one_leader plyrs *)
 
@@ -95,8 +95,8 @@ let rec robot_bet player trump calc list_cards curr_index acc =
         Player.choose_card_at_index player curr_index
       in
       let percentage =
-        Player.get_percentage (fst new_player_card)
-          (snd new_player_card) calc
+        Player.get_percentage (fst new_player_card) trump calc
+          (snd new_player_card)
       in
       if percentage > 50. then
         robot_bet player trump calc t (curr_index + 1) (acc + 1)
