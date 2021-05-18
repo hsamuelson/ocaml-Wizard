@@ -6,9 +6,30 @@
    state, were tested manually by comparing the gameplay of our wizard
    game with the expected gameplay mechanics as observed by veteran
    wizard players with a ruleset handy. The ruleset, which is provided
-   in rules.txt and can be read by typing in 'rules when prompted,
+   in rules.txt and can be read by typing in 'rules' when prompted,
    proved quite useful to manually test the edge cases in card
-   interactions, as there are many. *)
+   interactions, as there are many. We test the Player, Deck, Card,
+   Table, Calculator, and Round modules, leaving only the Main and
+   PrintFunct modules untested by OUnit. We developed our tests using
+   black-box testing and glass-box testing where appropriate, as
+   sometimes we knew there was an aspect to our implementation that we
+   needed to test, such as edge cases with empty lists, hence we would
+   use glass-box-testing, and sometimes we needed to check for the
+   correctness of the output because it was not obvious how the output
+   might be correct or incorrect based on the code alone, hence we used
+   black-box testing to design those tests. We performed manual
+   randomized testing for the functions in the Main module, as those
+   functions often take keyboard input as inputs, meaning they need to
+   be thoroughly protected from crashing on fuzzy inputs, which our
+   manual testing proved they were. We manually tested every single
+   input with randomized testing until it was impossible to break the
+   code with a bad input. The reason this test plan demonstrates the
+   correctness of the system is because the fundamental aspects of the
+   system are tested modularly. These aspects which are correct in their
+   modular setting are then combined in the manual tests, in which we
+   carefully check for any conditions that might cause functions which
+   pass their tests in modularity to fail in combinatio with others
+   functions.*)
 
 open OUnit2
 open Player
