@@ -461,8 +461,9 @@ and choose_card_normal_helper
         | _ ->
             ANSITerminal.erase Screen;
             f played_cards calc trump player played_cards)
-(**[valid_robot_card] returns whether the card [card] is valid to play given 
-the [played_cards]*)
+
+(**[valid_robot_card] returns whether the card [card] is valid to play
+   given the [played_cards] *)
 let valid_robot_card player played_cards card =
   let first_suit = find_first_round_trump played_cards in
   if
@@ -481,7 +482,8 @@ let compare_cards c1 c2 =
   else if Card.get_num c1 < Card.get_num c2 then 1
   else 0
 
-(**[exists_wizard] returns true if there is a wizard in [player_card_lst]*)
+(**[exists_wizard] returns true if there is a wizard in
+   [player_card_lst]*)
 let rec exists_wizard (player_card_lst : Card.card list) : bool =
   List.map (fun y -> Card.get_num y = 14) player_card_lst
   |> List.fold_left ( || ) false
@@ -495,7 +497,8 @@ let rec first_wizard (plyr_card : Card.card list) : Card.card =
         "precondition violated, need at least one tuple containing a \
          wizard card"
 
-(**[exists_trump] returns whether there is a card of the same suit as [trump_card] in [player_card_lst]*)
+(**[exists_trump] returns whether there is a card of the same suit as
+   [trump_card] in [player_card_lst]*)
 let rec exists_trump
     (player_card_lst : Card.card list)
     (trump_card : Card.card) : bool =
@@ -508,6 +511,8 @@ let rec exists_trump
     player_card_lst
   |> List.fold_left ( || ) false
 
+(**[first_trump] returns the first card of trump suit determined by
+   [trump] in [plyr_card]*)
 let rec first_trump (plyr_card : Card.card list) (trump : Card.card) :
     Card.card =
   match plyr_card with
@@ -520,11 +525,14 @@ let rec first_trump (plyr_card : Card.card list) (trump : Card.card) :
         "precondition violated, need at least one tuple containing a \
          trump card"
 
+(**[all_zeros] returns whether [player_card_lst] has all zeros*)
 let rec all_zeros (player_card_lst : Card.card list) : bool =
   match player_card_lst with
   | h :: t -> if Card.get_num h <> 0 then false else all_zeros t
   | [] -> true
 
+(**[find_first_nonzero_card] returns the first nonzero card in
+   [tuple_list]*)
 let rec find_first_nonzero_card tuple_list =
   match tuple_list with
   | h :: t ->
@@ -532,6 +540,8 @@ let rec find_first_nonzero_card tuple_list =
   | [] ->
       failwith "impossible to fail, somehow did not find non-zero card"
 
+(**[find_current_winning_card] finds the current winning card in
+   [card_list] given trump card [trump]*)
 let find_current_winning_card trump card_list =
   let card_list = List.rev card_list in
   let sorted_list = List.sort compare_cards card_list in
@@ -544,11 +554,14 @@ let find_current_winning_card trump card_list =
     let secondary_trump = find_first_nonzero_card card_list in
     first_trump sorted_list secondary_trump
 
+(**[card_wins] returns true if the card [card] wins given trump card
+   [trump] and played cards [played_cards]*)
 let card_wins trump played_cards card =
   let card_list = card :: played_cards in
   let winning_card = find_current_winning_card trump card_list in
   winning_card = card
 
+(**[print_basic_card_stats] prints the basic card stats of card [h]*)
 let print_basic_card_stats
     player
     percentage
@@ -570,6 +583,8 @@ let print_basic_card_stats
       ("percentage to beat: " ^ string_of_float prev_percentage))
   else ()
 
+(**[choose_best_card_helper] is the helper function for
+   [choose_best_card]*)
 let rec choose_best_card_helper
     played_cards
     (player : t)
@@ -595,6 +610,8 @@ let rec choose_best_card_helper
         choose_best_card_helper played_cards player t calc trump
           best_index (curr_index + 1) best_percentage
 
+(**[choose_best_card] chooses the card with the highest chance of
+   winning based on [trump] and [played_cards]*)
 let choose_best_card
     (played_cards : Card.card list)
     (calc : Calculator.t)
@@ -608,6 +625,8 @@ let choose_best_card
   (* print_endline ("index chosen: " ^ string_of_int best_index); *)
   fst (choose_card_at_index player best_index)
 
+(**[choose_worst_card_helper] is the helper function for
+   [choose_worst_card]*)
 let rec choose_worst_card_helper
     played_cards
     (player : t)
