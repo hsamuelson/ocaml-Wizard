@@ -299,28 +299,44 @@ let print_player (player : t) =
    _;
   } ->
       PrintFunct.print_hand ch 0;
-      ANSITerminal.print_string [] "\n";
-      ANSITerminal.print_string [] "\n";
-      ANSITerminal.print_string [] "\n";
+      move_bol ();
       let curr_pos = pos_cursor () in
       set_cursor 0 (snd curr_pos + 2);
+      save_cursor ();
       ANSITerminal.print_string
         [ ANSITerminal.magenta; Underlined; Bold ]
         ("●○●○●○●○● Player " ^ string_of_int pi
-       ^ " ●○●○●○●○●\n");
-      print_endline ("Current bet: " ^ string_of_int b);
-      print_endline ("Tricks won this round: " ^ string_of_int t);
-      print_endline ("Current score: " ^ string_of_int c);
-      print_endline "Current hand: ";
+       ^ " ●○●○●○●○●");
+      restore_cursor ();
+      move_cursor 0 1;
+      save_cursor ();
+      ANSITerminal.print_string [] ("Current bet: " ^ string_of_int b);
+      restore_cursor ();
+      move_cursor 0 1;
+      save_cursor ();
+      ANSITerminal.print_string []
+        ("Tricks won this round: " ^ string_of_int t);
+      restore_cursor ();
+      move_cursor 0 1;
+      save_cursor ();
+      ANSITerminal.print_string [] ("Current score: " ^ string_of_int c);
+      restore_cursor ();
+      move_cursor 0 1;
+      save_cursor ();
+      ANSITerminal.print_string [] "Current hand: ";
       print_cards_with_colors_short ch;
-
-      print_endline "\nCurrently selected card: ";
+      restore_cursor ();
+      move_cursor 0 1;
+      save_cursor ();
+      ANSITerminal.print_string [] "Currently selected card: ";
       print_cards_with_colors_short [ cc ];
+      restore_cursor ();
+      move_cursor 0 1;
+      save_cursor ();
       ANSITerminal.print_string
         [ ANSITerminal.magenta; Underlined; Bold ]
-        "\n\
-         ●○●○●○●○●○●○●○●○●○●○●○●○●○●○\n";
-      print_endline "\n"
+        "●○●○●○●○●○●○●○●○●○●○●○●○●○●○";
+      restore_cursor ()
 
 (**[print_player_list] prints the player information for each player in
    [list_players]*)
@@ -395,10 +411,7 @@ let rec choose_card_normal
   print_played_cards played_cards;
   print_player player;
   print_endline "\n";
-  save_cursor ();
-  set_cursor 50 20;
-  print_trump trump;
-  restore_cursor ();
+  (* print_trump trump; *)
   ANSITerminal.print_string
     [ ANSITerminal.yellow; Bold ]
     "Percentage of unplayed cards strictly worse than current card: ";
@@ -849,10 +862,11 @@ let rec choose_card_robot
     (player : t)
     (played_cards : Card.card list) =
   ANSITerminal.erase Screen;
-  print_trump trump;
+  (* print_trump trump; *)
   print_played_cards played_cards;
   print_player player;
-  print_endline "\n";
+  restore_cursor ();
+  move_cursor 0 2;
   ANSITerminal.print_string
     [ ANSITerminal.yellow; Bold ]
     "Robot choosing card... press enter.\n";
@@ -893,6 +907,7 @@ let display_player (player : t) : unit =
    _;
   } ->
       PrintFunct.print_hand ch 0;
+      move_bol ();
       save_cursor ();
       ANSITerminal.print_string
         [ ANSITerminal.magenta; Underlined; Bold ]

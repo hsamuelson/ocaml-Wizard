@@ -117,11 +117,8 @@ let rec robot_bet player trump calc list_cards curr_index acc =
 (** [print_trump a b] prints the trump card and returns the current
     player list*)
 let print_trump trump player_list : Player.t list =
-  save_cursor ();
-  move_cursor 50 20;
   ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
   Player.print_cards_with_colors_short [ trump ];
-  restore_cursor ();
   player_list
 
 (** [normal_player_bet a b c d e f g] returns an int * boolean that is
@@ -131,7 +128,7 @@ let normal_player_bet hd trump t_trck bet_sum num_p cntr plyrs =
   ANSITerminal.erase Screen;
   print_endline "\n";
   Player.print_player hd;
-  ignore (print_trump trump []);
+  (* ignore (print_trump trump []); *)
   let bet = usr_bet () in
   if bet + bet_sum = t_trck && cntr + 1 = num_p then
     (*This should only be the case for the last player*)
@@ -146,9 +143,12 @@ let normal_player_bet hd trump t_trck bet_sum num_p cntr plyrs =
     robot player bet was invalid*)
 let robot_player_bet round hd trump t_trck bet_sum num_p cntr plyrs =
   ANSITerminal.erase Screen;
-  print_endline "\n";
+
   Player.print_player hd;
-  ignore (print_trump trump []);
+  move_cursor 0 1;
+  (* ignore (print_trump trump []); *)
+  restore_cursor ();
+  move_cursor 0 2;
   ANSITerminal.print_string
     [ ANSITerminal.green; Bold ]
     "Robot making bet... press enter.";
@@ -354,7 +354,7 @@ let print_list_bets list_players =
 let rec player_plays_card round trump list_players acc =
   ANSITerminal.erase Screen;
   print_endline "\n";
-  ignore (print_trump trump []);
+  (* ignore (print_trump trump []); *)
   ANSITerminal.print_string
     [ ANSITerminal.white; Bold ]
     "PLAYED CARDS: ";
