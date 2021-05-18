@@ -366,7 +366,8 @@ let rec player_plays_card round trump list_players acc =
       let played_cards = List.map snd acc in
       let calc = round.calculator in
       let new_played_card =
-        Player.choose_card_rec played_cards calc trump h played_cards
+        Player.choose_card_robot_human played_cards calc trump h
+          played_cards
       in
       let new_round =
         {
