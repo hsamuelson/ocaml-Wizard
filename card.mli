@@ -37,9 +37,12 @@ val string_of_card : card -> string
 (** [get_num] returns the number of the card *)
 val get_num : card -> int
 
-(** [get_suit] returns the suit of the card*)
+(**[get_suit] returns the suit of the card*)
 val get_suit : card -> string
 
+(**[add_card_to_list] returns a [card_list] with [card] added to the
+   front of the list, and size incremented by 1*)
 val add_card_to_list : card_list -> card -> card_list
 
+(**[equals] returns true if two cards have the same suit and number*)
 val equals : card -> card -> bool
