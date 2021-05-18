@@ -1,4 +1,6 @@
-(**the abstract type value representing a card*)
+(** Represents a card object holding a color and a number. *)
+
+(**The abstract type value representing a card*)
 type card
 
 (**the abstract type value representing a card_list*)

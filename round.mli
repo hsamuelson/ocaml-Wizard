@@ -1,3 +1,6 @@
+(** Represents a round object that handles all players and movements on
+    the board.*)
+
 (** The abstract type of values representing a round *)
 type t
 

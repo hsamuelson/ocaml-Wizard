@@ -1,3 +1,5 @@
+(** Represents a deck of card objects.*)
+
 (*[deal] deals a deck of cards into [num_players] different card lists
   where each card list has [round_number] of cards, and outputs a trump
   card *)

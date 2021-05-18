@@ -1,3 +1,6 @@
+(** Represents a table object that holds all the rounds and players for
+    a game and runs each round.*)
+
 (** Table type holds a round. Each round is played from table and table
     passes in the players and deck as well. *)
 type t
