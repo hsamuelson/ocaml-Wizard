@@ -6,46 +6,32 @@
 
 (** The abstract type of values representing player. *)
 type t
-(** type t = { *)
 
-(* ________________________ *)
-
-(* bet; *)
-
-(* tricks_won_this_round; *)
-
-(* current_score; *)
-
-(* current_hand; *)
-
-(* current_selected_card; *)
-
-(* current_selected_index; *)
-
-(* player_id; *)
-(* ________________________ *)
-
-(* The indexing is out of bounds*)
+(** The indexing is out of bounds*)
 exception OutOfBounds
 
 (** If player is trying to select a card out of bounds*)
 exception NotValidSelection
 
+(**If there are no cards left to deal out*)
 exception NoCardsLeft
 
-(** [initialize_player a] initializes all feilds of a player object a. *)
+(** [initialize_player] initializes all fields of a player object
+    [p_num], and makes the player a robot if [robot] *)
 val initialize_player : int -> bool -> t
 
-(** [reset_round_player a] resets all necessary parts of a player object
-    a. *)
+(** [reset_round_player] resets all necessary parts of a player object
+    [player]. *)
 val reset_round_player : t -> t
 
-(** [choose_card a] is the function that will output the card we are
-    currently looking at a = 0 or 1 for moving between cards. Raises
-    NotValidMovement if the number is not 0 or 1*)
+(** [choose_card] either chooses the card at the current selection that
+    player [player] is holding or it selects the next or prev card based
+    on [move]*)
 val choose_card : string -> t -> t
 
-val choose_card_rec :
+(** [choose_card_robot_human] calls the appropriate function to choose a
+    card for a robot or a human for player [player]*)
+val choose_card_robot_human :
   Card.card list ->
   Calculator.t ->
   Card.card ->
@@ -97,13 +83,22 @@ val player_bet : t -> int
     original list of players*)
 val print_player_list : t list -> t list
 
+(** [print_cards_with_colors_short] prints the cards in [card_list] with
+    colors in a small format*)
 val print_cards_with_colors_short : Card.card list -> unit
 
+(** [choose_card_at_index] chooses the card at index [index] in player
+    [player]'s hand*)
 val choose_card_at_index : t -> int -> t * Card.card
 
+(** [get_card_color] returns the associated color of a card suit
+    [card_suit]*)
 val get_card_color : string -> ANSITerminal.style
 
+(** [is_robot] returns whether the given player [player] is a robot*)
 val get_is_robot : t -> bool
 
+(** [get_percentage] returns the percent of cards that card [card] is
+    better than*)
 val get_percentage :
   t -> Card.card -> Calculator.t -> Card.card -> float

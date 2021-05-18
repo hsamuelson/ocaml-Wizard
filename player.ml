@@ -2,6 +2,12 @@ open Unix
 open Float
 open ANSITerminal
 
+exception OutOfBounds
+
+exception NoCardsLeft
+
+exception NotValidSelection
+
 type t = {
   bet : int;  (** This player's current bet for this trick. *)
   tricks_won_this_round : int;
@@ -13,24 +19,16 @@ type t = {
   current_selected_card : Card.card;
       (** The card we are focused on (current selection)*)
   current_selected_index : int;  (** Index of currently selected card*)
-  player_id : int;
-  (* the id of the player *)
-  is_robot : bool;
+  player_id : int;  (** the id of the player *)
+  is_robot : bool;  (** whether the player is a robot*)
 }
 
-(* let next = "\027[C" *)
 let next = "next"
 
-(* let prev = "\027[D" *)
 let prev = "prev"
 
-exception OutOfBounds
-
-exception NoCardsLeft
-
-exception NotValidSelection
-
-(** [initialize_player a] initializes all feilds of a player object a. *)
+(** [initialize_player] initializes all fields of a player object
+    [p_num], and makes the player a robot if [robot] *)
 let initialize_player (p_num : int) (robot : bool) =
   {
     bet = 0;
@@ -43,8 +41,8 @@ let initialize_player (p_num : int) (robot : bool) =
     is_robot = robot;
   }
 
-(** [reset_round_player a] resets all necessary parts of a player object
-    a. *)
+(** [reset_round_player] resets all necessary parts of a player object
+    [player]. *)
 let reset_round_player (player : t) =
   {
     player with
@@ -55,13 +53,12 @@ let reset_round_player (player : t) =
     current_selected_card = Card.make_no_card ();
   }
 
-(** [get_hand_size a] returns the number of cards that are in the given
-    hand a *)
+(** [get_hand_size] returns the number of cards that are in [hand] *)
 let rec get_hand_size hand =
   match hand with [] -> 0 | h :: t -> 1 + get_hand_size t
 
-(** [find_card_at_index a b] returns the card object in the list at the
-    given index Raises OutOfBounds if the index is outside the list's
+(** [find_card_at_index] returns the card object in [card_list] at
+    index[index]. Raises OutOfBounds if [index] is outside the list's
     capacity*)
 let rec find_card_at_index (card_list : Card.card list) index =
   match index with
@@ -72,8 +69,8 @@ let rec find_card_at_index (card_list : Card.card list) index =
       | h :: t -> if t = [] then h else find_card_at_index t (index - 1)
       )
 
-(** [select_previous_card a] returns the card object in the player's
-    hand at the previous selected index*)
+(** [select_previous_card] returns the card object in the player
+    [player]'s hand at the previous selected index*)
 let select_previous_card (player : t) =
   match player with
   | { current_hand = hand; current_selected_index = index; _ } ->
@@ -86,8 +83,8 @@ let select_previous_card (player : t) =
         current_selected_card = find_card_at_index hand new_idx;
       }
 
-(** [select_next_card a] returns the card object in the player's hand at
-    the next selected index*)
+(** [select_next_card] returns the card object in the player [player]'s
+    hand at the next selected index*)
 let select_next_card (player : t) =
   match player with
   | { current_hand = hand; current_selected_index = index; _ } ->
@@ -100,6 +97,8 @@ let select_next_card (player : t) =
         current_selected_card = find_card_at_index hand new_idx;
       }
 
+(** [choose_card_at_index] chooses the card at index [index] in player
+    [player]'s hand*)
 let choose_card_at_index (player : t) (index : int) =
   let new_index =
     if index >= get_hand_size player.current_hand then
@@ -115,9 +114,9 @@ let choose_card_at_index (player : t) (index : int) =
     },
     new_card )
 
-(** [choose_card a] is the function that will output the card we are
-    currently looking at a = 0 or 1 for moving between cards. Raises
-    NotValidMovement if the number is not 0 or 1 *)
+(** [choose_card] either chooses the card at the current selection that
+    player [player] is holding or it selects the next or prev card based
+    on [move]*)
 let choose_card move (player : t) =
   if move = next || move = prev then
     if move = prev then select_previous_card player
@@ -137,9 +136,9 @@ let rec remove_index player_list index =
       | h :: t -> h :: remove_index t (index - 1))
 
 (** [remove_current_selected_card] returns a new player without the card
-    in hand that is currently selected. Used in play_card. If the
-    selected card is 0, we keep the selected index at 0. Otherwise, we
-    make the new selected card at previous_index -1*)
+    in hand that is currently selected for player [player]. Used in
+    play_card. If the selected card is 0, we keep the selected index at
+    0. Otherwise, we make the new selected card at previous_index -1*)
 let remove_current_selected_card (player : t) =
   let curr_hand = player.current_hand in
   let curr_index = player.current_selected_index in
@@ -156,7 +155,7 @@ let remove_current_selected_card (player : t) =
       else find_card_at_index curr_hand (curr_index - 1));
   }
 
-(** [win_trick ] allows this player to win a trick and returns the
+(** [win_trick] allows player [player] to win a trick and returns the
     current state of the player *)
 let win_trick (player : t) =
   {
@@ -165,7 +164,7 @@ let win_trick (player : t) =
   }
 
 (** [finish_round ] Finishes the round and adds trick points to the
-    current players score *)
+    current player [player]'s score *)
 let finish_round (player : t) =
   match player with
   | {
@@ -182,6 +181,7 @@ let finish_round (player : t) =
           current_score = curr_score - Int.abs (bet - tricks);
         }
 
+(** [is_robot] returns whether the given player [player] is a robot*)
 let get_is_robot player = player.is_robot
 
 (** [give_cards a b] returns a new player as a copy of b with new hand a*)
@@ -244,13 +244,17 @@ let player_to_string (player : t) =
       ^ Card.string_of_card cc ^ "\nCurrently selected index: "
       ^ string_of_int csi ^ "\n"
 
-(** [make_bet]*)
+(** [make_bet] returns player [player] with bet [bet]*)
 let make_bet bet (player : t) = { player with bet }
 
+(** [make_bet] returns player [plyr]'s score*)
 let player_score (plyr : t) = plyr.current_score
 
+(** [make_bet] returns player [plyr]'s id*)
 let player_id (plyr : t) = plyr.player_id
 
+(** [get_card_color] returns the associated color of a card suit
+    [card_suit]*)
 let get_card_color card_suit =
   match card_suit with
   | "red" -> ANSITerminal.red
@@ -259,6 +263,8 @@ let get_card_color card_suit =
   | "yellow" -> ANSITerminal.yellow
   | _ -> ANSITerminal.white
 
+(** [print_cards_with_colors] prints the cards in [card_list] with
+    colors in a big format*)
 let rec print_cards_with_colors card_list =
   match card_list with
   | h :: t ->
@@ -268,6 +274,8 @@ let rec print_cards_with_colors card_list =
       print_cards_with_colors t
   | [] -> ()
 
+(** [print_cards_with_colors_short] prints the cards in [card_list] with
+    colors in a small format*)
 let rec print_cards_with_colors_short card_list =
   match card_list with
   | h :: t ->
@@ -277,6 +285,7 @@ let rec print_cards_with_colors_short card_list =
       print_cards_with_colors_short t
   | [] -> ()
 
+(**[print_player] prints the current information for player [player]*)
 let print_player (player : t) =
   match player with
   | {
@@ -313,23 +322,26 @@ let print_player (player : t) =
          ●○●○●○●○●○●○●○●○●○●○●○●○●○●○\n";
       print_endline "\n"
 
-(* print_endline ("\nCurrently selected index: " ^ string_of_int csi ^
-   "\n") *)
-
+(**[print_player_list] prints the player information for each player in
+   [list_players]*)
 let print_player_list list_players =
   print_endline
     ("players list length: "
     ^ string_of_int (get_hand_size list_players));
-  List.map print_player list_players;
+  ignore (List.map print_player list_players);
   list_players
 
+(**[player_bet] returns the bet of player [player]*)
 let player_bet player = player.bet
 
+(**[has_card_of_suit] returns whether [player] has a card of suit [suit]*)
 let has_card_of_suit player suit =
   List.fold_left
     (fun b x -> b || Card.get_suit x = suit)
     false player.current_hand
 
+(**[find_first_round_trump] returns the suit trick card of
+   [played_cards], meaning the first card played*)
 let rec find_first_round_trump played_cards =
   match played_cards with
   | h :: t ->
@@ -337,15 +349,19 @@ let rec find_first_round_trump played_cards =
       else find_first_round_trump t
   | [] -> "No_Card"
 
+(**[check_for_wizards] returns true if there are any wizard in
+   [played_cards]*)
 let rec check_for_wizards played_cards =
   match played_cards with
   | h :: t -> if Card.get_num h = 14 then true else check_for_wizards t
   | [] -> false
 
+(**[print_trump] prints the trump card [trump]*)
 let print_trump trump =
   ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
   print_cards_with_colors_short [ trump ]
 
+(**[print_player_cards] prints the cards played in [acc]*)
 let print_played_cards acc =
   save_cursor ();
   set_cursor 50 18;
@@ -355,6 +371,8 @@ let print_played_cards acc =
   print_cards_with_colors_short acc;
   restore_cursor ()
 
+(** [get_percentage] returns the percent of cards that card [card] is
+    better than*)
 let get_percentage player trump calc card =
   trunc
     (100.0 *. 100.0
@@ -365,6 +383,8 @@ let get_percentage player trump calc card =
                (get_hand_size player.current_hand))))
   /. 100.0
 
+(**[choose_card_normal] returns the player [player] with their selected
+   card*)
 let rec choose_card_normal
     played_cards
     calc
@@ -411,6 +431,8 @@ let rec choose_card_normal
           choose_card_normal played_cards calc trump player played_cards
       )
 
+(**[choose_card_normal_helper] is the helper function for
+   [choose_card_normal]*)
 and choose_card_normal_helper
     played_cards
     calc
@@ -439,7 +461,8 @@ and choose_card_normal_helper
         | _ ->
             ANSITerminal.erase Screen;
             f played_cards calc trump player played_cards)
-
+(**[valid_robot_card] returns whether the card [card] is valid to play given 
+the [played_cards]*)
 let valid_robot_card player played_cards card =
   let first_suit = find_first_round_trump played_cards in
   if
@@ -452,15 +475,18 @@ let valid_robot_card player played_cards card =
   then true
   else false
 
+(**[compare_cards] compares the card numbers of [c1] and [c2]*)
 let compare_cards c1 c2 =
   if Card.get_num c1 > Card.get_num c2 then -1
   else if Card.get_num c1 < Card.get_num c2 then 1
   else 0
 
+(**[exists_wizard] returns true if there is a wizard in [player_card_lst]*)
 let rec exists_wizard (player_card_lst : Card.card list) : bool =
   List.map (fun y -> Card.get_num y = 14) player_card_lst
   |> List.fold_left ( || ) false
 
+(**[first_wizard] returns the first wizard in [plyr_card]*)
 let rec first_wizard (plyr_card : Card.card list) : Card.card =
   match plyr_card with
   | h :: t -> if Card.get_num h = 14 then h else first_wizard t
@@ -469,6 +495,7 @@ let rec first_wizard (plyr_card : Card.card list) : Card.card =
         "precondition violated, need at least one tuple containing a \
          wizard card"
 
+(**[exists_trump] returns whether there is a card of the same suit as [trump_card] in [player_card_lst]*)
 let rec exists_trump
     (player_card_lst : Card.card list)
     (trump_card : Card.card) : bool =
@@ -809,7 +836,9 @@ let rec choose_card_robot
       let card = new_robot_player.current_selected_card in
       (remove_current_selected_card new_robot_player, card)
 
-let rec choose_card_rec
+(** [choose_card_robot_human] calls the appropriate function to choose a
+    card for a robot or a human for player [player]*)
+let choose_card_robot_human
     played_cards
     calc
     trump

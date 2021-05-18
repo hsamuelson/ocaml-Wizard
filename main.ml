@@ -151,6 +151,8 @@ let print_ruleset () =
         "Those were the rules, now let the game begin! \n \n";
       ()
 
+(**[main_helper] will either print the ruleset or continue to starting
+   the game depending on the user keyboard input*)
 let rec main_helper () =
   ANSITerminal.print_string []
     "Press enter to start the game, or type 'rules' to read the rules\n\n";
@@ -168,14 +170,10 @@ let rec main_helper () =
           \ Please either press enter or type 'rules' and press enter\n";
       main_helper ()
 
+(**[main] launches the wizard game*)
 let main () =
-  (*prompt for json file and number of players*)
   ANSITerminal.erase Screen;
   PrintFunct.intro_screen ();
-  (* PrintFunct.print_hand [{number = 1; suit = "red"};{number = 2, suit
-     = "blue"}] *)
-  (* PrintFunct.zero ANSITerminal.red (); PrintFunct.one
-     ANSITerminal.green (); PrintFunct.two ANSITerminal.blue (); *)
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     "\n\nWelcome to the 3110 Wizard Game engine.\n";
