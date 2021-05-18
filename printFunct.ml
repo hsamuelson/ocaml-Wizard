@@ -1,3 +1,4 @@
+(**Represents a printer object to print cards graphically*)
 open ANSITerminal
 
 (**[intro_screen] prints the intro screen graphic for the wizard game*)
