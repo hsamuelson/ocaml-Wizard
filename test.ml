@@ -282,56 +282,6 @@ let choose_card_tests =
       [ 2; 1; 0; 4; 1; 0; 10 ];
   ]
 
-let play_card_test_player
-    (name : string)
-    (player : Player.t)
-    (expected_output : int list) =
-  name >:: fun _ ->
-  assert_equal expected_output
-    (let pl =
-       match Player.play_card player with
-       | fst, lst -> Player.player_to_list fst
-     in
-     pl)
-    ~printer:(print_player_list "[ ")
-
-let play_card_tests_get_player =
-  [
-    play_card_test_player "Player 7 plays first [idx 0] card" player7
-      [ 2; 1; 0; 3; 2; 0; 7 ];
-    play_card_test_player "Player 8 plays second [idx 1] card" player8
-      [ 2; 1; 0; 3; 2; 0; 8 ];
-    play_card_test_player "Player 9 plays third [idx 2] card" player9
-      [ 2; 1; 0; 3; 3; 1; 9 ];
-    play_card_test_player "Player 10 plays third [idx 1] card" player10
-      [ 2; 1; 0; 3; 2; 0; 10 ];
-  ]
-
-let play_card_test_card
-    (name : string)
-    (player : Player.t)
-    (expected_output : string) =
-  name >:: fun _ ->
-  assert_equal expected_output
-    (let pl =
-       match Player.play_card player with
-       | fst, lst -> Card.string_of_card lst
-     in
-     pl)
-    ~printer:print_string
-
-let play_card_tests_get_card =
-  [
-    play_card_test_card "Player 7 plays first [idx 0] card" player7
-      "[ 1 , red ]";
-    play_card_test_card "Player 8 plays second [idx 1] card" player8
-      "[ 2 , orange ]";
-    play_card_test_card "Player 9 plays third [idx 2] card" player9
-      "[ 3 , yellow ]";
-    play_card_test_card "Player 10 plays third [idx 2] card" player10
-      "[ 2 , orange ]";
-  ]
-
 let player12 =
   Player.initialize_player 12 false
   |> Player.make_bet 2 |> Player.win_trick |> Player.win_trick
@@ -405,16 +355,75 @@ let player_tests =
     give_cards_tests;
     get_cards_tests;
     choose_card_tests;
-    play_card_tests_get_player;
-    play_card_tests_get_card;
     finish_round_tests;
     reset_round_tests;
   ]
+
+let card_hand =
+  make_card_list [ Card.make_card 1 "red"; Card.make_card 2 "orange" ] 2
+
+let empty_card_hand = make_card_list [] 0
+
+let init_calculator_test
+    (name : string)
+    (card_list : Card.card_list)
+    (expected_output : Card.card_list) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (Calculator.get_unplayed (Calculator.init card_list))
+    ~printer:card_list_printer
+
+let init_calculator_tests =
+  [
+    init_calculator_test "intialize empty calc" card_hand card_hand;
+    init_calculator_test "initialize non-empty calc" empty_card_hand
+      empty_card_hand;
+  ]
+
+let card_hand2 =
+  make_card_list [ Card.make_card 1 "red"; Card.make_card 2 "orange" ] 2
+
+let calc1 = Calculator.init card_hand2
+
+let card1 = Card.make_card 1 "red"
+
+let first_removed = make_card_list [ Card.make_card 2 "orange" ] 2
+
+let card2 = Card.make_card 2 "orange"
+
+let second_removed = make_card_list [ Card.make_card 1 "red" ] 2
+
+let string_of_string s = s
+
+let update_unplayed_test
+    (name : string)
+    (calc : Calculator.t)
+    (card : Card.card)
+    (expected_output : string) =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (card_list_printer
+       (Calculator.get_unplayed (Calculator.update_unplayed calc card)))
+    ~printer:string_of_string
+
+let update_unplayed_tests =
+  [
+    update_unplayed_test "remove first card" calc1 card1
+      "[ 2 , orange ]";
+    update_unplayed_test "remove last card" calc1 card2 "[ 1 , red ]";
+  ]
+
+let calculator_tests = [ init_calculator_tests; update_unplayed_tests ]
 
 (*deck testing ends here*)
 let suite =
   "test suite for Wizard"
   >::: List.flatten
-         [ shuffle_tests; deal_tests; List.flatten player_tests ]
+         [
+           shuffle_tests;
+           deal_tests;
+           List.flatten player_tests;
+           List.flatten calculator_tests;
+         ]
 
 let _ = run_test_tt_main suite
