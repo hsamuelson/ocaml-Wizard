@@ -1,17 +1,19 @@
-(*TEST PLAN: Explanation of testing *)
+(**TEST PLAN: Our test system automatically tests the fundamental
+   functions for our wizard game with OUnit tests. These include the
+   tests of making bets, initializing the deck, shuffling the deck,
+   assigning cards, finishing and resetting the round, and more. The
+   more complex functions, which only make subtle changes to the game
+   state, were tested manually by comparing the gameplay of our wizard
+   game with the expected gameplay mechanics as observed by veteran
+   wizard players with a ruleset handy. The ruleset, which is provided
+   in rules.txt and can be read by typing in 'rules when prompted,
+   proved quite useful to manually test the edge cases in card
+   interactions, as there are many. *)
 
-(*Main file in which we call the module test files from *)
 open OUnit2
 open Player
-
-(*Note: make test will fail if you uncomment modules that output
-  failwith for any function *)
-
-(* open Table *)
 open Deck
 open Card
-
-(* open Round open Player *)
 
 (*create deck for testing from json file*)
 let j = Yojson.Basic.from_file "main_deck.json"
@@ -29,8 +31,9 @@ let rec deck_not_equal_helper cards1 cards2 acc =
           if h1 = h2 then deck_not_equal_helper t1 t2 acc
           else deck_not_equal_helper t1 t2 (acc + 1))
 
-(* I choose to check whether half the elts in the original deck shift to
-   a new spot in the new deck *)
+(* To test that the deck is shuffled, we checked that at least half of
+   the deck elements shift position, which is nearly guaranteed by
+   reshuffling a deck of cards of any significant size *)
 let cmp_decks_not_equal deck1 deck2 =
   let cards1 = get_cards deck1 in
   let cards2 = get_cards deck2 in
