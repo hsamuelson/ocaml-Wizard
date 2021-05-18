@@ -38,417 +38,332 @@ let intro_screen () =
     "                                              pcm82, ml2359, \
      hes227"
 
-(***[get_index] returns the string graphical representation of the index
-  [idx]*)
+(**[get_index] returns the string graphical representation of the index
+   [idx]*)
 let get_index idx =
   if idx < 10 then "█ Index: " ^ string_of_int idx ^ "        █"
   else "█ Index: " ^ string_of_int idx ^ "       █"
 
-(***[zero] prints the graphical representation of 0*)
-let zero clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█     ▄█████▄     █";
-  pr "█     ██   ██     █";
-  pr "█     ██   ██     █";
-  pr "█     ██   ██     █";
-  pr "█     ██   ██     █";
-  pr "█     ▀█████▀     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-  restore_cursor ()
-
-(***[one] prints the graphical representation of 1*)
-let one clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-
+(**[pr] prints string s with color [clr]*)
+let pr s clr =
   save_cursor ();
+  ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
+  restore_cursor ();
+  move_cursor 0 1
 
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█      ▄███       █";
-  pr "█        ██       █";
-  pr "█        ██       █";
-  pr "█        ██       █";
-  pr "█      ▄████▄     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+(**[zero] prints the graphical representation of 0 at index [idx] with
+   color [clr]*)
+let zero clr idx () =
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█     ▄█████▄     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ▀█████▀     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[two] prints the graphical representation of 2*)
+(**[one] prints the graphical representation of 1 at index [idx] with
+   color [clr]*)
+let one clr idx () =
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█      ▄███       █" clr;
+  pr "█        ██       █" clr;
+  pr "█        ██       █" clr;
+  pr "█        ██       █" clr;
+  pr "█      ▄████▄     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
+  restore_cursor ()
+
+(**[two] prints the graphical representation of 2 at index [idx] with
+   color [clr]*)
 let two clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█     ▄█████▄     █";
-  pr "█     ██   ██     █";
-  pr "█        ▄██▀     █";
-  pr "█      ▄██▀       █";
-  pr "█    ▄████▄▄▄     █";
-  pr "█    ▀▀▀▀▀▀▀▀     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█     ▄█████▄     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█        ▄██▀     █" clr;
+  pr "█      ▄██▀       █" clr;
+  pr "█    ▄████▄▄▄     █" clr;
+  pr "█    ▀▀▀▀▀▀▀▀     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[three] prints the graphical representation of 3*)
+(**[three] prints the graphical representation of 3 at index [idx] with
+   color [clr]*)
 let three clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█     ▄█████▄     █";
-  pr "█     ██   ██     █";
-  pr "█        ▄██▀     █";
-  pr "█        ▀██▄     █";
-  pr "█     ██   ██     █";
-  pr "█     ▀█████▀     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█     ▄█████▄     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█        ▄██▀     █" clr;
+  pr "█        ▀██▄     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ▀█████▀     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[four] prints the graphical representation of 4*)
+(**[four] prints the graphical representation of 4 at index [idx] with
+   color [clr]*)
 let four clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█     ▄█   █▄     █";
-  pr "█     ██   ██     █";
-  pr "█     ██   ██     █";
-  pr "█     ▀██████     █";
-  pr "█          ██     █";
-  pr "█          ██     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█     ▄█   █▄     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ▀██████     █" clr;
+  pr "█          ██     █" clr;
+  pr "█          ██     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[five] prints the graphical representation of 5*)
+(**[five] prints the graphical representation of 5 at index [idx] with
+   color [clr]*)
 let five clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█    ███████▀     █";
-  pr "█    ██           █";
-  pr "█    ▀██████▄     █";
-  pr "█         ▀██     █";
-  pr "█    ▄▄    ██     █";
-  pr "█    ▀██████▀     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█    ███████▀     █" clr;
+  pr "█    ██           █" clr;
+  pr "█    ▀██████▄     █" clr;
+  pr "█         ▀██     █" clr;
+  pr "█    ▄▄    ██     █" clr;
+  pr "█    ▀██████▀     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[six] prints the graphical representation of 6*)
+(**[six] prints the graphical representation of 6 at index [idx] with
+   color [clr]*)
 let six clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█    ▄█████▀      █";
-  pr "█    ██           █";
-  pr "█    ██           █";
-  pr "█    ███████▄     █";
-  pr "█    ██   ▀██     █";
-  pr "█    ██    ██     █";
-  pr "█    ▀██████▀     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█    ▄█████▀      █" clr;
+  pr "█    ██           █" clr;
+  pr "█    ██           █" clr;
+  pr "█    ███████▄     █" clr;
+  pr "█    ██   ▀██     █" clr;
+  pr "█    ██    ██     █" clr;
+  pr "█    ▀██████▀     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[seven] prints the graphical representation of 7*)
+(**[seven] prints the graphical representation of 7 at index [idx] with
+   color [clr]*)
 let seven clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█     ▄███████▄   █";
-  pr "█           ▄█▀   █";
-  pr "█          ▄█▀    █";
-  pr "█         ▄█      █";
-  pr "█        ▄█▀      █";
-  pr "█       ▄█▀       █ ";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█     ▄███████▄   █" clr;
+  pr "█           ▄█▀   █" clr;
+  pr "█          ▄█▀    █" clr;
+  pr "█         ▄█      █" clr;
+  pr "█        ▄█▀      █" clr;
+  pr "█       ▄█▀       █ " clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[eight] prints the graphical representation of 8*)
+(**[eight] prints the graphical representation of 8 at index [idx] with
+   color [clr]*)
 let eight clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█     ▄█████▄     █";
-  pr "█     ██   ██     █";
-  pr "█     ██▄▄██▀     █";
-  pr "█     ▄██▀██▄     █";
-  pr "█     ██   ██     █";
-  pr "█     ▀█████▀     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█     ▄█████▄     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ██▄▄██▀     █" clr;
+  pr "█     ▄██▀██▄     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ▀█████▀     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[nine]] prints the graphical representation of 9*)
+(**[nine]] prints the graphical representation of 9 at index [idx] with
+   color [clr]*)
 let nine clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█     ▄█████▄     █";
-  pr "█     ██   ██     █";
-  pr "█     ██   ██     █";
-  pr "█     ▀██████     █";
-  pr "█          ██     █";
-  pr "█          ██     █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█     ▄█████▄     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ██   ██     █" clr;
+  pr "█     ▀██████     █" clr;
+  pr "█          ██     █" clr;
+  pr "█          ██     █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[ten] prints the graphical representation of 10*)
+(**[ten] prints the graphical representation of 10 at index [idx] with
+   color [clr]*)
 let ten clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█  ▄███  ▄█████▄  █";
-  pr "█    ██  ██   ██  █";
-  pr "█    ██  ██   ██  █";
-  pr "█    ██  ██   ██  █";
-  pr "█    ██  ██   ██  █";
-  pr "█  ▄███▄ ▀█████▀  █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█  ▄███  ▄█████▄  █" clr;
+  pr "█    ██  ██   ██  █" clr;
+  pr "█    ██  ██   ██  █" clr;
+  pr "█    ██  ██   ██  █" clr;
+  pr "█    ██  ██   ██  █" clr;
+  pr "█  ▄███▄ ▀█████▀  █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[eleven] prints the graphical representation of 11*)
+(**[eleven] prints the graphical representation of 11 at index [idx]
+   with color [clr]*)
 let eleven clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█   ▄███   ▄███   █";
-  pr "█     ██     ██   █";
-  pr "█     ██     ██   █";
-  pr "█     ██     ██   █";
-  pr "█     ██     ██   █";
-  pr "█   ▄███▄  ▄███▄  █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀"
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█   ▄███   ▄███   █" clr;
+  pr "█     ██     ██   █" clr;
+  pr "█     ██     ██   █" clr;
+  pr "█     ██     ██   █" clr;
+  pr "█     ██     ██   █" clr;
+  pr "█   ▄███▄  ▄███▄  █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
+  restore_cursor ()
 
-;;
-restore_cursor ()
-
-(***[twelve] prints the graphical representation of 12*)
+(**[twelve] prints the graphical representation of 12 at index [idx]
+   with color [clr]*)
 let tweleve clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█  ▄███  ▄█████▄  █";
-  pr "█    ██  ██   ██  █";
-  pr "█    ██     ▄█▀   █";
-  pr "█    ██   ▄██▀    █";
-  pr "█    ██  ██   ▄▄  █";
-  pr "█  ▄███▄ ██████▀  █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█  ▄███  ▄█████▄  █" clr;
+  pr "█    ██  ██   ██  █" clr;
+  pr "█    ██     ▄█▀   █" clr;
+  pr "█    ██   ▄██▀    █" clr;
+  pr "█    ██  ██   ▄▄  █" clr;
+  pr "█  ▄███▄ ██████▀  █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[thirteen] prints the graphical representation of 13*)
+(**[thirteen] prints the graphical representation of 13 at index [idx]
+   with color [clr]*)
 let thirteen clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█  ▄███  ▄█████▄  █";
-  pr "█    ██  ██   ██  █";
-  pr "█    ██    ▄██▀   █";
-  pr "█    ██    ▀██▄   █";
-  pr "█    ██  ██   ██  █";
-  pr "█  ▄███▄ ▀█████▀  █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█  ▄███  ▄█████▄  █" clr;
+  pr "█    ██  ██   ██  █" clr;
+  pr "█    ██    ▄██▀   █" clr;
+  pr "█    ██    ▀██▄   █" clr;
+  pr "█    ██  ██   ██  █" clr;
+  pr "█  ▄███▄ ▀█████▀  █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
-(***[fourteen] prints the graphical representation of 14*)
+(**[fourteen] prints the graphical representation of 14 at index [idx]
+   with color [clr]*)
 let fourteen clr idx () =
-  let pr s =
-    save_cursor ();
-    ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
-    restore_cursor ();
-    move_cursor 0 1
-  in
-  pr "▄█████████████████▄";
-  pr (get_index idx);
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█  ▄███  ▄█   █▄  █";
-  pr "█    ██  ██   ██  █";
-  pr "█    ██  ▀██████  █";
-  pr "█    ██       ██  █";
-  pr "█    ██       ██  █";
-  pr "█  ▄███▄      █▀  █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "█                 █";
-  pr "▀█████████████████▀";
-
+  pr "▄█████████████████▄" clr;
+  pr (get_index idx) clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█  ▄███  ▄█   █▄  █" clr;
+  pr "█    ██  ██   ██  █" clr;
+  pr "█    ██  ▀██████  █" clr;
+  pr "█    ██       ██  █" clr;
+  pr "█    ██       ██  █" clr;
+  pr "█  ▄███▄      █▀  █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "█                 █" clr;
+  pr "▀█████████████████▀" clr;
   restore_cursor ()
 
 (**[select_number] selects which number to print based on [number] with
