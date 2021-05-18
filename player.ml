@@ -842,7 +842,7 @@ let robot_decision_making_choose played_cards calc trump player =
 
 (**[choose_card_robot] returns a robot [player] with a selected card
    based on [trump], [played_cards], and the cards in the hand of
-   [player]] *)
+   [player]*)
 let rec choose_card_robot
     calc
     trump
