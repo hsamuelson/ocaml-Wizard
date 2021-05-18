@@ -1,3 +1,5 @@
+(**Represents a printer object to print cards graphically*)
+
 (**[intro_screen] prints the intro screen graphic for the wizard game*)
 val intro_screen : unit -> unit
 
