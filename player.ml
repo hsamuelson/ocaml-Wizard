@@ -550,7 +550,6 @@ let find_current_winning_card trump card_list =
     first_trump sorted_list trump
   else if all_zeros card_list then List.nth card_list 0
   else
-    (*find first non-zero card, treat it like a trump card*)
     let secondary_trump = find_first_nonzero_card card_list in
     first_trump sorted_list secondary_trump
 
@@ -622,7 +621,6 @@ let choose_best_card
     choose_best_card_helper played_cards player player_hand calc trump
       (-1) 0 (-1.)
   in
-  (* print_endline ("index chosen: " ^ string_of_int best_index); *)
   fst (choose_card_at_index player best_index)
 
 (**[choose_worst_card_helper] is the helper function for
@@ -652,6 +650,8 @@ let rec choose_worst_card_helper
         choose_worst_card_helper played_cards player t calc trump
           best_index (curr_index + 1) worst_percentage
 
+(**[choose_worst_card] chooses the card with the lowest chance of
+   winning based on [trump] and [played_cards]*)
 let choose_worst_card
     (played_cards : Card.card list)
     (calc : Calculator.t)
@@ -662,9 +662,10 @@ let choose_worst_card
     choose_worst_card_helper played_cards player player_hand calc trump
       (-1) 0 101.
   in
-  (* print_endline ("index chosen: " ^ string_of_int best_index); *)
   fst (choose_card_at_index player best_index)
 
+(**[choose_best_losing_card_helper] is the helper function for
+   [choose_best_losing_card]*)
 let rec choose_best_losing_card_helper
     played_cards
     (player : t)
@@ -691,15 +692,18 @@ let rec choose_best_losing_card_helper
         choose_best_losing_card_helper played_cards player t calc trump
           best_index (curr_index + 1) best_percentage
 
+(**[choose_best_losing_card] chooses the card with the highest chance of
+   winning that still loses based on [trump] and [played_cards]*)
 let choose_best_losing_card played_cards calc trump player =
   let player_hand = player.current_hand in
   let best_index =
     choose_best_losing_card_helper played_cards player player_hand calc
       trump (-1) 0 (-1.)
   in
-  (* print_endline ("index chosen: " ^ string_of_int best_index); *)
   fst (choose_card_at_index player best_index)
 
+(**[choose_best_winning_card_helper] is the helper function for
+   [choose_best_winning_card]*)
 let rec choose_best_winning_card_helper
     played_cards
     (player : t)
@@ -726,15 +730,18 @@ let rec choose_best_winning_card_helper
         choose_best_winning_card_helper played_cards player t calc trump
           best_index (curr_index + 1) best_percentage
 
+(**[choose_best_winning_card] chooses the card with the highest chance
+   of winning that still wins based on [trump] and [played_cards]*)
 let choose_best_winning_card played_cards calc trump player =
   let player_hand = player.current_hand in
   let best_index =
     choose_best_winning_card_helper played_cards player player_hand calc
       trump (-1) 0 (-1.)
   in
-  (* print_endline ("index chosen: " ^ string_of_int best_index); *)
   fst (choose_card_at_index player best_index)
 
+(**[choose_worst_winning_card_helper] is the helper function for
+   [choose_worst_winning_card]*)
 let rec choose_worst_winning_card_helper
     played_cards
     (player : t)
@@ -755,25 +762,25 @@ let rec choose_worst_winning_card_helper
         && valid_robot_card player played_cards h
         && card_wins trump played_cards h
       then
-        (* print_endline ("better card: " ^ Card.get_suit h ^
-           string_of_int (Card.get_num h)); *)
         choose_worst_winning_card_helper played_cards player t calc
           trump curr_index (curr_index + 1) percentage
       else
-        (* print_endline ("not better card: " ^ Card.get_suit h ^
-           string_of_int (Card.get_num h)); *)
         choose_worst_winning_card_helper played_cards player t calc
           trump best_index (curr_index + 1) worst_percentage
 
+(**[choose_worst_winning_card] chooses the card with the lowest chance
+   of winning that still wins based on [trump] and [played_cards]*)
 let choose_worst_winning_card played_cards calc trump player =
   let player_hand = player.current_hand in
   let best_index =
     choose_worst_winning_card_helper played_cards player player_hand
       calc trump (-1) 0 101.
   in
-  (* print_endline ("index chosen: " ^ string_of_int best_index); *)
   fst (choose_card_at_index player best_index)
 
+(**[no_winning_cards] returns true if the player [player] does not have
+   any winning cards in their hand [card_list] based on [played_cards]
+   and [trump]*)
 let rec no_winning_cards
     trump
     (card_list : Card.card list)
@@ -788,6 +795,9 @@ let rec no_winning_cards
       else no_winning_cards trump t played_cards player
   | [] -> true
 
+(**[no_losing_cards] returns true if the player [player] does not have
+   any losing cards in their hand [card_list] based on [played_cards]
+   and [trump]*)
 let rec no_losing_cards
     trump
     (card_list : Card.card list)
@@ -802,38 +812,38 @@ let rec no_losing_cards
       else no_losing_cards trump t played_cards player
   | [] -> true
 
+(**[robot_needs_wins] returns true if robot [player] has bet more tricks
+   than they have currently won*)
 let robot_needs_wins player : bool =
   if player.bet > player.tricks_won_this_round then true else false
 
+(**[rng_true] returns true everey [num]/10 times based on a random
+   number generator*)
 let rng_true num =
-  let output = Random.int 9 in
+  let output = Random.int 10 in
   num >= output
 
+(**[robot_decision_making] determines which type of card the robot
+   [player] plays based on [played_cards] and [trump], where the robot
+   uses a decision tree to determine which action they will take with
+   some randomness involved at some terminal nodes*)
 let robot_decision_making_choose played_cards calc trump player =
   let player_cards = player.current_hand in
   if robot_needs_wins player then
     if no_winning_cards trump player_cards played_cards player then
-      (* print_endline "No winning cards: choose worst card"; *)
       choose_worst_card played_cards calc trump player
     else if rng_true 7 then
-      (* print_endline "choose worst winning card"; *)
       choose_worst_winning_card played_cards calc trump player
-    else
-      (* print_endline "choose best winning card"; *)
-      choose_best_winning_card played_cards calc trump player
+    else choose_best_winning_card played_cards calc trump player
   else if no_losing_cards trump player_cards played_cards player then
-    if rng_true 7 then
-      (* print_endline "No losing cards: choose best card"; *)
-      choose_best_card played_cards calc trump player
-    else
-      (* print_endline "No losing cards: choose worst winning card 2"; *)
-      choose_worst_winning_card played_cards calc trump player
-  else
-    (* print_endline "Cards can win or lose: choose best losing card"; *)
-    choose_best_losing_card played_cards calc trump player
+    if rng_true 7 then choose_best_card played_cards calc trump player
+    else choose_worst_winning_card played_cards calc trump player
+  else choose_best_losing_card played_cards calc trump player
 
+(**[choose_card_robot] returns a robot [player] with a selected card
+   based on [trump], [played_cards], and the cards in the hand of
+   [player]] *)
 let rec choose_card_robot
-    played_cards
     calc
     trump
     (player : t)
@@ -847,7 +857,6 @@ let rec choose_card_robot
     [ ANSITerminal.yellow; Bold ]
     "Robot choosing card... press enter.\n";
   let new_robot_player =
-    (* choose_best_card played_cards calc trump player *)
     robot_decision_making_choose played_cards calc trump player
   in
   match read_line () with
@@ -864,11 +873,13 @@ let choose_card_robot_human
     (player : t)
     (played_cards : Card.card list) =
   if player.is_robot then
-    choose_card_robot played_cards calc trump player played_cards
+    choose_card_robot calc trump player played_cards
   else choose_card_normal played_cards calc trump player played_cards
 
+(**[get_player_hand_list] gets the list of cards held by player [player]*)
 let get_player_hand_list player = player.current_hand
 
+(**[display_player] prints all of the information of player [player]*)
 let display_player (player : t) : unit =
   match player with
   | {
