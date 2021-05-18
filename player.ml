@@ -1,5 +1,6 @@
 open Unix
 open Float
+open ANSITerminal
 
 type t = {
   bet : int;  (** This player's current bet for this trick. *)
@@ -292,23 +293,25 @@ let print_player (player : t) =
       ANSITerminal.print_string [] "\n";
       ANSITerminal.print_string [] "\n";
       ANSITerminal.print_string [] "\n";
+      let curr_pos = pos_cursor () in
+      set_cursor 0 (snd curr_pos + 2);
       ANSITerminal.print_string
         [ ANSITerminal.magenta; Underlined; Bold ]
         ("●○●○●○●○● Player " ^ string_of_int pi
        ^ " ●○●○●○●○●\n");
-      print_string ("\nCurrent bet: " ^ string_of_int b);
-      print_string ("\nTricks won this round: " ^ string_of_int t);
-      print_string ("\nCurrent score: " ^ string_of_int c);
-      print_string "\nCurrent hand: ";
+      print_endline ("Current bet: " ^ string_of_int b);
+      print_endline ("Tricks won this round: " ^ string_of_int t);
+      print_endline ("Current score: " ^ string_of_int c);
+      print_endline "Current hand: ";
       print_cards_with_colors_short ch;
 
-      print_string "\nCurrently selected card: ";
+      print_endline "\nCurrently selected card: ";
       print_cards_with_colors_short [ cc ];
       ANSITerminal.print_string
         [ ANSITerminal.magenta; Underlined; Bold ]
-        "\n\n\
+        "\n\
          ●○●○●○●○●○●○●○●○●○●○●○●○●○●○\n";
-      print_string "\n"
+      print_endline "\n"
 
 (* print_endline ("\nCurrently selected index: " ^ string_of_int csi ^
    "\n") *)
@@ -341,15 +344,16 @@ let rec check_for_wizards played_cards =
 
 let print_trump trump =
   ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
-  print_cards_with_colors_short [ trump ];
-  print_endline "\n"
+  print_cards_with_colors_short [ trump ]
 
 let print_played_cards acc =
+  save_cursor ();
+  set_cursor 50 18;
   ANSITerminal.print_string
     [ ANSITerminal.white; Bold ]
     "PLAYED CARDS: ";
   print_cards_with_colors_short acc;
-  print_endline "\n"
+  restore_cursor ()
 
 let get_percentage player trump calc =
   trunc
@@ -372,7 +376,10 @@ let rec choose_card_normal
   print_played_cards played_cards;
   print_player player;
   print_endline "\n";
+  save_cursor ();
+  set_cursor 50 20;
   print_trump trump;
+  restore_cursor ();
   ANSITerminal.print_string
     [ ANSITerminal.yellow; Bold ]
     "Percentage of unplayed cards strictly worse than current card: ";
@@ -514,3 +521,41 @@ let rec choose_card_rec
   else choose_card_normal played_cards calc trump player played_cards
 
 let get_player_hand_list player = player.current_hand
+
+let display_player (player : t) : unit =
+  match player with
+  | {
+   bet = b;
+   tricks_won_this_round = t;
+   current_score = c;
+   current_hand = ch;
+   current_selected_card = cc;
+   current_selected_index = csi;
+   player_id = pi;
+   _;
+  } ->
+      PrintFunct.print_hand ch 0;
+      save_cursor ();
+      ANSITerminal.print_string
+        [ ANSITerminal.magenta; Underlined; Bold ]
+        ("●○●○●○●○● Player " ^ string_of_int pi
+       ^ " ●○●○●○●○●");
+      move_cursor 1 0;
+      ANSITerminal.print_string [] ("Current bet: " ^ string_of_int b);
+      move_cursor 1 0;
+      ANSITerminal.print_string []
+        ("Tricks won this round: " ^ string_of_int t);
+      move_cursor 1 0;
+      ANSITerminal.print_string [] ("Current score: " ^ string_of_int c);
+      move_cursor 1 0;
+      ANSITerminal.print_string [] "Current hand: ";
+      move_cursor 1 0;
+      print_cards_with_colors_short ch;
+
+      print_endline "Currently selected card: ";
+      print_cards_with_colors_short [ cc ];
+      move_cursor 1 0;
+      ANSITerminal.print_string
+        [ ANSITerminal.magenta; Underlined; Bold ]
+        "●○●○●○●○●○●○●○●○●○●○●○●○●○●○";
+      restore_cursor ()

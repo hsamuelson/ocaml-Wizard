@@ -49,7 +49,7 @@ let find_round_leader (plyrs : Player.t list) (round : int) (rnd : t) =
   (* Due to how run_game in table.ml works we need to make sure that
      when this is called we dont initalize a invalid round number *)
   (* if (round) <= ((deck_size rnd) / (rnd.num_players)) then plyrs else *)
-  find_leader (one_leader plyrs) (round+1) 1
+  find_leader (one_leader plyrs) (round + 1) 1
 
 (* one_leader plyrs *)
 
@@ -103,9 +103,11 @@ let rec robot_bet player trump calc list_cards curr_index acc =
       else robot_bet player trump calc t (curr_index + 1) acc
 
 let print_trump trump player_list : Player.t list =
+  save_cursor ();
+  move_cursor 50 20;
   ANSITerminal.print_string [ ANSITerminal.white; Bold ] "TRUMP CARD: ";
   Player.print_cards_with_colors_short [ trump ];
-  print_endline "\n";
+  restore_cursor ();
   player_list
 
 let normal_player_bet hd trump t_trck bet_sum num_p cntr plyrs =
