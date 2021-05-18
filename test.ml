@@ -193,6 +193,10 @@ let player4 = Player.initialize_player 4 false
 
 let player5 = Player.initialize_player 5 false |> Player.make_bet 2
 
+let player2 = Player.initialize_player 2 false
+
+let player1 = Player.initialize_player 1 false
+
 let win_trick_test
     (name : string)
     (player : Player.t)
@@ -207,6 +211,8 @@ let win_trick_tests =
     win_trick_test "Player 3 win trick" player3 [ 0; 1; 0; 0; 0; 0; 3 ];
     win_trick_test "Player 4 win trick" player4 [ 0; 1; 0; 0; 0; 0; 4 ];
     win_trick_test "Player 5 win trick" player5 [ 2; 1; 0; 0; 0; 0; 5 ];
+    win_trick_test "Player 1 win trick" player1 [ 0; 1; 0; 0; 0; 0; 1 ];
+    win_trick_test "Player 2 win trick" player2 [ 0; 1; 0; 0; 0; 0; 2 ];
   ]
 
 let card_hand_2 = [ Card.make_card 1 "red"; Card.make_card 2 "orange" ]
