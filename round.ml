@@ -95,8 +95,8 @@ let rec robot_bet player trump calc list_cards curr_index acc =
         Player.choose_card_at_index player curr_index
       in
       let percentage =
-        Player.get_percentage (fst new_player_card)
-          (snd new_player_card) calc
+        Player.get_percentage (fst new_player_card) trump calc
+          (snd new_player_card)
       in
       if percentage > 50. then
         robot_bet player trump calc t (curr_index + 1) (acc + 1)

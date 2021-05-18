@@ -1,3 +1,5 @@
+(*TEST PLAN: Explanation of testing *)
+
 (*Main file in which we call the module test files from *)
 open OUnit2
 open Player
@@ -128,7 +130,7 @@ let initialize_test
     (expected_output : int list) =
   name >:: fun _ ->
   assert_equal expected_output
-    (Player.player_to_list (Player.initialize_player id))
+    (Player.player_to_list (Player.initialize_player id false))
     ~printer:(print_player_list "[ ")
 
 let initialize_tests =
@@ -137,9 +139,9 @@ let initialize_tests =
     initialize_test "Initialize player 2" 2 [ 0; 0; 0; 0; 0; 0; 2 ];
   ]
 
-let player1 = Player.initialize_player 1
+let player1 = Player.initialize_player 1 false
 
-let player2 = Player.initialize_player 2
+let player2 = Player.initialize_player 2 false
 
 let make_bet_test
     (name : string)
@@ -161,11 +163,11 @@ let make_bet_tests =
       [ 3; 0; 0; 0; 0; 0; 2 ];
   ]
 
-let player3 = Player.initialize_player 3
+let player3 = Player.initialize_player 3 false
 
-let player4 = Player.initialize_player 4
+let player4 = Player.initialize_player 4 false
 
-let player5 = Player.initialize_player 5 |> Player.make_bet 2
+let player5 = Player.initialize_player 5 false |> Player.make_bet 2
 
 let win_trick_test
     (name : string)
@@ -194,7 +196,8 @@ let card_hand_4 =
   ]
 
 let player6 =
-  Player.initialize_player 6 |> Player.make_bet 2 |> Player.win_trick
+  Player.initialize_player 6 false
+  |> Player.make_bet 2 |> Player.win_trick
 
 let give_cards_test
     (name : string)
@@ -217,25 +220,25 @@ let give_cards_tests =
   ]
 
 let player7 =
-  Player.initialize_player 7
+  Player.initialize_player 7 false
   |> Player.make_bet 2 |> Player.win_trick
   |> Player.give_cards card_hand_4
 
 let player8 =
-  Player.initialize_player 8
+  Player.initialize_player 8 false
   |> Player.make_bet 2 |> Player.win_trick
   |> Player.give_cards card_hand_4
   |> Player.choose_card "next"
 
 let player9 =
-  Player.initialize_player 9
+  Player.initialize_player 9 false
   |> Player.make_bet 2 |> Player.win_trick
   |> Player.give_cards card_hand_4
   |> Player.choose_card "next"
   |> Player.choose_card "next"
 
 let player10 =
-  Player.initialize_player 10
+  Player.initialize_player 10 false
   |> Player.make_bet 2 |> Player.win_trick
   |> Player.give_cards card_hand_4
   |> Player.choose_card "next"
@@ -330,16 +333,18 @@ let play_card_tests_get_card =
   ]
 
 let player12 =
-  Player.initialize_player 12
+  Player.initialize_player 12 false
   |> Player.make_bet 2 |> Player.win_trick |> Player.win_trick
 
 let player13 =
-  Player.initialize_player 13 |> Player.make_bet 2 |> Player.win_trick
+  Player.initialize_player 13 false
+  |> Player.make_bet 2 |> Player.win_trick
 
-let player14 = Player.initialize_player 14 |> Player.make_bet 0
+let player14 = Player.initialize_player 14 false |> Player.make_bet 0
 
 let player15 =
-  Player.initialize_player 15 |> Player.make_bet 0 |> Player.win_trick
+  Player.initialize_player 15 false
+  |> Player.make_bet 0 |> Player.win_trick
 
 let finish_round_test
     (name : string)
@@ -364,12 +369,12 @@ let finish_round_tests =
   ]
 
 let player16 =
-  Player.initialize_player 16
+  Player.initialize_player 16 false
   |> Player.make_bet 2 |> Player.win_trick |> Player.win_trick
   |> Player.finish_round
 
 let player17 =
-  Player.initialize_player 17
+  Player.initialize_player 17 false
   |> Player.make_bet 3 |> Player.win_trick |> Player.win_trick
   |> Player.win_trick
   |> Player.give_cards card_hand_4

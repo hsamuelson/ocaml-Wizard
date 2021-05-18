@@ -105,4 +105,5 @@ val get_card_color : string -> ANSITerminal.style
 
 val get_is_robot : t -> bool
 
-val get_percentage : t -> Card.card -> Calculator.t -> float
+val get_percentage :
+  t -> Card.card -> Calculator.t -> Card.card -> float

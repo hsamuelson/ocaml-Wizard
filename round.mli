@@ -8,7 +8,12 @@ val play_round : t -> t
 val scoreboard : Player.t list -> string * string
 
 val players : t -> Player.t list
-val round_num : t ->  int 
+
+val round_num : t -> int
+
 val deck_size : t -> int
 
 val print_scoreboard : t -> unit
+
+val find_winning_card :
+  Card.card -> (Player.t * Card.card) list -> Player.t * Card.card
