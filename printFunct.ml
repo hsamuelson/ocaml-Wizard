@@ -1,42 +1,71 @@
 open ANSITerminal
 
+let pr_help s = ANSITerminal.print_string [ ANSITerminal.red; Bold ] s
+
 (**[intro_screen] prints the intro screen graphic for the wizard game*)
 let intro_screen () =
-  ANSITerminal.print_string
-    [ ANSITerminal.red; Bold ]
-    " \n\
-    \  ▄█     █▄   ▄█   ▄███████▄     \
+  let size_screen = size () in
+  set_cursor 0 ((snd size_screen / 2) - 8);
+  pr_help
+    "  ▄█     █▄   ▄█   ▄███████▄     \
      ▄████████    ▄████████ \
-     ████████▄  \n\
-    \  ███     ███ ███  ██▀     ▄██   \
+     ████████▄ ";
+  move_cursor 0 1;
+  move_bol ();
+  pr_help
+    "  ███     ███ ███  ██▀     ▄██   \
      ███    ███   ███    ███ ███   \
-     ▀███ \n\
-    \  ███     ███ ███▌       ▄███▀   \
+     ▀███ ";
+  move_cursor 0 1;
+  move_bol ();
+  pr_help
+    "  ███     ███ ███▌       ▄███▀   \
      ███    ███   ███    ███ ███    \
-     ███ \n\
-    \  ███     ███ ███▌  \
+     ███";
+  move_cursor 0 1;
+  move_bol ();
+  pr_help
+    "  ███     ███ ███▌  \
      ▀█▀▄███▀▄▄   ███    ███  \
-     ▄███▄▄▄▄██▀ ███    ███ \n\
-    \  ███     ███ ███▌   ▄███▀   ▀ \
+     ▄███▄▄▄▄██▀ ███    ███ ";
+  move_cursor 0 1;
+  move_bol ();
+  pr_help
+    "  ███     ███ ███▌   ▄███▀   ▀ \
      ▀███████████ \
-     ▀▀███▀▀▀▀▀   ███    ███ \n\
-    \  ███     ███ ███  ▄███▀         \
+     ▀▀███▀▀▀▀▀   ███    ███ ";
+  move_cursor 0 1;
+  move_bol ();
+  pr_help
+    "  ███     ███ ███  ▄███▀         \
      ███    ███ ▀███████████ \
-     ███    ███ \n\
-    \  ███ ▄█▄ ███ ███  ███▄     \
+     ███    ███ ";
+  move_cursor 0 1;
+  move_bol ();
+  pr_help
+    "  ███ ▄█▄ ███ ███  ███▄     \
      ▄█   ███    ███   ███    ███ \
-     ███   ▄███ \n\
-    \   ▀███▀███▀  █▀    \
+     ███   ▄███ ";
+  move_cursor 0 1;
+  move_bol ();
+  pr_help
+    "   ▀███▀███▀  █▀    \
      ▀████████▀   ███    █▀    \
-     ███    ███ ████████▀  \n\
-    \                                              ███    \
-     ███            \n";
+     ███    ███ ████████▀ ";
+  move_cursor 0 1;
+  move_bol ();
+  pr_help
+    "                                              ███    \
+     ███          ";
+  move_cursor 0 1;
+  move_bol ();
 
   ANSITerminal.print_string []
     "                                                 CS3110 Spring 2021\n";
   ANSITerminal.print_string []
     "                                              pcm82, ml2359, \
-     hes227"
+     hes227";
+  move_cursor 0 10
 
 (**[get_index] returns the string graphical representation of the index
    [idx]*)

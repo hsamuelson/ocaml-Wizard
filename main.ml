@@ -173,6 +173,7 @@ let rec main_helper () =
 (**[main] launches the wizard game*)
 let main () =
   ANSITerminal.erase Screen;
+  ANSITerminal.resize 100 50;
   PrintFunct.intro_screen ();
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
