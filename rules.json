@@ -1,4 +1,5 @@
-Objective: predict the exact number of tricks you will take in each round. 
+{
+  "text": "Objective: predict the exact number of tricks you will take in each round. 
 When there are no more cards to be dealt, the player with the highest score wins the game. 
 
 Components: There are four suits: red, blue, green, yellow. Each suit has cards 0-14, where 0 and 14 are special cards. 
@@ -36,4 +37,5 @@ If the lead card is a Wizard, it wins the trick and players may play any card th
 The one exception to this is if only Naars are played, the first Naar played wins the trick.
 
 Rules were derived from rules in the original wizard play-set, published here:
-https: //www.ultraboardgames.com/wizard/game-rules.php
+https: //www.ultraboardgames.com/wizard/game-rules.php"
+}

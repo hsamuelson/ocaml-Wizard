@@ -1,6 +1,7 @@
 open ANSITerminal
 open Sys
 open Printexc
+open Yojson.Basic.Util
 
 (**[end_game] prints the final scores for every player, a game over
    message, and exits the application*)
@@ -117,31 +118,16 @@ let rec deck_input_helper () =
           "File not found. \n\n";
       deck_input_helper ()
 
-(**[text_file_to_list_strings] reads the lines of a text file into a
-   string list, which is returned*)
-let text_file_to_list_strings file =
-  let lines = ref [] in
-  let channel = open_in file in
-  try
-    while true do
-      let written_lines = !lines in
-      lines := input_line channel :: written_lines
-    done;
-    !lines
-  with _ ->
-    close_in channel;
-    let written_lines = !lines in
-    List.rev written_lines
+(**[make_rules] returns a Yojson.Basic.t object from a valid rule json
+   file [json]*)
+let make_rules json = json |> member "text" |> to_string
 
 (**[print_ruleset] prints the ruleset*)
 let print_ruleset () =
+  let rules_json = Yojson.Basic.from_file "rules.json" in
   ANSITerminal.print_string
     [ ANSITerminal.magenta ]
-    (List.fold_left
-       (fun a b -> a ^ "\n" ^ b)
-       ""
-       (text_file_to_list_strings "rules.txt")
-    ^ "\n\n\n");
+    ("\n\n" ^ make_rules rules_json ^ "\n\n");
   print_string [ Bold ] "Press any key to finish reading rules...";
   match read_line () with
   | _ ->
