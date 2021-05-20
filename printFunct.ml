@@ -5,56 +5,60 @@ let pr_help s = ANSITerminal.print_string [ ANSITerminal.red; Bold ] s
 (**[intro_screen] prints the intro screen graphic for the wizard game*)
 let intro_screen () =
   let size_screen = size () in
-  set_cursor 11 ((snd size_screen / 2) - 8);
+  (* print_endline (string_of_int (fst size_screen)); print_endline
+     (string_of_int (snd size_screen)); *)
+  let left_margin = (fst size_screen / 2) - 35 in
+  let right_margin = snd size_screen / 2 in
+  set_cursor (left_margin + 1) right_margin;
   pr_help
     "  ▄█     █▄   ▄█   ▄███████▄     \
      ▄████████    ▄████████ \
      ████████▄ ";
   move_bol ();
-  move_cursor 10 1;
+  move_cursor left_margin 1;
   pr_help
     "  ███     ███ ███  ██▀     ▄██   \
      ███    ███   ███    ███ ███   \
      ▀███ ";
   move_bol ();
 
-  move_cursor 10 1;
+  move_cursor left_margin 1;
   pr_help
     "  ███     ███ ███▌       ▄███▀   \
      ███    ███   ███    ███ ███    \
      ███";
   move_bol ();
-  move_cursor 10 1;
+  move_cursor left_margin 1;
   pr_help
     "  ███     ███ ███▌  \
      ▀█▀▄███▀▄▄   ███    ███  \
      ▄███▄▄▄▄██▀ ███    ███ ";
   move_bol ();
-  move_cursor 10 1;
+  move_cursor left_margin 1;
   pr_help
     "  ███     ███ ███▌   ▄███▀   ▀ \
      ▀███████████ \
      ▀▀███▀▀▀▀▀   ███    ███ ";
   move_bol ();
-  move_cursor 10 1;
+  move_cursor left_margin 1;
   pr_help
     "  ███     ███ ███  ▄███▀         \
      ███    ███ ▀███████████ \
      ███    ███ ";
   move_bol ();
-  move_cursor 10 1;
+  move_cursor left_margin 1;
   pr_help
     "  ███ ▄█▄ ███ ███  ███▄     \
      ▄█   ███    ███   ███    ███ \
      ███   ▄███ ";
   move_bol ();
-  move_cursor 10 1;
+  move_cursor left_margin 1;
   pr_help
     "   ▀███▀███▀  █▀    \
      ▀████████▀   ███    █▀    \
      ███    ███ ████████▀ ";
   move_bol ();
-  move_cursor 10 1;
+  move_cursor left_margin 1;
   pr_help
     "                                              ███    \
      ███          ";
