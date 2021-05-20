@@ -378,9 +378,12 @@ let print_trump trump =
   print_cards_with_colors_short [ trump ]
 
 (**[print_player_cards] prints the cards played in [acc]*)
-let print_played_cards acc =
+let print_played_cards acc trump =
   save_cursor ();
   set_cursor 50 18;
+  print_trump trump;
+  let shift_line = if Card.get_num trump > 9 then -19 else -18 in
+  move_cursor shift_line 2;
   ANSITerminal.print_string
     [ ANSITerminal.white; Bold ]
     "PLAYED CARDS: ";
@@ -408,7 +411,7 @@ let rec choose_card_normal
     (player : t)
     (played_cards : Card.card list) =
   ANSITerminal.erase Screen;
-  print_played_cards played_cards;
+  print_played_cards played_cards trump;
   print_player player;
   print_endline "\n";
   (* print_trump trump; *)
@@ -863,7 +866,7 @@ let rec choose_card_robot
     (played_cards : Card.card list) =
   ANSITerminal.erase Screen;
   (* print_trump trump; *)
-  print_played_cards played_cards;
+  print_played_cards played_cards trump;
   print_player player;
   restore_cursor ();
   move_cursor 0 2;

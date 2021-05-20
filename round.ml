@@ -148,7 +148,10 @@ let robot_player_bet round hd trump t_trck bet_sum num_p cntr plyrs =
   move_cursor 0 1;
   (* ignore (print_trump trump []); *)
   restore_cursor ();
-  move_cursor 0 2;
+  save_cursor ();
+  set_cursor 50 18;
+  ignore (print_trump trump plyrs);
+  restore_cursor ();
   ANSITerminal.print_string
     [ ANSITerminal.green; Bold ]
     "Robot making bet... press enter.";
@@ -477,6 +480,7 @@ let scoreboard (p_list : Player.t list) =
 let print_scoreboard rnd : unit =
   let score_b = scoreboard rnd.players in
   (* Round number print *)
+  ANSITerminal.erase Screen;
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
     ("\nRound " ^ string_of_int rnd.round_num ^ "\n");

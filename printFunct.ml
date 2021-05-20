@@ -5,8 +5,6 @@ let pr_help s = ANSITerminal.print_string [ ANSITerminal.red; Bold ] s
 (**[intro_screen] prints the intro screen graphic for the wizard game*)
 let intro_screen () =
   let size_screen = size () in
-  (* print_endline (string_of_int (fst size_screen)); print_endline
-     (string_of_int (snd size_screen)); *)
   let left_margin = (fst size_screen / 2) - 35 in
   let right_margin = snd size_screen / 2 in
   set_cursor (left_margin + 1) right_margin;
@@ -84,6 +82,22 @@ let pr s clr =
   ANSITerminal.print_string [ ANSITerminal.Bold; clr ] s;
   restore_cursor ();
   move_cursor 0 1
+
+(**[get_row_col idx] returns the placement of the card in the terminal*)
+let get_new_row idx =
+  (*card width: 19 + 6 spaces*)
+  let width_terminal = fst (size ()) in
+  let max_idx_per_row = width_terminal / 25 in
+  if idx >= max_idx_per_row then true else false
+
+(** [helper_move_cursor idx] helps to move the cursor before each card
+    is printed*)
+let helper_move_cursor idx : unit =
+  let new_row = get_new_row idx in
+  if new_row then (
+    ANSITerminal.erase Screen;
+    move_bol ())
+  else ()
 
 (**[zero] prints the graphical representation of 0 at index [idx] with
    color [clr]*)
@@ -437,9 +451,11 @@ let print_hand (c_list : Card.card list) i =
     match c_list with
     | h :: t ->
         set_cursor (i * 25) 1;
-        select_number (Card.get_num h)
-          (get_card_color (Card.get_suit h))
-          i;
+        if not (get_new_row i) then
+          select_number (Card.get_num h)
+            (get_card_color (Card.get_suit h))
+            i
+        else restore_cursor ();
         aux t (i + 1)
     | [] -> ()
   in
