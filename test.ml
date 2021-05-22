@@ -35,6 +35,8 @@ open OUnit2
 open Player
 open Deck
 open Card
+open Round
+open Table
 
 (*create deck for testing from json file*)
 let j = Yojson.Basic.from_file "main_deck.json"
@@ -446,6 +448,113 @@ let update_unplayed_tests =
 let calculator_tests = [ init_calculator_tests; update_unplayed_tests ]
 
 (*deck testing ends here*)
+(* Round testing starts here *)
+let playrList = [ player6; player7; player8 ]
+
+let plarys2 = [ player7; player8; player9 ]
+
+let round1 = init_first_round 3 main_deck playrList
+
+let round2 = gen_next_round round1 playrList
+
+let round_gen_tests =
+  [
+    ( "Check playr list is correct " >:: fun _ ->
+      assert_equal playrList (players round1) );
+    ("Check round num" >:: fun _ -> assert_equal 1 (round_num round1));
+    ("Check deck size " >:: fun _ -> assert_equal 60 (deck_size round1));
+  ]
+
+let round_find_leader_tests =
+  [
+    ( "Check correct leader " >:: fun _ ->
+      assert_equal playrList (find_round_leader playrList 1 round1) );
+    ( "Check correct leader of second round " >:: fun _ ->
+      assert_equal playrList
+        (find_round_leader [ player7; player8; player6 ] 2 round1) );
+    ( "Check correct leader is still correct when looped around table "
+    >:: fun _ ->
+      assert_equal playrList
+        (find_round_leader [ player6; player7; player8 ] 4 round1) );
+  ]
+
+let round_gen_next_round_tests =
+  [
+    ( "Check round num is updated " >:: fun _ ->
+      assert_equal 2 (round_num round2) );
+    ( "Check player order is updated " >:: fun _ ->
+      assert_equal [ player6; player7; player8 ] (players round2) );
+  ]
+
+let score_board_tests =
+  [
+    ( "Check scoreboard correctly runs 3 players" >:: fun _ ->
+      assert_equal (" 1 2 3", " 0 0 0") (scoreboard (init_players 3 0))
+    );
+    ( "Check scorboard correctly runs 2 players " >:: fun _ ->
+      assert_equal (" 1 2", " 0 0") (scoreboard (init_players 2 0)) );
+    ( "Check scorboard with robots and humans " >:: fun _ ->
+      assert_equal
+        (" 1 2 3 4 5", " 0 0 0 0 0")
+        (scoreboard (init_players 3 2)) );
+  ]
+
+let card3 = Card.make_card 10 "red"
+
+let card4 = Card.make_card 11 "red"
+
+let card5 = Card.make_card 4 "blue"
+
+let card6 = Card.make_card 5 "blue"
+
+let card7 = Card.make_card 8 "red"
+
+let card8_wizard = Card.make_card 14 "green"
+
+let playr_card_list =
+  [ (player7, card4); (player8, card3); (player9, card1) ]
+
+let playr_card_list2 =
+  [ (player7, card4); (player8, card3); (player9, card5) ]
+
+let playr_card_list3 =
+  [ (player7, card4); (player8, card3); (player9, card5) ]
+
+let playr_card_list4 =
+  [ (player7, card4); (player8, card8_wizard); (player9, card5) ]
+
+let find_winning_card_tests =
+  [
+    ( "Win correctly with only one suite thats not trump" >:: fun _ ->
+      assert_equal (player7, card4)
+        (find_winning_card card5 playr_card_list) );
+    ( "Win correctly with all trump" >:: fun _ ->
+      assert_equal (player7, card4)
+        (find_winning_card card7 playr_card_list) );
+    ( "Win correctly with low trump" >:: fun _ ->
+      assert_equal (player9, card5)
+        (find_winning_card card6 playr_card_list2) );
+    ( "Win correctly with muiltple trump and non-trump" >:: fun _ ->
+      assert_equal (player7, card4)
+        (find_winning_card card1 playr_card_list3) );
+    ( "Win with non trump /suite wizard card" >:: fun _ ->
+      assert_equal (player8, card8_wizard)
+        (find_winning_card card1 playr_card_list4) );
+  ]
+
+let round_tests =
+  [
+    round_gen_tests;
+    round_find_leader_tests;
+    round_gen_next_round_tests;
+    score_board_tests;
+    find_winning_card_tests;
+  ]
+
+let table_tests =
+  [ (* ("Initilize plar list with no robots " >:: fun _ -> assert_equal
+       playrList (init_players 3 0) ); *) ]
+
 let suite =
   "test suite for Wizard"
   >::: List.flatten
@@ -454,6 +563,8 @@ let suite =
            deal_tests;
            List.flatten player_tests;
            List.flatten calculator_tests;
+           List.flatten round_tests;
+           table_tests;
          ]
 
 let _ = run_test_tt_main suite

@@ -33,3 +33,12 @@ val print_scoreboard : t -> unit
     wins the round*)
 val find_winning_card :
   Card.card -> (Player.t * Card.card) list -> Player.t * Card.card
+
+(** [find_round_leader a b c] returns a list of players where the
+    correct first player will be first in the list. This function
+    rotates the table where the original list of players is a, the round
+    number is b and the round object is c.*)
+val find_round_leader : Player.t list -> int -> t -> Player.t list
+(* [gen_next_round a b] returns the next round object. Change round
+   object to be ready to be run on next round *)
+val gen_next_round : t-> Player.t list -> t
