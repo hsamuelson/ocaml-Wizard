@@ -179,6 +179,7 @@ let main () =
   ANSITerminal.erase Screen;
   ANSITerminal.resize 100 50;
   check_size_of_screen ();
+  ANSITerminal.erase Screen;
   PrintFunct.intro_screen ();
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
