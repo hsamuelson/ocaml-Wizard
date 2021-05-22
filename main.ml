@@ -156,10 +156,29 @@ let rec main_helper () =
           \ Please either press enter or type 'rules' and press enter\n";
       main_helper ()
 
+(**[check_size_of_screen] keeps checking that you have the correct
+   screen size before playing the game*)
+let rec check_size_of_screen () =
+  let screen_size = size () in
+  match screen_size with
+  | width, height ->
+      if width < 100 then (
+        ANSITerminal.print_string [ Bold; red ]
+          "Your terminal is not large enough for this game. Please \
+           make your terminal wider. Then press ENTER.";
+        match read_line () with _ -> check_size_of_screen ())
+      else if height < 30 then (
+        ANSITerminal.print_string [ Bold; red ]
+          "Your terminal is not large enough for this game. Please \
+           make your terminal taller. Then press ENTER.";
+        match read_line () with _ -> check_size_of_screen ())
+      else ()
+
 (**[main] launches the wizard game*)
 let main () =
   ANSITerminal.erase Screen;
   ANSITerminal.resize 100 50;
+  check_size_of_screen ();
   PrintFunct.intro_screen ();
   ANSITerminal.print_string
     [ ANSITerminal.cyan; Bold ]
